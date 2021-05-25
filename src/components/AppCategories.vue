@@ -2,7 +2,7 @@
   <div class="categories-list">
     <ck-category
       v-for="(income, i) of incomes"
-      :key="`in-${i}`"
+      :key="`inc-${i}`"
       :icon="income.icon"
       :title="income.title"
       type="income"
@@ -11,7 +11,7 @@
   <div class="categories-list">
     <ck-category
       v-for="(account, i) of accounts"
-      :key="`in-${i}`"
+      :key="`acc-${i}`"
       :icon="account.icon"
       :title="account.title"
       type="account"
@@ -20,7 +20,7 @@
   <div class="categories-list">
     <ck-category
       v-for="(expense, i) of expenses"
-      :key="`in-${i}`"
+      :key="`exp-${i}`"
       :icon="expense.icon"
       :title="expense.title"
       type="expense"
