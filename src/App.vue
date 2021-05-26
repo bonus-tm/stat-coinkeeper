@@ -48,19 +48,3 @@ export default {
   }
 }
 </script>
-
-<style>
-  #app {
-    font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
-  }
-
-  .fade-enter-active,
-  .fade-leave-active {
-    pointer-events: none;
-    transition: opacity 0.5s cubic-bezier(1, 0.5, 0.8, 1);
-  }
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
-</style>

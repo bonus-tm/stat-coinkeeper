@@ -1,0 +1,29 @@
+:root {
+  --bg-color: white;
+  --text-color: #333;
+
+  --dropzone-hover-bg-color: lightsteelblue;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #333;
+    --text-color: #fff;
+    --dropzone-hover-bg-color: darkslateblue;
+  }
+}
+
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  pointer-events: none;
+  transition: opacity 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}

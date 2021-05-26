@@ -106,6 +106,6 @@ export default {
     min-width: 10rem;
   }
   .dragover {
-    background-color: lightsteelblue;
+    background-color: var(--dropzone-hover-bg-color);
   }
 </style>

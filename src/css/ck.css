@@ -9,6 +9,15 @@
   --icon-sprite-size: calc(var(--icon-size-scale) * 46px);
   --icon-sprites-image-size: calc(9 * var(--icon-sprite-size) - calc(var(--icon-size-scale) * 9px));
   --shift: var(--icon-sprite-size);
+
+  --category-title-color: #4f4f4f;
+  --category-title-font-weight: 500;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --category-title-color: #afafaf;
+    --category-title-font-weight: 400;
+  }
 }
 
 .ck-category {
@@ -30,8 +39,8 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: 500;
-  color: #4f4f4f;
+  font-weight: var(--category-title-font-weight);
+  color: var(--category-title-color);
 }
 
 .ck-category__icon-wrapper {
@@ -70,7 +79,7 @@
   background-color: #0491d1;
 }
 .ck-category_account .ck-category__fill {
-  background-color: #fc0;
+  background-color: #f7b600; /*#fc0*/
 }
 .ck-category_expense .ck-category__fill {
   background-color: #0ac38e;
