@@ -58,7 +58,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .dropzone {
     border: 4px dashed mediumslateblue;
     border-radius: 0.5rem;

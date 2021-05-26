@@ -1,18 +1,14 @@
 <template>
   <button v-if="currentState !== states.noData" @click="reset">Reset</button>
 
-  <transition mode="out-in" name="fade">
-    <upload-file v-if="currentState === states.noData" @load="onDataLoaded" />
-  </transition>
+  <upload-file v-if="currentState === states.noData" @load="onDataLoaded" />
 
-  <transition mode="out-in" name="fade">
-    <app-categories
-      v-if="currentState === states.dataRead"
-      :incomes="incomes"
-      :accounts="accounts"
-      :expenses="expenses"
-    />
-  </transition>
+  <app-categories
+    v-if="currentState === states.dataRead"
+    :incomes="incomes"
+    :accounts="accounts"
+    :expenses="expenses"
+  />
 </template>
 
 <script>
