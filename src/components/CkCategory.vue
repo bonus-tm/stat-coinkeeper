@@ -3,19 +3,25 @@
     :class="`ck-category_${type}`"
     class="ck-category"
     draggable="true"
-    @ondragstart="onDragStart"
+    @dragstart="onDragStart"
+    @dragend="onDragEnd"
   >
     <div class="ck-category__icon-wrapper">
       <div class="ck-category__fill" style="height: 100%;" />
-      <div class="ck-category__icon" :class="`ck-category__icon_${icon.toLowerCase()}`" />
+      <div
+        :class="`ck-category__icon_${category.icon.toLowerCase()}`"
+        class="ck-category__icon"
+      />
     </div>
     <div class="ck-category__title">
-      {{ title }}
+      {{ category.title }}
     </div>
   </div>
 </template>
 
 <script>
+import {state} from '../services/store'
+
 export default {
   name: 'CkCategory',
   props: {
@@ -26,12 +32,20 @@ export default {
         return ['income', 'account', 'expense'].includes(value)
       }
     },
-    icon: {type: String, required: true},
-    title: {type: String, required: true},
+    category: {type: Object, required: true},
   },
   methods: {
     onDragStart (e) {
-      e.dataTransfer.setData('text/plain', null)
+      console.log('dragstart')
+      state.dragging = true
+      e.dataTransfer.setData(
+        'text',
+        JSON.stringify({type: this.type, category: this.category})
+      )
+    },
+    onDragEnd () {
+      console.log('dragend')
+      state.dragging = false
     },
   }
 }
