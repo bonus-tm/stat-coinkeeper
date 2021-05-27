@@ -1,3 +1,6 @@
+import Translit from 'cyrillic-to-translit-js'
+const translit = new Translit()
+
 let csv
 
 const fixStr = str => str?.slice(1, -1)
@@ -16,7 +19,14 @@ const fixDate = dateStr => {
     )
   }
 }
-
+/**
+ *
+ * @param {string} title
+ * @return {string}
+ */
+const makeCategoryId = title => {
+  return translit.transform(title, '_').toLowerCase()
+}
 const FIELDS = {
   'Название': {name: 'title', number: false},
   'Бюджет': {name: 'budget', number: true},
@@ -25,6 +35,7 @@ const FIELDS = {
   'Валюта': {name: 'currency', number: false},
   'Текущее значение': {name: 'value', number: true},
 }
+// Преобразовать список категорий в доходах, расходах или наличии в массив объектов
 const formatCategories = (src, separator) => {
   let titles = src.shift().split(separator).map(fixStr).map(str => FIELDS[str])
   let data = []
@@ -33,6 +44,7 @@ const formatCategories = (src, separator) => {
     for (let [i, val] of srcCategory.split(separator).entries()) {
       category[titles[i].name] = titles[i].number ? fixNum(val) : fixStr(val)
     }
+    category.id = makeCategoryId(category.title)
     data.push(category)
   }
   return data
