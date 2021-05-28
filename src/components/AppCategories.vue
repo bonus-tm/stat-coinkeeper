@@ -33,19 +33,23 @@
 </template>
 
 <script>
-import {state} from '../services/store'
+import {readonly, state} from '../services/store'
 import CkCategory from './CkCategory.vue'
 import DropZone from './DropZone.vue'
 
 export default {
   name: 'AppCategories',
   components: {DropZone, CkCategory},
-  props: {
-    incomes: {type: Array, required: true},
-    accounts: {type: Array, required: true},
-    expenses: {type: Array, required: true},
-  },
   computed: {
+    incomes () {
+      return readonly.incomes
+    },
+    accounts () {
+      return readonly.accounts
+    },
+    expenses () {
+      return readonly.expenses
+    },
     dragging () {
       return state.dragging
     },

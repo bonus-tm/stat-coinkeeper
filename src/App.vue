@@ -3,18 +3,13 @@
 
   <upload-file v-if="appState === states.noData" @load="onDataLoaded" />
 
-  <app-categories
-    v-if="appState === states.dataRead"
-    :incomes="incomes"
-    :accounts="accounts"
-    :expenses="expenses"
-  />
+  <app-categories v-if="appState === states.dataRead" />
 </template>
 
 <script>
 import UploadFile from './components/UploadFile.vue'
 import AppCategories from './components/AppCategories.vue'
-import {initReadonly} from './services/store'
+import {initReadonly, clearReadonly} from './services/store'
 
 export default {
   name: 'App',
@@ -28,23 +23,15 @@ export default {
     return {
       states,
       appState: states.noData,
-      incomes: [],
-      accounts: [],
-      expenses: [],
     }
   },
   methods: {
     reset () {
       this.appState = this.states.noData
-      this.incomes = []
-      this.accounts = []
-      this.expenses = []
+      clearReadonly()
     },
     onDataLoaded (allData) {
       initReadonly(allData)
-      this.incomes = allData.incomes
-      this.accounts = allData.accounts
-      this.expenses = allData.expenses
       this.appState = this.states.dataRead
     },
   }

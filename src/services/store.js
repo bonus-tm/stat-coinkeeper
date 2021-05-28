@@ -26,3 +26,11 @@ export const initReadonly = ({operations, incomes, accounts, expenses, tags}) =>
   readonly.expenses = expenses
   readonly.tags = tags
 }
+
+export const clearReadonly = () => {
+  readonly.operations = null
+  readonly.incomes = null
+  readonly.accounts = null
+  readonly.expenses = null
+  readonly.tags = null
+}
