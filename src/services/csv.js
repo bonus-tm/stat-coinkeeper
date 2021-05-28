@@ -36,11 +36,11 @@ const FIELDS = {
   'Текущее значение': {name: 'value', number: true},
 }
 // Преобразовать список категорий в доходах, расходах или наличии в массив объектов
-const formatCategories = (src, separator) => {
+const formatCategories = (src, separator, type) => {
   let titles = src.shift().split(separator).map(fixStr).map(str => FIELDS[str])
   let data = []
   for (let srcCategory of src) {
-    let category = {}
+    let category = {type}
     for (let [i, val] of srcCategory.split(separator).entries()) {
       category[titles[i].name] = titles[i].number ? fixNum(val) : fixStr(val)
     }
@@ -64,24 +64,24 @@ export const loadData = data => {
   }
 
   srcIncomes = srcIncomes.split('\n')
-  let incomes = formatCategories(srcIncomes, separator)
+  let incomes = formatCategories(srcIncomes, separator, 'income')
   // console.log(incomes)
 
   srcAccounts = srcAccounts.split('\n')
-  let accounts = formatCategories(srcAccounts, separator)
+  let accounts = formatCategories(srcAccounts, separator, 'account')
 
   srcExpenses = srcExpenses.split('\n')
-  let expenses = formatCategories(srcExpenses, separator)
+  let expenses = formatCategories(srcExpenses, separator, 'expense')
 
   srcTags = srcTags.split('\n')
-  let tags = formatCategories(srcTags, separator)
+  let tags = formatCategories(srcTags, separator, 'tag')
 
   // 'Расход' — только расходы
   // 'Перевод' — доходы и переводы между своими счетами
   const INCOME = 'income'
   const SPENDING = 'spend'
   const TRANSFER = 'transfer'
-  const determineOperationType = (type, source) => {
+  const determineOperationDirection = (type, source) => {
     if (type === 'Расход') return SPENDING
     if (incomes.find(income => income.title === source)) return INCOME
     return TRANSFER
@@ -96,7 +96,7 @@ export const loadData = data => {
 
     let [
       dateStr,
-      type,
+      direction,
       source,
       destination,
       tags,
@@ -109,7 +109,7 @@ export const loadData = data => {
     ] = entry.split(separator)
     operations.push({
       date: fixDate(dateStr),
-      type: determineOperationType(fixStr(type), fixStr(source)),
+      direction: determineOperationDirection(fixStr(direction), fixStr(source)),
       source: fixStr(source),
       destination: fixStr(destination),
       value: fixNum(value),

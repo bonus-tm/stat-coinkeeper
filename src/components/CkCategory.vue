@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="`ck-category_${type}`"
+    :class="`ck-category_${category.type}`"
     class="ck-category"
     draggable="true"
     @dragstart="onDragStart"
@@ -25,26 +25,14 @@ import {state} from '../services/store'
 export default {
   name: 'CkCategory',
   props: {
-    type: {
-      type: String,
-      required: true,
-      validator (value) {
-        return ['income', 'account', 'expense'].includes(value)
-      }
-    },
     category: {type: Object, required: true},
   },
   methods: {
     onDragStart (e) {
-      console.log('dragstart')
       state.dragging = true
-      e.dataTransfer.setData(
-        'text',
-        JSON.stringify({type: this.type, category: this.category})
-      )
+      e.dataTransfer.setData('text', JSON.stringify(this.category))
     },
     onDragEnd () {
-      console.log('dragend')
       state.dragging = false
     },
   }
