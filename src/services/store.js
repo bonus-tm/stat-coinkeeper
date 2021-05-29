@@ -19,15 +19,17 @@ export const state = reactive({
 
 export const readonly = {}
 
-export const initReadonly = ({operations, incomes, accounts, expenses, tags}) => {
-  readonly.operations = operations
-  readonly.incomes = incomes
-  readonly.accounts = accounts
-  readonly.expenses = expenses
-  readonly.tags = tags
+export const initReadonly = ({timestamp, data}) => {
+  readonly.timestamp = timestamp
+  readonly.operations = data.operations
+  readonly.incomes = data.incomes
+  readonly.accounts = data.accounts
+  readonly.expenses = data.expenses
+  readonly.tags = data.tags
 }
 
 export const clearReadonly = () => {
+  readonly.timestamp = null
   readonly.operations = null
   readonly.incomes = null
   readonly.accounts = null

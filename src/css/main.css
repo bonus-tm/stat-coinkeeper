@@ -16,6 +16,7 @@ body {
   background-color: var(--bg-color);
   color: var(--text-color);
   font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
 }
 
 .fade-enter-active,

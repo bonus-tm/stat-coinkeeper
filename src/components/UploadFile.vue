@@ -1,6 +1,7 @@
 <template>
   <div
     class="dropzone"
+    :class="{dragover}"
     @dragover.prevent="dragover = true"
     @dragleave="dragover = false"
     @drop.stop.prevent="onDrop"
@@ -45,9 +46,8 @@ export default {
 
       let reader = new FileReader()
       reader.onload = () => {
-        let allData = loadData(reader.result)
-        console.log(allData)
-        this.$emit('load', allData)
+        let data = loadData(reader.result)
+        this.$emit('import', {timestamp: file.lastModified, data})
       }
       reader.readAsText(file)
     },
@@ -68,6 +68,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+  .dragover {
+    background-color: var(--dropzone-hover-bg-color);
+    opacity: 0.5;
   }
   input {
     display: none;
