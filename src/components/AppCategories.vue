@@ -21,6 +21,8 @@
     />
   </div>
 
+  <categories-income />
+
   <div class="dropzones">
     <div v-for="heapKey of heapsAccountKeys" :key="heapKey">
       <drop-zone :heap="heaps[heapKey]">
@@ -36,10 +38,11 @@
 import {readonly, state} from '../services/store'
 import CkCategory from './CkCategory.vue'
 import DropZone from './DropZone.vue'
+import CategoriesIncome from './CategoriesIncome.vue'
 
 export default {
   name: 'AppCategories',
-  components: {DropZone, CkCategory},
+  components: {CategoriesIncome, DropZone, CkCategory},
   computed: {
     incomes () {
       return readonly.incomes
@@ -59,16 +62,6 @@ export default {
     heapsAccountKeys () {
       return Object.keys(state.heaps)
         .filter(key => state.heaps[key].type === 'accounts')
-    },
-    moneyValues () {
-      let values = {}
-      for (let key of Object.keys(this.money)) {
-        values[key] = this.money[key].categories.reduce((acc, category) => {
-          acc += category.value * this.currencyRates[category.currency]
-          return acc
-        }, 0)
-      }
-      return values
     },
   }
 }
