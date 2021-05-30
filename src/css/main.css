@@ -1,13 +1,15 @@
 :root {
   --bg-color: white;
   --text-color: #333;
+  --font-weight: 500;
 
   --dropzone-hover-bg-color: lightsteelblue;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-color: #333;
-    --text-color: #fff;
+    --bg-color: #181818;
+    --text-color: #f0f0f0;
+    --font-weight: 400;
     --dropzone-hover-bg-color: darkslateblue;
   }
 }
@@ -17,6 +19,7 @@ body {
   color: var(--text-color);
   font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
   font-size: 14px;
+  font-weight: var(--font-weight);
 }
 
 .fade-enter-active,

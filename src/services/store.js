@@ -1,5 +1,23 @@
 import {reactive} from 'vue'
 
+export const palette = [
+  '#d70206',
+  '#f05b4f',
+  '#f4c63d',
+  '#d17905',
+  '#453d3f',
+  '#59922b',
+  '#0544d3',
+  '#6b0392',
+  '#f05b4f',
+  '#dda458',
+  '#eacf7d',
+  '#86797d',
+  '#b2c326',
+  '#6188e2',
+  '#a748ca',
+]
+
 // heaps can be two types — accounts and operations (incomes + expenses)
 export const state = reactive({
   dragging: false,

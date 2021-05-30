@@ -26,7 +26,7 @@
   flex-direction: column;
   align-items: center;
   width: var(--category-container-width);
-  margin: 0 3px 15px;
+  margin: 0 calc(var(--icon-wrapper-size) / 10) calc(var(--icon-wrapper-size) / 3);
   z-index: 1;
 }
 
@@ -45,7 +45,7 @@
 
 .ck-category__icon-wrapper {
   position: relative;
-  margin: 10px 0;
+  margin: calc(var(--icon-wrapper-size) / 3) 0 calc(var(--icon-wrapper-size) / 6);
   width: var(--icon-wrapper-size);
   height: var(--icon-wrapper-size);
   overflow: hidden;

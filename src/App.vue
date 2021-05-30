@@ -14,19 +14,19 @@
 
   <upload-file v-if="appState === states.noData" @import="onDataImport" />
 
-  <app-categories v-if="appState === states.dataRead" />
+  <analyze-accounts v-if="appState === states.dataRead" />
 </template>
 
 <script>
 import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
 import UploadFile from './components/UploadFile.vue'
-import AppCategories from './components/AppCategories.vue'
+import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
 import {clearReadonly, initReadonly, readonly} from './services/store'
 
 export default {
   name: 'App',
-  components: {AppCategories, UploadFile},
+  components: {AnalyzeAccounts, UploadFile},
   data () {
     let states = {
       noData: 0,

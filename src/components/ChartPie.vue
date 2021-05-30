@@ -1,5 +1,17 @@
 <template>
   <div class="pie-container">
+    <svg viewBox="0 0 64 64" class="pie">
+      <circle
+        v-for="(slice, i) in sectors"
+        :key="`circle-${i}`"
+        r="25%"
+        cx="50%"
+        cy="50%"
+        :stroke="palette[i]"
+        :stroke-dasharray="`${round(slice.percent, 2)} 100`"
+        :stroke-dashoffset="`${-round(slice.offset, 2)}`"
+      ></circle>
+    </svg>
     <div class="pie-legend">
       <template v-for="(sector, i) in sectors" :key="`legend-${i}`">
         <div
@@ -15,22 +27,12 @@
         </div>
       </template>
     </div>
-    <svg viewBox="0 0 64 64" class="pie">
-      <circle
-        v-for="(slice, i) in sectors"
-        :key="`circle-${i}`"
-        r="25%"
-        cx="50%"
-        cy="50%"
-        :stroke="palette[i]"
-        :stroke-dasharray="`${round(slice.percent, 2)} 100`"
-        :stroke-dashoffset="`${-round(slice.offset, 2)}`"
-      ></circle>
-    </svg>
   </div>
 </template>
 
 <script>
+import {palette} from '../services/store'
+
 export default {
   name: 'ChartPie',
   props: {
@@ -38,28 +40,10 @@ export default {
     fieldTitle: {type: String, default: 'title'},
     fieldValue: {type: String, default: 'value'},
   },
-  data () {
-    return {
-      palette: [
-        '#d70206',
-        '#f05b4f',
-        '#f4c63d',
-        '#d17905',
-        '#453d3f',
-        '#59922b',
-        '#0544d3',
-        '#6b0392',
-        '#f05b4f',
-        '#dda458',
-        '#eacf7d',
-        '#86797d',
-        '#b2c326',
-        '#6188e2',
-        '#a748ca',
-      ]
-    }
-  },
   computed: {
+    palette () {
+      return palette
+    },
     totalValue () {
       return this.data.reduce((total, sector) => {
         total += sector[this.fieldValue]
@@ -98,7 +82,7 @@ export default {
     display: flex;
   }
   .pie-legend {
-    margin-right: 1rem;
+    margin-left: 1rem;
     display: grid;
     grid-template-columns: 30px repeat(3, auto);
     column-gap: 0.5rem;
@@ -109,11 +93,18 @@ export default {
   .pie-legend-color {
     width: 30px;
     height: 1rem;
-    border-radius: 3px;
+    border-radius: 1px;
   }
   .pie {
     width: 150px;
     transform: rotate(-90deg);
+    background-color: rgba(40,40,40, 0.1);
+    border-radius: 50%;
+  }
+  @media (prefers-color-scheme: dark) {
+    .pie {
+      background-color: rgba(230,230,230, 0.1);
+    }
   }
 
   .pie circle {

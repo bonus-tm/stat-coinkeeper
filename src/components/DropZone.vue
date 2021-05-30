@@ -1,10 +1,10 @@
 <template>
-  <h3>
+  <h3 :style="{color: titleColor, backgroundColor: titleBg}">
     <slot name="title">
       Dropzone
     </slot>
   </h3>
-  <div class="dropzone">
+  <div class="dropzone" :style="{borderColor: titleBg}">
     <div
       v-show="dragging"
       class="dz-cover"
@@ -31,6 +31,8 @@ export default {
   name: 'DropZone',
   components: {CkCategory},
   props: {
+    titleColor: {type: String, default: 'black'},
+    titleBg: {type: String, default: 'darkgray'},
     heap: {type: Object, required: true},
   },
   data () {
@@ -72,14 +74,16 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .dropzone {
     position: relative;
-    display: flex;
     border: 1px solid red;
-    border-radius: 3px;
-    min-height: 10rem;
-    min-width: 10rem;
+    border-bottom-left-radius: 2px;
+    border-bottom-right-radius: 2px;
+    min-height: 4rem;
+    display: grid;
+    grid-template-columns: repeat(4, var(--category-container-width));
+    width: calc(4 * var(--category-container-width));
   }
   .dz-cover {
     position: absolute;
@@ -97,6 +101,12 @@ export default {
   }
 
   h3 {
+    font-weight: 400;
     text-align: center;
+    width: calc(4 * var(--category-container-width) + 2px);
+    margin: 1rem 0 0;
+    padding: 0.2rem 0;
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
   }
 </style>
