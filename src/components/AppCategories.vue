@@ -74,6 +74,6 @@ export default {
   .dropzones {
     display: grid;
     gap: 1rem;
-    grid-template-columns: repeat(auto-fill, 400px);
+    grid-template-columns: repeat(auto-fill, 300px);
   }
 </style>
