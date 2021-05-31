@@ -1,4 +1,6 @@
 import Translit from 'cyrillic-to-translit-js'
+import * as constants from '../constants'
+
 const translit = new Translit()
 
 let csv
@@ -9,8 +11,8 @@ const fixDate = dateStr => {
   let [month, day, year] = fixStr(dateStr)?.split('/')
   return {
     year: Number(year),
-    month: Number(month),
-    day: Number(),
+    month: Number(month) - 1,
+    day: Number(day),
     date: new Date(
       Number(year),
       Number(month) - 1,
@@ -78,13 +80,10 @@ export const loadData = data => {
 
   // 'Расход' — только расходы
   // 'Перевод' — доходы и переводы между своими счетами
-  const INCOME = 'income'
-  const SPENDING = 'spend'
-  const TRANSFER = 'transfer'
   const determineOperationDirection = (type, source) => {
-    if (type === 'Расход') return SPENDING
-    if (incomes.find(income => income.title === source)) return INCOME
-    return TRANSFER
+    if (type === 'Расход') return constants.OUT
+    if (incomes.find(income => income.title === source)) return constants.IN
+    return constants.TRANSFER
   }
 
   // remove row with column titles
