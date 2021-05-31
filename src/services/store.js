@@ -21,13 +21,13 @@ export const palette = [
 // heaps can be two types — accounts and operations (incomes + expenses)
 export const state = reactive({
   dragging: false,
-  heaps: {
-    cashless: {type: 'accounts', title: 'Безнал', categories: []},
-    cash: {type: 'accounts', title: 'Наличка', categories: []},
-    currency: {type: 'accounts', title: 'Валюта', categories: []},
-    gulden: {type: 'accounts', title: 'Клад', categories: []},
-    rest: {type: 'accounts', title: 'Остальное', categories: []},
-  },
+  heaps: [
+    {type: 'accounts', title: 'Безнал', categories: []},
+    {type: 'accounts', title: 'Наличка', categories: []},
+    {type: 'accounts', title: 'Валюта', categories: []},
+    {type: 'accounts', title: 'Клад', categories: []},
+    {type: 'accounts', title: 'Остальное', categories: []},
+  ],
   currencyRates: {
     RUB: 1,
     USD: 73.41,
