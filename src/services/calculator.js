@@ -26,10 +26,9 @@ export const createMonthAxis = operations => {
  * Помесячное суммирование доходов и расходов выбранных категорий
  * @param {[String]} categoryTitles названия категорий расходов и источников доходов
  * @param {Array} operations
- * @param xy
  * @return {{}} {'2019-0': 12345, '2019-1': 45678, ...}
  */
-export const sumByMonths = (categoryTitles, operations, xy = false) => {
+export const sumByMonths = (categoryTitles, operations) => {
   let months = {}
   for (let op of operations) {
     if (

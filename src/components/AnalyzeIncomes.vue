@@ -60,8 +60,15 @@ export default {
       }
     }
     let monthAxis = createMonthAxis(readonly.operations)
-    let data = sumByMonths(['Украшения', 'Материалы'], readonly.operations, true)
-    let data2 = sumByMonths(['Айпеченье', 'Кхмер'], readonly.operations, true)
+    let data = sumByMonths(['Украшения', 'Материалы'], readonly.operations)
+    let data2 = sumByMonths(['Айпеченье', 'Кхмер'], readonly.operations)
+    for (let key of Object.keys(data)) {
+      if (data[key] < 0) {
+        data2[key] += data[key]
+        data[key] = 0
+      }
+
+    }
     console.log(data)
     console.log(data2)
     let chartData = {
