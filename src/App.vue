@@ -14,7 +14,8 @@
 
   <upload-file v-if="appState === states.noData" @import="onDataImport" />
 
-  <analyze-accounts v-if="appState === states.dataRead" />
+  <!--<analyze-accounts v-if="appState === states.dataRead" />-->
+  <analyze-incomes v-if="appState === states.dataRead" />
 </template>
 
 <script>
@@ -22,11 +23,13 @@ import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
 import UploadFile from './components/UploadFile.vue'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
+import AnalyzeIncomes from './components/AnalyzeIncomes.vue'
 import {clearReadonly, initReadonly, readonly} from './services/store'
+import {sumByMonths} from './services/calculator'
 
 export default {
   name: 'App',
-  components: {AnalyzeAccounts, UploadFile},
+  components: {AnalyzeIncomes, AnalyzeAccounts, UploadFile},
   data () {
     let states = {
       noData: 0,
@@ -59,6 +62,24 @@ export default {
       console.log(allData)
       initReadonly(allData)
       this.appState = this.states.dataRead
+
+      let tosh = sumByMonths(['Айпеченье'], readonly.operations)
+      console.log(tosh)
+
+      let byt = sumByMonths(['Бытовуха'], readonly.operations)
+      console.log(byt)
+
+      let ta = sumByMonths(['Украшения'], readonly.operations)
+      let ta2 = sumByMonths(['Украшения', 'Материалы'], readonly.operations)
+      console.log(ta, ta2)
+
+      /*
+      let accs = {}
+      for (let acc of readonly.accounts) {
+        accs[acc.title] = calcAccountInitialValue(acc, readonly.operations)
+      }
+      console.log(accs)
+      */
     },
   }
 }

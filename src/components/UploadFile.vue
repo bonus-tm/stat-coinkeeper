@@ -7,7 +7,13 @@
     @drop.stop.prevent="onDrop"
     @click="openChooseFile"
   >
-    <p>Сюда надо бросить файл *.csv, эскспортированный из CoinKeeper'а</p>
+    <p>Сюда надо бросить файл *.csv, эскспортированный из CoinKeeper'аx</p>
+    <p>
+      Инструкция по экспорту данных:
+      <a href="https://ruhelp.coinkeeper.me/4e4288b6e3ad4b349aab0e7b55d12d99">
+        ruhelp.coinkeeper.me/4e4288b6e3ad4b349aab0e7b55d12d99
+      </a>
+    </p>
     <input
       ref="fileInput"
       name="csv"

@@ -27,6 +27,11 @@ export const state = reactive({
     {type: 'accounts', title: 'Валюта', categories: []},
     {type: 'accounts', title: 'Клад', categories: []},
     {type: 'accounts', title: 'Остальное', categories: []},
+
+    {type: 'operations', title: 'Доходы Тоша', categories: []},
+    {type: 'operations', title: 'Доходы Тани', categories: []},
+    {type: 'operations', title: 'Постоянные расходы', categories: []},
+    {type: 'operations', title: 'Редкие', categories: []},
   ],
   currencyRates: {
     RUB: 1,
