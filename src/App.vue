@@ -14,8 +14,8 @@
 
   <upload-file v-if="appState === states.noData" @import="onDataImport" />
 
-  <!--<analyze-accounts v-if="appState === states.dataRead" />-->
   <analyze-incomes v-if="appState === states.dataRead" />
+  <analyze-accounts v-if="appState === states.dataRead" />
 </template>
 
 <script>
