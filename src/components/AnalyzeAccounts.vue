@@ -58,13 +58,4 @@ export default {
 </script>
 
 <style>
-  .analyze {
-    display: grid;
-    grid-template-columns: repeat(2, calc(4 * var(--category-container-width) + 2rem)) auto;
-    align-items: start;
-  }
-  .categories-list {
-    display: grid;
-    grid-template-columns: repeat(4, var(--category-container-width));
-  }
 </style>
