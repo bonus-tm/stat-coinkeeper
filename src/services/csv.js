@@ -5,8 +5,8 @@ const translit = new Translit()
 
 let csv
 
-const fixStr = str => str?.slice(1, -1)
-const fixNum = str => Number(str?.slice(1, -1))
+const fixStr = str => str.charAt(0) === '"' ? str.slice(1, -1) : str
+const fixNum = str => Number(str.charAt(0) === '"' ? str.slice(1, -1) : str)
 const fixDate = dateStr => {
   let [month, day, year] = fixStr(dateStr)?.split('/')
   return {
@@ -105,7 +105,13 @@ export const loadData = data => {
       currency2,
       repeat,
       comment,
-    ] = entry.split(separator)
+    ] = entry.split('","')
+    // хак, чтобы нормально парсить несколько тегов через запятую —
+    // split не просто по запятой, а по кавычкам и запятой: ","
+    // а потом в первой и последней части отрезать лишнюю кавычку
+    dateStr = dateStr.substring(1)
+    comment = comment.slice(0, -1)
+
     operations.push({
       date: fixDate(dateStr),
       direction: determineOperationDirection(fixStr(direction), fixStr(source)),
