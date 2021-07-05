@@ -11,11 +11,7 @@
 
     <div>
       <div v-for="(heap, i) of heapsAccount" :key="`dz-acc-${i}`">
-        <drop-zone :heap="heap" :title-bg="palette[i]">
-          <template v-slot:title>
-            {{ heap.title }}
-          </template>
-        </drop-zone>
+        <drop-zone v-model="heapsAccount[i]" />
       </div>
     </div>
 
@@ -35,9 +31,7 @@ export default {
   components: {ChartPie, CkCategory, DropZone},
   setup () {
     let accounts = computed(() => readonly.accounts)
-    let heapsAccount = computed(() => {
-      return state.heaps.filter(heap => heap.type === 'accounts')
-    })
+    let heapsAccount = computed(() => state.heaps.accounts)
     let chartData = computed(() => {
       return heapsAccount.value.map(heap => ({
         title: heap.title,

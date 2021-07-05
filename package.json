@@ -10,6 +10,7 @@
     "chart.js": "^3.4.0",
     "cyrillic-to-translit-js": "^3.1.0",
     "date-fns": "^2.22.1",
+    "tippy.js": "^6.3.1",
     "vue": "^3.0.5",
     "vue-chart-3": "^0.2.13"
   },

@@ -85,7 +85,8 @@ export default {
     margin-left: 1rem;
     display: grid;
     grid-template-columns: 30px repeat(3, auto);
-    column-gap: 0.5rem;
+    gap: 0.5rem;
+    align-content: center;
   }
   .pie-legend-value {
     text-align: right;

@@ -19,13 +19,20 @@
     </div>
 
     <div>
-      <div v-for="(heap, i) of heapsIncomes" :key="`dz-acc-${i}`">
-        <drop-zone :heap="heap" :title-bg="palette[i]">
-          <template v-slot:title>
-            {{ heap.title }}
-          </template>
-        </drop-zone>
+      <div v-for="(heap, i) of heapsIncome" :key="`dz-acc-${i}`">
+        <drop-zone v-model="heapsIncome[i]" @remove="removeHeap(i)" />
       </div>
+      <button @click="addHeap">
+        Добавить кучу
+      </button>
+
+      <h3>Кучи расходов</h3>
+      <div v-for="(heap, i) of heapsExpense" :key="`dz-acc-${i}`">
+        <drop-zone v-model="heapsExpense[i]" @remove="removeHeap(i)" />
+      </div>
+      <button @click="addHeap">
+        Добавить кучу
+      </button>
     </div>
 
     <line-chart
@@ -37,8 +44,8 @@
 </template>
 
 <script>
-import {computed, ref, toRaw} from 'vue'
-import {Chart, LineController, CategoryScale, LinearScale, PointElement, LineElement, Tooltip} from 'chart.js'
+import {computed, ref} from 'vue'
+import {CategoryScale, Chart, LinearScale, LineController, LineElement, PointElement, Tooltip} from 'chart.js'
 import {LineChart} from 'vue-chart-3'
 import {createMonthAxis, sumByMonths} from '../services/calculator'
 import {palette, readonly, state} from '../services/store'
@@ -82,9 +89,7 @@ export default {
   setup () {
     let incomes = computed(() => readonly.incomes)
     let expenses = computed(() => readonly.expenses)
-    let heapsIncomes = computed(() => {
-      return state.heaps.filter(heap => heap.type === 'operations')
-    })
+    let heaps = computed(() => state.heaps.allIncomesVsExpenses)
 
     let chartIncomesOptions = {
       responsive: true,
@@ -126,56 +131,49 @@ export default {
     }
     let monthAxis = createMonthAxis(readonly.operations)
 
-    // let datasets = computed(() => {
-    //   return heapsIncomes.value.map((heap, i) => {
-    //     let data = sumByMonths(toRaw(heap.categories), readonly.operations)
-    //     console.log({heap, data})
-    //     return {
-    //       label: heap.title,
-    //       data: monthAxis.map(ym => data[ym]),
-    //       borderColor: palette[i],
-    //       // backgroundColor: 'rgba(250,50,20,0.5)',
-    //     }
-    //   })
-    // })
-    // let data = sumByMonths(['Украшения', 'Материалы'], readonly.operations)
-    // let data2 = sumByMonths(['Айпеченье', 'Кхмер'], readonly.operations)
-    // for (let key of Object.keys(data)) {
-    //   if (data[key] < 0) {
-    //     data2[key] += data[key]
-    //     data[key] = 0
-    //   }
-    // }
-
     let chartIncomesData = computed(() => ({
       xLabels: monthAxis.map((ym, i) => {
         let [y, m] = ym.split('-')
         return m === '0' || i === 0 ? `${months[m]} ${y}` : months[m]
       }),
-      datasets: state.heaps.filter(heap => heap.type === 'operations')
-        .map((heap, i) => {
-          let categoryTitles = heap.categories.map(cat => cat.title)
-          let data = sumByMonths(categoryTitles, readonly.operations)
-          console.log({categoryTitles, data})
-          return {
-            label: heap.title,
-            data: monthAxis.map(ym => data[ym]),
-            borderColor: palette[i],
-            // backgroundColor: 'rgba(250,50,20,0.5)',
-          }
-        }),
+      datasets: heaps.value.map((heap, i) => {
+        let categoryTitles = heap.categories.map(cat => cat.title)
+        let data = sumByMonths(categoryTitles, readonly.operations)
+        console.log({categoryTitles, data})
+        return {
+          label: heap.title,
+          data: monthAxis.map(ym => data[ym]),
+          borderColor: heap.titleBg,
+          backgroundColor: 'rgba(250,50,20,0.5)',
+        }
+      }),
     }))
 
     let chartRef = ref()
+
+    let addHeap = () => {
+      state.heaps.push({
+        type: 'operations',
+        title: 'Куча',
+        categories: [],
+      })
+    }
+    let removeHeap = index => {
+      console.log('removeHeap', index)
+      state.heaps.splice(index, 1)
+    }
+
     return {
       chartRef,
       palette,
       incomes,
       expenses,
-      heapsIncomes,
+      heaps,
       chartIncomesOptions,
       chartIncomesData,
+      addHeap,
+      removeHeap,
     }
-  }
+  },
 }
 </script>

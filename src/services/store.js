@@ -1,6 +1,7 @@
 import {reactive} from 'vue'
 
 export const palette = [
+  '#cccccc',
   '#ff3b30',
   '#ff9500',
   '#ffcc00',
@@ -9,27 +10,77 @@ export const palette = [
   '#007aff',
   '#5856d6',
   '#af52de',
+  '#000000',
 ]
 
 // heaps can be two types — accounts and operations (incomes + expenses)
 export const state = reactive({
   dragging: false,
-  heaps: [
-    {type: 'accounts', title: 'Безнал', categories: []},
-    {type: 'accounts', title: 'Наличка', categories: []},
-    {type: 'accounts', title: 'Валюта', categories: []},
-    {type: 'accounts', title: 'Клад', categories: []},
-    {type: 'accounts', title: 'Остальное', categories: []},
-
-    {type: 'operations', title: 'Доходы Тоша', categories: []},
-    {type: 'operations', title: 'Доходы Тани', categories: []},
-    {type: 'operations', title: 'Постоянные расходы', categories: []},
-    {type: 'operations', title: 'Редкие', categories: []},
-  ],
   currencyRates: {
     RUB: 1,
     USD: 73.41,
     EUR: 89.52,
+  },
+  heaps: {
+    accounts: [
+      {
+        type: 'accounts',
+        title: 'Безнал',
+        color: {bg: '#ccc', border: '#ddd'},
+        categories: []
+      },
+      {
+        type: 'accounts',
+        title: 'Наличка',
+        color: {bg: '#ccc', border: '#ddd'},
+        categories: []
+      },
+      {
+        type: 'accounts',
+        title: 'Валюта',
+        color: {bg: '#ccc', border: '#ddd'},
+        categories: []
+      },
+      {
+        type: 'accounts',
+        title: 'Клад',
+        color: {bg: '#ccc', border: '#ddd'},
+        categories: []
+      },
+      {
+        type: 'accounts',
+        title: 'Остальное',
+        color: {bg: '#ccc', border: '#ddd'},
+        categories: []
+      },
+    ],
+    allIncomesVsExpenses: [
+      {
+        type: 'operations',
+        title: 'Все доходы',
+        color: {bg: '#34c759', border: '#34c759'},
+        categories: []
+      },
+      {
+        type: 'operations',
+        title: 'Все расходы',
+        color: {bg: '#ff3b30', border: '#ff3b30'},
+        categories: []
+      },
+    ],
+    incomes: [
+      {type: 'operations', title: 'Доходы Тоша', color: {}, categories: []},
+      {type: 'operations', title: 'Доходы Тани', color: {}, categories: []},
+    ],
+    expenses: [
+      {
+        type: 'operations',
+        title: 'Постоянные расходы',
+        color: {},
+        categories: []
+      },
+      {type: 'operations', title: 'Редкие', color: {}, categories: []},
+    ],
   }
 })
 

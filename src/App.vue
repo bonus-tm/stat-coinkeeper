@@ -14,8 +14,10 @@
 
   <upload-file v-if="appState === states.noData" @import="onDataImport" />
 
-  <analyze-incomes v-if="appState === states.dataRead" />
-  <analyze-accounts v-if="appState === states.dataRead" />
+  <template v-if="appState === states.dataRead">
+    <AnalyzeIncomesVsExpenses />
+    <analyze-accounts />
+  </template>
 </template>
 
 <script>
@@ -23,13 +25,13 @@ import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
 import UploadFile from './components/UploadFile.vue'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
-import AnalyzeIncomes from './components/AnalyzeIncomes.vue'
+import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
 import {clearReadonly, initReadonly, readonly} from './services/store'
 import {sumByMonths} from './services/calculator'
 
 export default {
   name: 'App',
-  components: {AnalyzeIncomes, AnalyzeAccounts, UploadFile},
+  components: {AnalyzeIncomesVsExpenses, AnalyzeAccounts, UploadFile},
   data () {
     let states = {
       noData: 0,
