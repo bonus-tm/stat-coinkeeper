@@ -1,49 +1,49 @@
 :root {
   --icon-size-scale: 0.5;
 
-  --category-container-width: calc(var(--icon-size-scale) * 120px);
-  --category-title-height: calc(var(--icon-size-scale) * 38px);
-  --category-title-font-size: calc(var(--icon-size-scale) * 16px);
+  --coin-container-width: calc(var(--icon-size-scale) * 120px);
+  --coin-title-height: calc(var(--icon-size-scale) * 38px);
+  --coin-title-font-size: calc(var(--icon-size-scale) * 16px);
   --icon-wrapper-size: calc(var(--icon-size-scale) * 60px);
   --icon-size: calc(var(--icon-size-scale) * 37px);
   --icon-sprite-size: calc(var(--icon-size-scale) * 46px);
   --icon-sprites-image-size: calc(9 * var(--icon-sprite-size) - calc(var(--icon-size-scale) * 9px));
   --shift: var(--icon-sprite-size);
 
-  --category-title-color: #4f4f4f;
-  --category-title-font-weight: 500;
+  --coin-title-color: #4f4f4f;
+  --coin-title-font-weight: 500;
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --category-title-color: #afafaf;
-    --category-title-font-weight: 400;
+    --coin-title-color: #afafaf;
+    --coin-title-font-weight: 400;
   }
 }
 
-.ck-category {
+.ck-coin {
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
-  width: var(--category-container-width);
+  width: var(--coin-container-width);
   margin: 0 calc(var(--icon-wrapper-size) / 10) calc(var(--icon-wrapper-size) / 3);
   z-index: 1;
 }
 
-.ck-category__title {
+.ck-coin__title {
   width: 100%;
-  height: var(--category-title-height);
-  line-height: var(--category-title-height);
-  font-size: var(--category-title-font-size);
+  height: var(--coin-title-height);
+  line-height: var(--coin-title-height);
+  font-size: var(--coin-title-font-size);
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-weight: var(--category-title-font-weight);
-  color: var(--category-title-color);
+  font-weight: var(--coin-title-font-weight);
+  color: var(--coin-title-color);
 }
 
-.ck-category__icon-wrapper {
+.ck-coin__icon-wrapper {
   position: relative;
   margin: calc(var(--icon-wrapper-size) / 3) 0 calc(var(--icon-wrapper-size) / 6);
   width: var(--icon-wrapper-size);
@@ -53,7 +53,7 @@
   background: #c1c5c9;
   cursor: pointer;
 }
-.ck-category__icon {
+.ck-coin__icon {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -64,267 +64,267 @@
   background-image: url("../assets/web_1x.png")
 }
 @media (-webkit-min-device-pixel-ratio: 2),(min-resolution: 192dpi) {
-  .ck-category__icon {
+  .ck-coin__icon {
     background-image: url("../assets/web_2x.png");
     background-size: var(--icon-sprites-image-size) var(--icon-sprites-image-size);
   }
 }
 
-.ck-category_income .ck-category__icon-wrapper,
-.ck-category_account .ck-category__icon-wrapper,
-.ck-category_expense .ck-category__icon-wrapper {
-  box-shadow: 0 2px 9px 0 rgb(0 0 0 / 13%);
+.ck-coin_income .ck-coin__icon-wrapper,
+.ck-coin_account .ck-coin__icon-wrapper,
+.ck-coin_expense .ck-coin__icon-wrapper {
+  box-shadow: 0 2px 9px 0 rgb(0, 0, 0, 0.13);
 }
-.ck-category_income .ck-category__icon-wrapper {
+.ck-coin_income .ck-coin__icon-wrapper {
   background-color: #0491d1;
 }
-.ck-category_account .ck-category__fill {
+.ck-coin_account .ck-coin__fill {
   background-color: #f7b600; /*#fc0*/
 }
-.ck-category_expense .ck-category__fill {
+.ck-coin_expense .ck-coin__fill {
   background-color: #0ac38e;
 }
 
 /* icons sprites bg positions */
-.ck-category__icon_airplane {
+.ck-coin__icon_airplane {
   background-position: calc(-1 * var(--shift)) 0;
 }
-.ck-category__icon_at {
+.ck-coin__icon_at {
   background-position: calc(-6 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_bandaid {
+.ck-coin__icon_bandaid {
   background-position: 0 calc(-1 * var(--shift));
 }
-.ck-category__icon_bank {
+.ck-coin__icon_bank {
   background-position: calc(-1 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_barchart {
+.ck-coin__icon_barchart {
   background-position: calc(-2 * var(--shift)) 0;
 }
-.ck-category__icon_bars {
+.ck-coin__icon_bars {
   background-position: calc(-2 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_beauty {
+.ck-coin__icon_beauty {
   background-position: 0 calc(-2 * var(--shift));
 }
-.ck-category__icon_beerglass {
+.ck-coin__icon_beerglass {
   background-position: calc(-1 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_bicycle {
+.ck-coin__icon_bicycle {
   background-position: calc(-2 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_bonus {
+.ck-coin__icon_bonus {
   background-position: calc(-3 * var(--shift)) 0;
 }
-.ck-category__icon_book {
+.ck-coin__icon_book {
   background-position: calc(-3 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_books {
+.ck-coin__icon_books {
   background-position: calc(-3 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_business {
+.ck-coin__icon_business {
   background-position: 0 calc(-3 * var(--shift));
 }
-.ck-category__icon_camera {
+.ck-coin__icon_camera {
   background-position: calc(-1 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_car {
+.ck-coin__icon_car {
   background-position: calc(-2 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_card {
+.ck-coin__icon_card {
   background-position: calc(-3 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_cards {
+.ck-coin__icon_cards {
   background-position: calc(-4 * var(--shift)) 0;
 }
-.ck-category__icon_cash {
+.ck-coin__icon_cash {
   background-position: calc(-4 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_coffee {
+.ck-coin__icon_coffee {
   background-position: calc(-4 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_controller {
+.ck-coin__icon_controller {
   background-position: calc(-4 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_credit {
+.ck-coin__icon_credit {
   background-position: 0 calc(-4 * var(--shift));
 }
-.ck-category__icon_debt {
+.ck-coin__icon_debt {
   background-position: calc(-1 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_dice {
+.ck-coin__icon_dice {
   background-position: calc(-2 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_dramamasks {
+.ck-coin__icon_dramamasks {
   background-position: calc(-3 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_dumbells {
+.ck-coin__icon_dumbells {
   background-position: calc(-4 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_eating {
+.ck-coin__icon_eating {
   background-position: calc(-5 * var(--shift)) 0;
 }
-.ck-category__icon_emoney {
+.ck-coin__icon_emoney {
   background-position: calc(-5 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_entertainment {
+.ck-coin__icon_entertainment {
   background-position: calc(-5 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_flower {
+.ck-coin__icon_flower {
   background-position: calc(-5 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_forkandknife {
+.ck-coin__icon_forkandknife {
   background-position: calc(-5 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_fuel {
+.ck-coin__icon_fuel {
   background-position: 0 calc(-5 * var(--shift));
 }
-.ck-category__icon_gifts {
+.ck-coin__icon_gifts {
   background-position: calc(-7 * var(--shift)) calc(-8 * var(--shift));
   width: calc(var(--icon-size-scale) * (32 / 37) * 37px);
   height: calc(var(--icon-size-scale) * (33 / 37) * 37px);
 }
-.ck-category__icon_globe {
+.ck-coin__icon_globe {
   background-position: calc(-2 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_gradhat {
+.ck-coin__icon_gradhat {
   background-position: calc(-3 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_grapes {
+.ck-coin__icon_grapes {
   background-position: calc(-4 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_groceries {
+.ck-coin__icon_groceries {
   background-position: calc(-5 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_guitar {
+.ck-coin__icon_guitar {
   background-position: calc(-6 * var(--shift)) 0;
 }
-.ck-category__icon_hammer {
+.ck-coin__icon_hammer {
   background-position: calc(-6 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_hitech {
+.ck-coin__icon_hitech {
   background-position: calc(-6 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_hobbies {
+.ck-coin__icon_hobbies {
   background-position: calc(-6 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_house {
+.ck-coin__icon_house {
   background-position: 0 0;
 }
-.ck-category__icon_household {
+.ck-coin__icon_household {
   background-position: calc(-6 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_insurance {
+.ck-coin__icon_insurance {
   background-position: 0 calc(-6 * var(--shift));
 }
-.ck-category__icon_internet {
+.ck-coin__icon_internet {
   background-position: calc(-1 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_investments {
+.ck-coin__icon_investments {
   background-position: calc(-2 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_iphone {
+.ck-coin__icon_iphone {
   background-position: calc(-3 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_ipod {
+.ck-coin__icon_ipod {
   background-position: calc(-4 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_kids {
+.ck-coin__icon_kids {
   background-position: calc(-5 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_man {
+.ck-coin__icon_man {
   background-position: calc(-6 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_medical {
+.ck-coin__icon_medical {
   background-position: calc(-7 * var(--shift)) 0;
 }
-.ck-category__icon_miscellaneous {
+.ck-coin__icon_miscellaneous {
   background-position: calc(-7 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_newspaper {
+.ck-coin__icon_newspaper {
   background-position: calc(-7 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_note {
+.ck-coin__icon_note {
   background-position: calc(-7 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_paintroller {
+.ck-coin__icon_paintroller {
   background-position: calc(-7 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_pets {
+.ck-coin__icon_pets {
   background-position: calc(-7 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_phone {
+.ck-coin__icon_phone {
   background-position: calc(-7 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_pictureframe {
+.ck-coin__icon_pictureframe {
   background-position: 0 calc(-7 * var(--shift));
 }
-.ck-category__icon_piechart {
+.ck-coin__icon_piechart {
   background-position: calc(-1 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_plant {
+.ck-coin__icon_plant {
   background-position: calc(-2 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_poison {
+.ck-coin__icon_poison {
   background-position: calc(-3 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_property {
+.ck-coin__icon_property {
   background-position: calc(-4 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_ramen {
+.ck-coin__icon_ramen {
   background-position: calc(-5 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_recordplayer {
+.ck-coin__icon_recordplayer {
   background-position: calc(-6 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_reminder {
+.ck-coin__icon_reminder {
   background-position: calc(-7 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_salary {
+.ck-coin__icon_salary {
   background-position: calc(-8 * var(--shift)) 0;
 }
-.ck-category__icon_savings {
+.ck-coin__icon_savings {
   background-position: calc(-8 * var(--shift)) calc(-1 * var(--shift));
 }
-.ck-category__icon_shoppingbag {
+.ck-coin__icon_shoppingbag {
   background-position: calc(-8 * var(--shift)) calc(-2 * var(--shift));
 }
-.ck-category__icon_shoppingcart {
+.ck-coin__icon_shoppingcart {
   background-position: calc(-8 * var(--shift)) calc(-3 * var(--shift));
 }
-.ck-category__icon_spiderweb {
+.ck-coin__icon_spiderweb {
   background-position: calc(-8 * var(--shift)) calc(-4 * var(--shift));
 }
-.ck-category__icon_sport {
+.ck-coin__icon_sport {
   background-position: calc(-8 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_tv {
+.ck-coin__icon_tv {
   background-position: calc(-8 * var(--shift)) calc(-7 * var(--shift));
 }
-.ck-category__icon_transport {
+.ck-coin__icon_transport {
   background-position: 0 calc(-8 * var(--shift));
 }
-.ck-category__icon_travelling {
+.ck-coin__icon_travelling {
   background-position: calc(-1 * var(--shift)) calc(-8 * var(--shift));
 }
-.ck-category__icon_tshirt {
+.ck-coin__icon_tshirt {
   background-position: calc(-8 * var(--shift)) calc(-6 * var(--shift));
 }
-.ck-category__icon_wineglass {
+.ck-coin__icon_wineglass {
   background-position: calc(-3 * var(--shift)) calc(-8 * var(--shift));
 }
-.ck-category__icon_wardrobe {
+.ck-coin__icon_wardrobe {
   background-position: calc(-2 * var(--shift)) calc(-8 * var(--shift));
 }
-.ck-category__icon_woman {
+.ck-coin__icon_woman {
   background-position: calc(-4 * var(--shift)) calc(-8 * var(--shift));
 }
-.ck-category__icon_wrench {
+.ck-coin__icon_wrench {
   background-position: calc(-5 * var(--shift)) calc(-8 * var(--shift));
 }
-.ck-category__icon_city {
+.ck-coin__icon_city {
   background-position: calc(-1 * var(--shift)) calc(-5 * var(--shift));
 }
-.ck-category__icon_display {
+.ck-coin__icon_display {
   background-position: calc(-6 * var(--shift)) calc(-8 * var(--shift));
 }

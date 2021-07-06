@@ -24,16 +24,16 @@ export const createMonthAxis = operations => {
 
 /**
  * Помесячное суммирование доходов и расходов выбранных категорий
- * @param {[String]} categoryTitles названия категорий расходов и источников доходов
+ * @param {[String]} coinTitles названия категорий расходов и источников доходов
  * @param {Array} operations
  * @return {{}} {'2019-0': 12345, '2019-1': 45678, ...}
  */
-export const sumByMonths = (categoryTitles, operations) => {
+export const sumByMonths = (coinTitles, operations) => {
   let months = {}
   for (let op of operations) {
     if (
-      categoryTitles.includes(op.source) ||
-      categoryTitles.includes(op.destination)
+      coinTitles.includes(op.source) ||
+      coinTitles.includes(op.destination)
     ) {
       let {year, month} = op.date
       if (typeof months[`${year}-${month}`] === 'undefined') {

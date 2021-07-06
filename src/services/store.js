@@ -27,31 +27,31 @@ export const state = reactive({
         type: 'accounts',
         title: 'Безнал',
         color: {bg: '#ccc', border: '#ddd'},
-        categories: []
+        coins: []
       },
       {
         type: 'accounts',
         title: 'Наличка',
         color: {bg: '#ccc', border: '#ddd'},
-        categories: []
+        coins: []
       },
       {
         type: 'accounts',
         title: 'Валюта',
         color: {bg: '#ccc', border: '#ddd'},
-        categories: []
+        coins: []
       },
       {
         type: 'accounts',
         title: 'Клад',
         color: {bg: '#ccc', border: '#ddd'},
-        categories: []
+        coins: []
       },
       {
         type: 'accounts',
         title: 'Остальное',
         color: {bg: '#ccc', border: '#ddd'},
-        categories: []
+        coins: []
       },
     ],
     allIncomesVsExpenses: [
@@ -59,27 +59,27 @@ export const state = reactive({
         type: 'operations',
         title: 'Все доходы',
         color: {bg: '#34c759', border: '#34c759'},
-        categories: []
+        coins: []
       },
       {
         type: 'operations',
         title: 'Все расходы',
         color: {bg: '#ff3b30', border: '#ff3b30'},
-        categories: []
+        coins: []
       },
     ],
     incomes: [
-      {type: 'operations', title: 'Доходы Тоша', color: {}, categories: []},
-      {type: 'operations', title: 'Доходы Тани', color: {}, categories: []},
+      {type: 'operations', title: 'Доходы Тоша', color: {}, coins: []},
+      {type: 'operations', title: 'Доходы Тани', color: {}, coins: []},
     ],
     expenses: [
       {
         type: 'operations',
         title: 'Постоянные расходы',
         color: {},
-        categories: []
+        coins: []
       },
-      {type: 'operations', title: 'Редкие', color: {}, categories: []},
+      {type: 'operations', title: 'Редкие', color: {}, coins: []},
     ],
   }
 })

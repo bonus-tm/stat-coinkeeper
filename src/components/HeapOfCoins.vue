@@ -59,11 +59,11 @@
       @dragover="$event.preventDefault()"
       @drop="onDrop"
     />
-    <ck-category
-      v-for="category of heap.categories"
-      :key="`money-acc-${category.id}`"
-      :category="category"
-      @click="remove(category.id)"
+    <Coin
+      v-for="coin of heap.coins"
+      :key="`money-acc-${coin.id}`"
+      :coin="coin"
+      @click="remove(coin.id)"
     />
   </div>
 </template>
@@ -73,11 +73,11 @@ import {computed, ref} from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css' // optional for styling
 import {palette, state} from '../services/store'
-import CkCategory from './CkCategory.vue'
+import Coin from './Coin.vue'
 
 export default {
-  name: 'DropZone',
-  components: {CkCategory},
+  name: 'HeapOfCoins',
+  components: {Coin},
   directives: {
     editor: {
       mounted (el) {
@@ -120,20 +120,20 @@ export default {
     let onDrop = e => {
       e.preventDefault()
       dragover.value = false
-      let category = JSON.parse(e.dataTransfer.getData('text'))
+      let coin = JSON.parse(e.dataTransfer.getData('text'))
 
-      let inHeap = props.modelValue.categories.find(cat => cat.id === category.id)
+      let inHeap = props.modelValue.coins.find(cat => cat.id === coin.id)
       let isAcceptedType =
-        (props.modelValue.type === 'accounts' && category.type === 'account') ||
-        (props.modelValue.type === 'operations' && ['income', 'expense'].includes(category.type))
+        (props.modelValue.type === 'accounts' && coin.type === 'account') ||
+        (props.modelValue.type === 'operations' && ['income', 'expense'].includes(coin.type))
 
       if (isAcceptedType && !inHeap) {
-        props.modelValue.categories.push(category)
+        props.modelValue.coins.push(coin)
       }
     }
-    let remove = categoryId => {
-      let i = props.modelValue.categories.findIndex(cat => cat.id === categoryId)
-      if (i !== -1) props.modelValue.categories.splice(i, 1)
+    let remove = coinId => {
+      let i = props.modelValue.coins.findIndex(cat => cat.id === coinId)
+      if (i !== -1) props.modelValue.coins.splice(i, 1)
     }
     let setColor = color => {
       props.modelValue.titleBg = color
@@ -163,8 +163,8 @@ export default {
     border-bottom-right-radius: 2px;
     min-height: 4rem;
     display: grid;
-    grid-template-columns: repeat(4, var(--category-container-width));
-    width: calc(4 * var(--category-container-width));
+    grid-template-columns: repeat(4, var(--coin-container-width));
+    width: calc(4 * var(--coin-container-width));
   }
   .dz-cover {
     position: absolute;
@@ -186,7 +186,7 @@ export default {
     grid-template-columns: auto 1.5rem;
     align-items: center;
     margin-top: 1rem;
-    width: calc(4 * var(--category-container-width) + 2px);
+    width: calc(4 * var(--coin-container-width) + 2px);
   }
   .heap-title a {
     color: #000;

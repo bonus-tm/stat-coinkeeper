@@ -2,25 +2,25 @@
   <h2>Анализ доходов и расходов</h2>
   <div class="analyze">
     <div>
-      <div class="categories-list">
-        <ck-category
+      <div class="coins-list">
+        <Coin
           v-for="(income, i) of incomes"
           :key="`inc-${i}`"
-          :category="income"
+          :coin="income"
         />
       </div>
-      <div class="categories-list">
-        <ck-category
+      <div class="coins-list">
+        <Coin
           v-for="(expense, i) of expenses"
           :key="`inc-${i}`"
-          :category="expense"
+          :coin="expense"
         />
       </div>
     </div>
 
     <div>
       <div v-for="(heap, i) of heaps" :key="`dz-acc-${i}`">
-        <drop-zone v-model="heaps[i]" />
+        <HeapOfCoins v-model="heaps[i]" />
       </div>
     </div>
 
@@ -36,8 +36,8 @@ import {LineChart} from 'vue-chart-3'
 import {createMonthAxis, sumByMonths} from '../services/calculator'
 import {palette, readonly, state} from '../services/store'
 import {humanize} from '../services/numerals'
-import CkCategory from './CkCategory.vue'
-import DropZone from './DropZone.vue'
+import Coin from './Coin.vue'
+import HeapOfCoins from './HeapOfCoins.vue'
 
 Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler, ChartDataLabels)
 
@@ -72,7 +72,7 @@ const months = [
 
 export default {
   name: 'AnalyzeIncomesVsExpenses',
-  components: {DropZone, CkCategory, LineChart},
+  components: {HeapOfCoins, Coin, LineChart},
   setup () {
     let incomes = computed(() => readonly.incomes)
     let expenses = computed(() => readonly.expenses)
@@ -155,8 +155,8 @@ export default {
         return m === '0' || i === 0 ? `${months[m]}\n${y}` : months[m]
       }),
       datasets: heaps.value.map((heap, i) => {
-        let categoryTitles = heap.categories.map(cat => cat.title)
-        let data = sumByMonths(categoryTitles, readonly.operations)
+        let coinTitles = heap.coins.map(cat => cat.title)
+        let data = sumByMonths(coinTitles, readonly.operations)
         console.log(data)
         return {
           label: heap.title,
