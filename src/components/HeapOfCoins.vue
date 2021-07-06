@@ -5,8 +5,8 @@
   >
     <h3>{{ heap.title }}</h3>
     <div v-if="editable" v-editor>
-      <!-- TODO: prevent default, make icon component maybe? -->
-      <a href="#">
+      <!-- TODO: make icon component maybe? -->
+      <a href="#" @click.prevent>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="16"
@@ -136,7 +136,7 @@ export default {
       if (i !== -1) props.modelValue.coins.splice(i, 1)
     }
     let setColor = color => {
-      props.modelValue.titleBg = color
+      props.modelValue.color.border = color
     }
 
     return {

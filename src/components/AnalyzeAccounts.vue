@@ -35,6 +35,7 @@ export default {
     let chartData = computed(() => {
       return heapsAccount.value.map(heap => ({
         title: heap.title,
+        color: heap.color.border,
         value: heap.coins.reduce((acc, coin) => {
           acc += coin.value * state.currencyRates[coin.currency]
           return acc

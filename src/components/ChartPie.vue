@@ -7,7 +7,7 @@
         r="25%"
         cx="50%"
         cy="50%"
-        :stroke="palette[i]"
+        :stroke="slice.color"
         :stroke-dasharray="`${round(slice.percent, 2)} 100`"
         :stroke-dashoffset="`${-round(slice.offset, 2)}`"
       ></circle>
@@ -15,7 +15,7 @@
     <div class="pie-legend">
       <template v-for="(sector, i) in sectors" :key="`legend-${i}`">
         <div
-          :style="{backgroundColor: palette[i]}"
+          :style="{backgroundColor: sector.color}"
           class="pie-legend-color"
         />
         <div>{{ sector.title }}</div>
@@ -39,6 +39,7 @@ export default {
     data: {type: Array, required: true},
     fieldTitle: {type: String, default: 'title'},
     fieldValue: {type: String, default: 'value'},
+    fieldColor: {type: String, default: 'color'},
   },
   computed: {
     palette () {
@@ -58,7 +59,8 @@ export default {
           offset,
           percent,
           value: piece[this.fieldValue],
-          title: piece[this.fieldTitle]
+          title: piece[this.fieldTitle],
+          color: piece[this.fieldColor],
         }
         offset += sector.percent
         if (offset === 100 && percent > 0) {
