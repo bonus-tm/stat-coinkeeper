@@ -4,7 +4,7 @@
     :style="{color: titleColor, backgroundColor: bgColor}"
   >
     <h3>{{ heap.title }}</h3>
-    <div v-editor>
+    <div v-if="editable" v-editor>
       <!-- TODO: prevent default, make icon component maybe? -->
       <a href="#">
         <svg
@@ -96,6 +96,7 @@ export default {
     },
   },
   props: {
+    editable: {type: Boolean, default: false},
     titleColor: {type: String, default: 'black'},
     modelValue: {type: Object, default () {return {}}},
   },

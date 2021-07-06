@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "chart.js": "^3.4.0",
+    "chartjs-plugin-datalabels": "^2.0.0",
     "cyrillic-to-translit-js": "^3.1.0",
     "date-fns": "^2.22.1",
     "tippy.js": "^6.3.1",
