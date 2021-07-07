@@ -1,36 +1,29 @@
 <template>
   <h2>Анализ наличности</h2>
-  <div class="analyze">
-    <div class="coins-list">
-      <Coin
-        v-for="(account, i) of accounts"
-        :key="`inc-${i}`"
-        :coin="account"
-      />
-    </div>
 
+  <div class="analyze">
     <div>
       <div v-for="(heap, i) of heapsAccount" :key="`dz-acc-${i}`">
         <HeapOfCoins v-model="heapsAccount[i]" editable />
       </div>
     </div>
 
-    <chart-pie :data="chartData" />
+    <ChartPie :data="chartData" />
   </div>
 </template>
 
 <script>
 import {computed} from 'vue'
-import {palette, readonly, state} from '../services/store'
-import Coin from './Coin.vue'
-import HeapOfCoins from './HeapOfCoins.vue'
+import {state} from '../services/store'
 import ChartPie from './ChartPie.vue'
+import Coin from './Coin.vue'
+import CoinsAccounts from './CoinsAccounts.vue'
+import HeapOfCoins from './HeapOfCoins.vue'
 
 export default {
   name: 'AnalyzeAccounts',
-  components: {ChartPie, Coin, HeapOfCoins},
+  components: {ChartPie, Coin, CoinsAccounts, HeapOfCoins},
   setup () {
-    let accounts = computed(() => readonly.accounts)
     let heapsAccount = computed(() => state.heaps.accounts)
     let chartData = computed(() => {
       return heapsAccount.value.map(heap => ({
@@ -43,8 +36,6 @@ export default {
       }))
     })
     return {
-      palette,
-      accounts,
       heapsAccount,
       chartData,
     }

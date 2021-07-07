@@ -1,23 +1,7 @@
 <template>
   <h2>Анализ доходов и расходов</h2>
-  <div class="analyze">
-    <div>
-      <div class="coins-list">
-        <Coin
-          v-for="(income, i) of incomes"
-          :key="`inc-${i}`"
-          :coin="income"
-        />
-      </div>
-      <div class="coins-list">
-        <Coin
-          v-for="(expense, i) of expenses"
-          :key="`inc-${i}`"
-          :coin="expense"
-        />
-      </div>
-    </div>
 
+  <div class="analyze">
     <div>
       <div v-for="(heap, i) of heapsIncome" :key="`dz-acc-${i}`">
         <HeapOfCoins v-model="heapsIncome[i]" @remove="removeHeap(i)" />
@@ -35,7 +19,7 @@
       </button>
     </div>
 
-    <line-chart
+    <LineChart
       ref="chartRef"
       :data="chartIncomesData"
       :options="chartIncomesOptions"
@@ -45,14 +29,11 @@
 
 <script>
 import {computed, ref} from 'vue'
-import {CategoryScale, Chart, LinearScale, LineController, LineElement, PointElement, Tooltip} from 'chart.js'
 import {LineChart} from 'vue-chart-3'
 import {createMonthAxis, sumByMonths} from '../services/calculator'
 import {palette, readonly, state} from '../services/store'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
-
-Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement, Tooltip)
 
 // const months = [
 //   'январь',
@@ -84,7 +65,7 @@ const months = [
 ]
 
 export default {
-  name: 'AnalyzeIncomes',
+  name: 'AnalyzeExpenses',
   components: {HeapOfCoins, Coin, LineChart},
   setup () {
     let incomes = computed(() => readonly.incomes)

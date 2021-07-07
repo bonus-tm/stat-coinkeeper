@@ -1,74 +1,25 @@
 <template>
   <h2>Анализ доходов и расходов</h2>
-  <div class="analyze">
-    <div>
-      <div class="coins-list">
-        <Coin
-          v-for="(income, i) of incomes"
-          :key="`inc-${i}`"
-          :coin="income"
-        />
-      </div>
-      <div class="coins-list">
-        <Coin
-          v-for="(expense, i) of expenses"
-          :key="`inc-${i}`"
-          :coin="expense"
-        />
-      </div>
-    </div>
 
+  <div class="analyze">
     <div>
       <div v-for="(heap, i) of heaps" :key="`dz-acc-${i}`">
         <HeapOfCoins v-model="heaps[i]" />
       </div>
     </div>
 
-    <line-chart ref="chartRef" :data="chartData" :options="chartOptions" />
+    <LineChart ref="chartRef" :data="chartData" :options="chartOptions" />
   </div>
 </template>
 
 <script>
 import {computed, ref} from 'vue'
-import {CategoryScale, Chart, Filler, LinearScale, LineController, LineElement, PointElement, Tooltip} from 'chart.js'
-import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {LineChart} from 'vue-chart-3'
 import {createMonthAxis, sumByMonths} from '../services/calculator'
-import {palette, readonly, state} from '../services/store'
+import {palette, months, readonly, state} from '../services/store'
 import {humanize} from '../services/numerals'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
-
-Chart.register(LineController, CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler, ChartDataLabels)
-
-// const months = [
-//   'январь',
-//   'февраль',
-//   'март',
-//   'апрель',
-//   'май',
-//   'июнь',
-//   'июль',
-//   'август',
-//   'сентябрь',
-//   'октябрь',
-//   'ноябрь',
-//   'декабрь',
-// ]
-const months = [
-  'янв',
-  'фев',
-  'март',
-  'апр',
-  'май',
-  'июнь',
-  'июль',
-  'авг',
-  'сен',
-  'окт',
-  'ноя',
-  'дек',
-]
 
 export default {
   name: 'AnalyzeIncomesVsExpenses',
@@ -81,29 +32,6 @@ export default {
     let chartOptions = {
       responsive: true,
       aspectRatio: 3,
-      plugins: [
-        Filler,
-      //   {
-      //     beforeInit (chart) {
-      //       console.log('beforeInit', chart.data.labels)
-      //       chart.data.labels.forEach((e, i, a) => {
-      //         console.log(e)
-      //         if (/\n/.test(e)) {
-      //           a[i] = e.split(/\n/)
-      //         }
-      //       })
-      //     },
-      //     beforeUpdate (chart) {
-      //       console.log('beforeUpdate', chart.data.labels)
-      //       chart.data.labels.forEach((e, i, a) => {
-      //         console.log('beforeUpdate', e)
-      //         if (/\n/.test(e)) {
-      //           a[i] = e.split(/\n/)
-      //         }
-      //       })
-      //     },
-      //   }
-      ],
       elements: {
         line: {
           tension: 0.2,
@@ -124,10 +52,6 @@ export default {
             maxRotation: 0,
             padding: 5,
             autoSkip: false,
-            // callback (value, index, ticks) {
-            //   console.log(value, this.getLabelForValue(value))
-            //   return value
-            // }
           }
         },
         y: {
@@ -154,7 +78,7 @@ export default {
         let [y, m] = ym.split('-')
         return m === '0' || i === 0 ? `${months[m]}\n${y}` : months[m]
       }),
-      datasets: heaps.value.map((heap, i) => {
+      datasets: heaps.value.map(heap => {
         let coinTitles = heap.coins.map(cat => cat.title)
         let data = sumByMonths(coinTitles, readonly.operations)
         console.log(data)
@@ -177,7 +101,7 @@ export default {
               size: 11,
               weight: 'bold'
             },
-            formatter(value){
+            formatter (value) {
               return humanize(value)
             }
           }

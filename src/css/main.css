@@ -32,9 +32,15 @@ body {
   opacity: 0;
 }
 
+.section {
+  display: grid;
+  grid-template-columns: calc(4 * var(--coin-container-width) + 2rem) auto;
+  align-items: start;
+}
+
 .analyze {
   display: grid;
-  grid-template-columns: repeat(2, calc(4 * var(--coin-container-width) + 2rem)) auto;
+  grid-template-columns: calc(4 * var(--coin-container-width) + 2rem) auto;
   align-items: start;
 }
 .coins-list {

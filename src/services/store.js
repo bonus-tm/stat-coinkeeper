@@ -12,6 +12,34 @@ export const palette = [
   '#af52de',
   '#000000',
 ]
+// export const months = [
+//   'январь',
+//   'февраль',
+//   'март',
+//   'апрель',
+//   'май',
+//   'июнь',
+//   'июль',
+//   'август',
+//   'сентябрь',
+//   'октябрь',
+//   'ноябрь',
+//   'декабрь',
+// ]
+export const months = [
+  'янв',
+  'фев',
+  'март',
+  'апр',
+  'май',
+  'июнь',
+  'июль',
+  'авг',
+  'сен',
+  'окт',
+  'ноя',
+  'дек',
+]
 
 // heaps can be two types — accounts and operations (incomes + expenses)
 export const state = reactive({

@@ -12,26 +12,85 @@
     {{ dataDate }}
   </div>
 
-  <upload-file v-if="appState === states.noData" @import="onDataImport" />
+  <UploadFile v-if="appState === states.noData" @import="onDataImport" />
 
   <template v-if="appState === states.dataRead">
-    <AnalyzeIncomesVsExpenses />
-    <analyze-accounts />
+    <div class="section">
+      <CoinsOperations />
+
+      <div>
+        <AnalyzeIncomesVsExpenses />
+        <!--<AnalyzeExpenses />-->
+      </div>
+    </div>
+
+    <div class="section">
+      <CoinsAccounts />
+
+      <div>
+        <AnalyzeAccounts />
+      </div>
+    </div>
   </template>
 </template>
 
 <script>
 import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
-import UploadFile from './components/UploadFile.vue'
-import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
-import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
-import {clearReadonly, initReadonly, readonly} from './services/store'
+import {
+  CategoryScale,
+  Chart,
+  Filler,
+  LinearScale,
+  LineController,
+  LineElement,
+  PointElement,
+  Tooltip,
+} from 'chart.js'
+import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {sumByMonths} from './services/calculator'
+import {clearReadonly, initReadonly, readonly} from './services/store'
+import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
+import AnalyzeExpenses from './components/AnalyzeExpenses.vue'
+import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
+import CoinsAccounts from './components/CoinsAccounts.vue'
+import CoinsOperations from './components/CoinsOperations.vue'
+import UploadFile from './components/UploadFile.vue'
+
+const pl = {
+  id: 'labels-split',
+  beforeInit (chart) {
+    console.log('beforeInit', chart)
+    chart.data.xLabels.forEach((value, i, labels) => {
+      if (/\n/.test(value)) {
+        labels[i] = value.split(/\n/)
+      }
+    })
+  },
+}
+
+Chart.register(
+  LineController,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Tooltip,
+  Filler,
+  ChartDataLabels,
+  pl
+)
 
 export default {
   name: 'App',
-  components: {AnalyzeIncomesVsExpenses, AnalyzeAccounts, UploadFile},
+  components: {
+    AnalyzeExpenses,
+    AnalyzeIncomesVsExpenses,
+    AnalyzeAccounts,
+    CoinsAccounts,
+    CoinsOperations,
+    UploadFile
+  },
   data () {
     let states = {
       noData: 0,
