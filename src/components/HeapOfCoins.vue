@@ -53,7 +53,7 @@
 import {computed, ref} from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css' // optional for styling
-import {palette, state} from '../services/store'
+import {palette, dragging} from '../services/store'
 import Coin from './Coin.vue'
 import Icon from './Icon.vue'
 
@@ -84,7 +84,6 @@ export default {
   },
   emits: ['update:modelValue', 'remove'],
   setup (props, {emit}) {
-    let dragging = computed(() => state.dragging)
     let dragover = ref(false)
     let heap = computed({
       get: () => props.modelValue,

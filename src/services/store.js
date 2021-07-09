@@ -1,4 +1,7 @@
-import {reactive} from 'vue'
+import {reactive, ref, watch, toRaw} from 'vue'
+import localForage from 'localforage'
+
+const SAVE_KEY = 'sck-state'
 
 export const palette = [
   '#cccccc',
@@ -41,9 +44,12 @@ export const months = [
   'дек',
 ]
 
+export const dragging = ref(false)
+
+
+
 // heaps can be two types — accounts and operations (incomes + expenses)
-export const state = reactive({
-  dragging: false,
+const defaultState = {
   currencyRates: {
     RUB: 1,
     USD: 73.41,
@@ -110,7 +116,38 @@ export const state = reactive({
       {type: 'operations', title: 'Редкие', color: {}, coins: []},
     ],
   }
-})
+}
+
+export let state = reactive({})
+
+export const initState = async () => {
+  console.log('init state')
+  let initial
+  try {
+    initial = await localForage.getItem(SAVE_KEY)
+    console.log('initial', initial)
+  } catch (e) {
+    console.log({e})
+  }
+  if (initial) {
+    state = reactive({...initial})
+  } else {
+    state = reactive({...defaultState})
+  }
+
+  watch(
+    () => state,
+    async state => {
+      console.log('state change observed', state)
+      await localForage.setItem(SAVE_KEY, toRaw(state))
+    },
+    {deep: true}
+  )
+}
+
+(async () => {
+  await initState()
+})()
 
 export const readonly = {}
 
