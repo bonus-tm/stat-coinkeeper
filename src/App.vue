@@ -20,7 +20,7 @@
 
       <div>
         <AnalyzeIncomesVsExpenses />
-        <!--<AnalyzeExpenses />-->
+        <AnalyzeExpenses />
       </div>
     </div>
 
