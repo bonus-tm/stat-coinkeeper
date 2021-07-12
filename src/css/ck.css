@@ -12,6 +12,13 @@
 
   --coin-title-color: #4f4f4f;
   --coin-title-font-weight: 500;
+
+  --color-gray: #c1c5c9;
+  --color-green: #0ac38e;
+  --color-yellow: #f7b600;
+  /*--color-red: #ff3b30;*/
+  --color-red: #e53935;
+  --color-blue: #0491d1;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -50,7 +57,7 @@
   height: var(--icon-wrapper-size);
   overflow: hidden;
   border-radius: 50%;
-  background: #c1c5c9;
+  background: var(--color-gray);
   cursor: pointer;
 }
 .ck-coin__icon {
@@ -73,16 +80,17 @@
 .ck-coin_income .ck-coin__icon-wrapper,
 .ck-coin_account .ck-coin__icon-wrapper,
 .ck-coin_expense .ck-coin__icon-wrapper {
-  box-shadow: 0 2px 9px 0 rgb(0, 0, 0, 0.13);
+  box-shadow: 0 2px 9px 0 rgba(0, 0, 0, 0.13);
 }
 .ck-coin_income .ck-coin__icon-wrapper {
-  background-color: #0491d1;
+  background-color: var(--color-blue);
 }
 .ck-coin_account .ck-coin__fill {
-  background-color: #f7b600; /*#fc0*/
+  background-color: var(--color-yellow) /*#fc0*/
 }
 .ck-coin_expense .ck-coin__fill {
-  background-color: #0ac38e;
+  background-color: var(--color-red);
+  /*background-color: #0ac38e;*/
 }
 
 /* icons sprites bg positions */

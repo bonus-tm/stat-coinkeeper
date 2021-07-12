@@ -1,7 +1,7 @@
 import {reactive, ref, watch, toRaw} from 'vue'
 import localForage from 'localforage'
 
-const SAVE_KEY = 'sck-state'
+const CONFIG_SAVE_KEY = 'sck-config'
 
 export const palette = [
   '#cccccc',
@@ -98,7 +98,7 @@ const defaultState = {
       {
         type: 'operations',
         title: 'Все расходы',
-        color: {bg: '#ff3b30', border: '#ff3b30'},
+        color: {bg: '#0491d1', border: '#0491d1'},
         coins: []
       },
     ],
@@ -124,7 +124,7 @@ export const initState = async () => {
   console.log('init state')
   let initial
   try {
-    initial = await localForage.getItem(SAVE_KEY)
+    initial = await localForage.getItem(CONFIG_SAVE_KEY)
     console.log('initial', initial)
   } catch (e) {
     console.log({e})
@@ -139,7 +139,7 @@ export const initState = async () => {
     () => state,
     async state => {
       console.log('state change observed', state)
-      await localForage.setItem(SAVE_KEY, toRaw(state))
+      await localForage.setItem(CONFIG_SAVE_KEY, toRaw(state))
     },
     {deep: true}
   )

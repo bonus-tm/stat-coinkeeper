@@ -46,6 +46,7 @@ import {
   LineElement,
   PointElement,
   Tooltip,
+  Legend,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {sumByMonths} from './services/calculator'
@@ -70,6 +71,7 @@ const pl = {
 }
 
 Chart.register(
+  Legend,
   LineController,
   CategoryScale,
   LinearScale,
