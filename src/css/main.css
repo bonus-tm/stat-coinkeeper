@@ -34,14 +34,21 @@ body {
 
 .section {
   display: grid;
-  grid-template-columns: calc(4 * var(--coin-container-width) + 2rem) auto;
+  grid-template-columns: calc(4 * var(--coin-container-width)) auto;
+  gap: 2rem;
   align-items: start;
 }
 
 .analyze {
   display: grid;
-  grid-template-columns: calc(4 * var(--coin-container-width) + 2rem) auto;
+  grid-template-columns: calc(4 * var(--coin-container-width)) auto;
+  gap: 2rem;
   align-items: start;
+}
+
+.coins-source {
+  position: sticky;
+  top: 10px;
 }
 .coins-list {
   display: grid;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="coins-source">
     <h2>Операции</h2>
     <div class="coins-list">
       <Coin
