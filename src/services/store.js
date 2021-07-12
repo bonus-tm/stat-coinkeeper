@@ -1,4 +1,4 @@
-import {reactive, ref, watch, toRaw} from 'vue'
+import {reactive, ref, toRaw, watch} from 'vue'
 import localForage from 'localforage'
 
 const CONFIG_SAVE_KEY = 'sck-config'
@@ -46,8 +46,6 @@ export const months = [
 
 export const dragging = ref(false)
 
-
-
 // heaps can be two types — accounts and operations (incomes + expenses)
 const defaultState = {
   currencyRates: {
@@ -92,19 +90,29 @@ const defaultState = {
       {
         type: 'operations',
         title: 'Все доходы',
-        color: {bg: '#34c759', border: '#34c759'},
+        color: {bg: '#0491d1', border: '#0491d1'},
         coins: []
       },
       {
         type: 'operations',
         title: 'Все расходы',
-        color: {bg: '#0491d1', border: '#0491d1'},
+        color: {bg: '#e53935', border: '#e53935'},
         coins: []
       },
     ],
     incomes: [
-      {type: 'operations', title: 'Доходы Тоша', color: {}, coins: []},
-      {type: 'operations', title: 'Доходы Тани', color: {}, coins: []},
+      {
+        type: 'operations',
+        title: 'Доходы Тоша',
+        color: {bg: '#0491d1', border: '#0491d1'},
+        coins: []
+      },
+      {
+        type: 'operations',
+        title: 'Доходы Тани',
+        color: {bg: '#e53935', border: '#e53935'},
+        coins: []
+      },
     ],
     expenses: [
       {

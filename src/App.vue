@@ -20,6 +20,7 @@
 
       <div>
         <AnalyzeIncomesVsExpenses />
+        <AnalyzeIncomes />
         <AnalyzeExpenses />
       </div>
     </div>
@@ -53,6 +54,7 @@ import {sumByMonths} from './services/calculator'
 import {clearReadonly, initReadonly, readonly} from './services/store'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from './components/AnalyzeExpenses.vue'
+import AnalyzeIncomes from './components/AnalyzeIncomes.vue'
 import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
 import CoinsAccounts from './components/CoinsAccounts.vue'
 import CoinsOperations from './components/CoinsOperations.vue'
@@ -86,9 +88,10 @@ Chart.register(
 export default {
   name: 'App',
   components: {
-    AnalyzeExpenses,
-    AnalyzeIncomesVsExpenses,
     AnalyzeAccounts,
+    AnalyzeExpenses,
+    AnalyzeIncomes,
+    AnalyzeIncomesVsExpenses,
     CoinsAccounts,
     CoinsOperations,
     UploadFile
@@ -125,24 +128,6 @@ export default {
       console.log(allData)
       initReadonly(allData)
       this.appState = this.states.dataRead
-
-      let tosh = sumByMonths(['Айпеченье'], readonly.operations)
-      console.log(tosh)
-
-      let byt = sumByMonths(['Бытовуха'], readonly.operations)
-      console.log(byt)
-
-      let ta = sumByMonths(['Украшения'], readonly.operations)
-      let ta2 = sumByMonths(['Украшения', 'Материалы'], readonly.operations)
-      console.log(ta, ta2)
-
-      /*
-      let accs = {}
-      for (let acc of readonly.accounts) {
-        accs[acc.title] = calcAccountInitialValue(acc, readonly.operations)
-      }
-      console.log(accs)
-      */
     },
   }
 }

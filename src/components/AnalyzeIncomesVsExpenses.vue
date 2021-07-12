@@ -3,7 +3,7 @@
 
   <div class="analyze">
     <div>
-      <div v-for="(heap, i) of heaps" :key="`dz-acc-${i}`">
+      <div v-for="(heap, i) of heaps" :key="`h-in-ex-${i}`">
         <HeapOfCoins v-model="heaps[i]" changeable-color />
       </div>
     </div>

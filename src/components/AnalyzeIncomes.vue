@@ -1,11 +1,11 @@
 <template>
-  <h2>Анализ расходов</h2>
+  <h2>Анализ доходов</h2>
 
   <div class="analyze">
     <div>
-      <div v-for="(heap, i) of heapsExpenses" :key="`h-ex-${i}`">
+      <div v-for="(heap, i) of heapsIncomes" :key="`h-in-${i}`">
         <HeapOfCoins
-          v-model="heapsExpenses[i]"
+          v-model="heapsIncomes[i]"
           editable
           @remove="removeHeap(i)"
         />
@@ -33,10 +33,10 @@ import HeapOfCoins from './HeapOfCoins.vue'
 import {humanize} from '../services/numerals'
 
 export default {
-  name: 'AnalyzeExpenses',
+  name: 'AnalyzeIncomes',
   components: {HeapOfCoins, Coin, LineChart},
   setup () {
-    let heapsExpenses = computed(() => state.heaps.expenses)
+    let heapsIncomes = computed(() => state.heaps.incomes)
 
     let chartOptions = {
       responsive: true,
@@ -87,7 +87,7 @@ export default {
         let [y, m] = ym.split('-')
         return m === '0' || i === 0 ? `${months[m]}\n${y}` : months[m]
       }),
-      datasets: heapsExpenses.value.map(heap => {
+      datasets: heapsIncomes.value.map(heap => {
         let coinTitles = heap.coins.map(coin => coin.title)
         let data = sumByMonths(coinTitles, readonly.operations)
         return {
@@ -116,7 +116,7 @@ export default {
     let chartRef = ref()
 
     let addHeap = () => {
-      state.heaps.expenses.push({
+      state.heaps.incomes.push({
         type: 'operations',
         title: 'Куча',
         color: {},
@@ -125,13 +125,13 @@ export default {
     }
     let removeHeap = index => {
       console.log('removeHeap', index)
-      state.heaps.expenses.splice(index, 1)
+      state.heaps.incomes.splice(index, 1)
     }
 
     return {
       chartRef,
       palette,
-      heapsExpenses,
+      heapsIncomes,
       chartOptions,
       chartData,
       addHeap,
