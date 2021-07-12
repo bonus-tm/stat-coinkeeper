@@ -4,15 +4,15 @@
     :style="{color: titleColor, backgroundColor: bgColor}"
   >
     <h3>{{ heap.title }}</h3>
-    <div v-if="editable" v-editor>
+    <div v-if="showEditor" v-editor>
       <a href="#" @click.prevent>
         <Icon icon="edit" />
       </a>
       <div>
-        <div>
+        <div v-if="editable || renameable">
           <input type="text" v-model="heap.title">
         </div>
-        <div class="palette-grid">
+        <div v-if="editable || changeableColor" class="palette-grid">
           <div
             v-for="(color, i) in palette"
             :key="`c-${i}`"
@@ -21,7 +21,7 @@
             @click="setColor(color)"
           />
         </div>
-        <div style="margin-top: 1rem;text-align: right">
+        <div v-if="editable || removable" style="margin-top: 1rem;text-align: right">
           <button @click="$emit('remove')">
             <Icon icon="remove" />
             Удалить кучу
@@ -79,8 +79,11 @@ export default {
   },
   props: {
     editable: {type: Boolean, default: false},
-    titleColor: {type: String, default: 'black'},
+    removable: {type: Boolean, default: false},
+    renameable: {type: Boolean, default: false},
+    changeableColor: {type: Boolean, default: false},
     modelValue: {type: Object, default () {return {}}},
+    titleColor: {type: String, default: 'black'},
   },
   emits: ['update:modelValue', 'remove'],
   setup (props, {emit}) {
@@ -91,6 +94,13 @@ export default {
     })
 
     let bgColor = computed(() => props.modelValue?.color?.border || palette[0])
+
+    let showEditor = computed(() => {
+      return props.editable ||
+        props.renameable ||
+        props.removable ||
+        props.changeableColor
+    })
 
     let onDragEnter = () => {
       dragover.value = true
@@ -126,6 +136,7 @@ export default {
       dragging,
       dragover,
       heap,
+      showEditor,
       onDragEnter,
       onDragLeave,
       onDrop,

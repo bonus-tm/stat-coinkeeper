@@ -4,7 +4,7 @@
   <div class="analyze">
     <div>
       <div v-for="(heap, i) of heaps" :key="`dz-acc-${i}`">
-        <HeapOfCoins v-model="heaps[i]" />
+        <HeapOfCoins v-model="heaps[i]" changeable-color />
       </div>
     </div>
 
@@ -69,7 +69,7 @@ export default {
             },
           },
         }
-      }
+      },
     }
     let monthAxis = createMonthAxis(readonly.operations)
 
@@ -85,14 +85,14 @@ export default {
         return {
           label: heap.title,
           data: monthAxis.map(ym => Math.abs(data[ym])),
-          borderColor: heap.color.bg,
+          borderColor: heap.color.border,
           // backgroundColor: 'rgba(250,50,20,0.5)',
           fill: {
             target: 'origin',
             below: 'rgba(250,50,20,0.5)',
           },
           datalabels: {
-            color: heap.color.bg,
+            color: heap.color.border,
             backgroundColor: 'var(--bg-color)',
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
