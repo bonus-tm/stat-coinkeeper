@@ -14,3 +14,17 @@ export const humanize = value => {
     return `${value.toString()}K`
   }
 }
+
+/**
+ * Convert hex string color to rgba string with optional opacity
+ * @param {String} hex color like #12ab4f
+ * @param {Number} opacity optional opacity 0-1
+ * @return {String}
+ */
+export const hex2rgba = (hex, opacity = 1) => {
+  let [, r1, r2, g1, g2, b1, b2] = hex.split('')
+  let r = parseInt(`${r1}${r2}`, 16)
+  let g = parseInt(`${g1}${g2}`, 16)
+  let b = parseInt(`${b1}${b2}`, 16)
+  return `rgba(${r},${g},${b},${opacity})`
+}

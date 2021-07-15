@@ -17,7 +17,7 @@ import {computed, ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
 import {createMonthAxis, sumByMonths} from '../services/calculator'
 import {palette, months, readonly, state} from '../services/store'
-import {humanize} from '../services/numerals'
+import {humanize, hex2rgba} from '../services/numerals'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 
@@ -35,6 +35,7 @@ export default {
       elements: {
         line: {
           tension: 0.2,
+          fill: true,
         }
       },
       scales: {
@@ -86,14 +87,10 @@ export default {
           label: heap.title,
           data: monthAxis.map(ym => Math.abs(data[ym])),
           borderColor: heap.color.border,
-          // backgroundColor: 'rgba(250,50,20,0.5)',
-          fill: {
-            target: 'origin',
-            below: 'rgba(250,50,20,0.5)',
-          },
+          backgroundColor: hex2rgba(heap.color.border, 0.2),
           datalabels: {
             color: heap.color.border,
-            backgroundColor: 'var(--bg-color)',
+            backgroundColor: 'rgba(0, 0, 0, 0.4)',
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
             align: 'end',
