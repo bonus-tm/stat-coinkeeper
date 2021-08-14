@@ -1,4 +1,13 @@
 <template>
+  <p>
+    Инструкция по экспорту данных:
+    <a
+      href="https://ruhelp.coinkeeper.me/4e4288b6e3ad4b349aab0e7b55d12d99"
+      target="_blank"
+    >
+      ruhelp.coinkeeper.me/4e4288b6e3ad4b349aab0e7b55d12d99
+    </a>
+  </p>
   <div
     class="dropzone"
     :class="{dragover}"
@@ -7,13 +16,7 @@
     @drop.stop.prevent="onDrop"
     @click="openChooseFile"
   >
-    <p>Сюда надо бросить файл *.csv, эскспортированный из CoinKeeper'аx</p>
-    <p>
-      Инструкция по экспорту данных:
-      <a href="https://ruhelp.coinkeeper.me/4e4288b6e3ad4b349aab0e7b55d12d99">
-        ruhelp.coinkeeper.me/4e4288b6e3ad4b349aab0e7b55d12d99
-      </a>
-    </p>
+    <p>Сюда надо бросить csv-файл, эскспортированный из CoinKeeper'а.</p>
     <input
       ref="fileInput"
       name="csv"
@@ -35,6 +38,7 @@ export default {
       dragover: false
     }
   },
+  emits: ['import'],
   methods: {
     onDrop (e) {
       this.dragover = false
@@ -65,12 +69,18 @@ export default {
 </script>
 
 <style scoped>
+  p {
+    text-align: center;
+  }
   .dropzone {
+    position: absolute;
+    top: 3rem;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    right: 1.5rem;
     border: 4px dashed mediumslateblue;
     border-radius: 0.5rem;
-    margin: 5rem;
     padding: 2rem;
-    min-height: 50vh;
     display: flex;
     align-items: center;
     justify-content: center;

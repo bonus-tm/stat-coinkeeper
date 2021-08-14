@@ -1,38 +1,53 @@
 <template>
-  <div>
-    <button v-if="appState !== states.noData" @click="clearData">
-      Очистить только данные
-    </button>
-    <button v-if="appState !== states.noData" @click="reset">
-      Удалить всё
-    </button>
-  </div>
-  <div v-if="appState === states.dataRead">
-    Данные экспортированы
-    {{ dataDate }}
-  </div>
-
-  <UploadFile v-if="appState === states.noData" @import="onDataImport" />
-
-  <template v-if="appState === states.dataRead">
-    <div class="section">
-      <CoinsOperations />
-
-      <div>
-        <AnalyzeIncomesVsExpenses />
-        <AnalyzeIncomes />
-        <AnalyzeExpenses />
+  <header>
+    <div>
+      <div v-if="appState === states.dataRead">
+        Данные экспортированы
+        {{ dataDate }}
       </div>
     </div>
-
-    <div class="section">
-      <CoinsAccounts />
-
-      <div>
-        <AnalyzeAccounts />
-      </div>
+    <h1>Статистика из Coin Keeper</h1>
+    <div>
+      <button v-if="appState !== states.noData" @click="clearData">
+        Очистить только данные
+      </button>
+      &nbsp;
+      <button v-if="appState !== states.noData" @click="reset">
+        Удалить всё
+      </button>
     </div>
-  </template>
+  </header>
+
+  <main>
+    <UploadFile v-if="appState === states.noData" @import="onDataImport" />
+
+    <template v-if="appState === states.dataRead">
+      <div class="section">
+        <CoinsOperations />
+
+        <div>
+          <AnalyzeIncomesVsExpenses />
+          <AnalyzeIncomes />
+          <AnalyzeExpenses />
+        </div>
+      </div>
+
+      <div class="section">
+        <CoinsAccounts />
+
+        <div>
+          <AnalyzeAccounts />
+        </div>
+      </div>
+    </template>
+  </main>
+
+  <footer>
+    <p>
+      Все данные хранятся только в браузере и никуда не передаются.
+      Сайт только загружается с сервера и больше с ним не взаимодействует.
+    </p>
+  </footer>
 </template>
 
 <script>
@@ -42,15 +57,14 @@ import {
   CategoryScale,
   Chart,
   Filler,
+  Legend,
   LinearScale,
   LineController,
   LineElement,
   PointElement,
   Tooltip,
-  Legend,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import {sumByMonths} from './services/calculator'
 import {clearReadonly, initReadonly, readonly} from './services/store'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from './components/AnalyzeExpenses.vue'
@@ -122,7 +136,10 @@ export default {
       clearReadonly()
     },
     reset () {
-      return confirm('Удалить всю инфу и настройки?')
+      return confirm(
+        'Удалить всю инфу и настройки?\n' +
+        'Будут удалены все данные, кучи и их настройки цвета, названия прочее.'
+      )
     },
     onDataImport (allData) {
       console.log(allData)
