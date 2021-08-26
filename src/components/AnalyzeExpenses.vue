@@ -31,6 +31,7 @@ import {palette, months, readonly, state} from '../services/store'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'
+import {getDataLabelBg} from '../services/canvas-colors'
 
 export default {
   name: 'AnalyzeExpenses',
@@ -98,7 +99,7 @@ export default {
           backgroundColor: hex2rgba(heap.color.border, 0.2),
           datalabels: {
             color: heap.color.border,
-            backgroundColor: 'rgba(0, 0, 0, 0.4)',
+            backgroundColor: getDataLabelBg(),
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
             align: 'end',
