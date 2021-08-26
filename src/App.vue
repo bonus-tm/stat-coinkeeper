@@ -65,7 +65,7 @@ import {
   Tooltip,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import {clearReadonly, initReadonly, readonly} from './services/store'
+import {clearReadonly, setReadonly, readonly, readonlyEmpty} from './services/store'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from './components/AnalyzeExpenses.vue'
 import AnalyzeIncomes from './components/AnalyzeIncomes.vue'
@@ -119,6 +119,7 @@ export default {
     return {
       states,
       appState: states.noData,
+      readonlyEmpty,
     }
   },
   computed: {
@@ -130,10 +131,16 @@ export default {
       )
     },
   },
+  watch: {
+    readonlyEmpty (val) {
+      if (val) this.appState = this.states.noData
+      else this.appState = this.states.dataRead
+    }
+  },
   methods: {
-    clearData () {
+    async clearData () {
       this.appState = this.states.noData
-      clearReadonly()
+      await clearReadonly()
     },
     reset () {
       return confirm(
@@ -141,9 +148,9 @@ export default {
         'Будут удалены все данные, кучи и их настройки цвета, названия прочее.'
       )
     },
-    onDataImport (allData) {
+    async onDataImport (allData) {
       console.log(allData)
-      initReadonly(allData)
+      await setReadonly(allData)
       this.appState = this.states.dataRead
     },
   }

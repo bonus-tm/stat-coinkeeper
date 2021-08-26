@@ -2,6 +2,7 @@ import {reactive, ref, toRaw, watch} from 'vue'
 import localForage from 'localforage'
 
 const CONFIG_SAVE_KEY = 'sck-config'
+const DATA_SAVE_KEY = 'sck-data'
 
 export const palette = [
   '#cccccc',
@@ -127,9 +128,11 @@ const defaultState = {
 }
 
 export let state = reactive({})
+export let readonly = {}
+export const readonlyEmpty = ref(true)
 
-export const initState = async () => {
-  console.log('init state')
+export const init = async () => {
+  console.log('init')
   let initial
   try {
     initial = await localForage.getItem(CONFIG_SAVE_KEY)
@@ -151,28 +154,42 @@ export const initState = async () => {
     },
     {deep: true}
   )
+
+  try {
+    readonly = await localForage.getItem(DATA_SAVE_KEY) || {}
+    readonlyEmpty.value = false
+    console.log('initial readonly user data', readonlyEmpty.value, readonly)
+  } catch (e) {
+    console.log({e})
+  }
 }
 
-(async () => {
-  await initState()
-})()
-
-export const readonly = {}
-
-export const initReadonly = ({timestamp, data}) => {
+export const setReadonly = async ({timestamp, data}) => {
   readonly.timestamp = timestamp
   readonly.operations = data.operations
   readonly.incomes = data.incomes
   readonly.accounts = data.accounts
   readonly.expenses = data.expenses
   readonly.tags = data.tags
+
+  await localForage.setItem(DATA_SAVE_KEY, readonly)
+
+  readonlyEmpty.value = false
 }
 
-export const clearReadonly = () => {
+export const clearReadonly = async () => {
   readonly.timestamp = null
   readonly.operations = null
   readonly.incomes = null
   readonly.accounts = null
   readonly.expenses = null
   readonly.tags = null
+
+  await localForage.removeItem(DATA_SAVE_KEY)
+
+  readonlyEmpty.value = true
 }
+
+(async () => {
+  await init()
+})()
