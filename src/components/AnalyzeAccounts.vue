@@ -3,9 +3,12 @@
 
   <div class="analyze">
     <div>
-      <div v-for="(heap, i) of heapsAccount" :key="`dz-acc-${i}`">
-        <HeapOfCoins v-model="heapsAccount[i]" editable />
-      </div>
+      <HeapOfCoins
+        v-for="(heap, i) of heapsAccount"
+        :key="`dz-acc-${i}`"
+        v-model="heapsAccount[i]"
+        editable
+      />
     </div>
 
     <ChartPie :data="chartData" />

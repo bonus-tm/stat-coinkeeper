@@ -1,14 +1,14 @@
 <template>
   <div class="coins-source">
     <h2>Операции</h2>
-    <div class="coins-list">
+    <div class="coins-container">
       <Coin
         v-for="(income, i) of incomes"
         :key="`inc-${i}`"
         :coin="income"
       />
     </div>
-    <div class="coins-list">
+    <div class="coins-container">
       <Coin
         v-for="(expense, i) of expenses"
         :key="`inc-${i}`"
@@ -37,9 +37,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  h2 {
-    margin-left: 1rem;
-  }
-</style>

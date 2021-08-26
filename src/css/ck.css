@@ -10,6 +10,8 @@
   --icon-sprites-image-size: calc(9 * var(--icon-sprite-size) - calc(var(--icon-size-scale) * 9px));
   --shift: var(--icon-sprite-size);
 
+  --coins-container-width: calc(4 * var(--coin-container-width) + 3 * (var(--icon-wrapper-size) / 10));
+
   --coin-title-color: #4f4f4f;
   --coin-title-font-weight: 500;
 
@@ -27,13 +29,20 @@
   }
 }
 
+.coins-container {
+  display: grid;
+  grid-template-columns: repeat(4, var(--coin-container-width));
+  grid-gap: calc(var(--icon-wrapper-size) / 3) calc(var(--icon-wrapper-size) / 10);
+  width: var(--coins-container-width);
+  padding-bottom: calc(var(--icon-wrapper-size) / 3);
+}
+
 .ck-coin {
   display: flex;
   position: relative;
   flex-direction: column;
   align-items: center;
   width: var(--coin-container-width);
-  margin: 0 calc(var(--icon-wrapper-size) / 10) calc(var(--icon-wrapper-size) / 3);
   z-index: 1;
 }
 

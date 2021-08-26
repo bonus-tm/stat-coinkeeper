@@ -1,7 +1,7 @@
 <template>
   <div class="coins-source">
     <h2>Кошельки</h2>
-    <div class="coins-list">
+    <div class="coins-container">
       <Coin
         v-for="(account, i) of accounts"
         :key="`inc-${i}`"
@@ -28,9 +28,3 @@ export default {
   }
 }
 </script>
-
-<style scoped>
-  h2 {
-    margin-left: 1rem;
-  }
-</style>

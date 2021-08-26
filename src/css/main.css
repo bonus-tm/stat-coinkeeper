@@ -84,14 +84,14 @@ h1 {
 
 .section {
   display: grid;
-  grid-template-columns: calc(4 * var(--coin-container-width)) auto;
+  grid-template-columns: var(--coins-container-width) auto;
   gap: 2rem;
   align-items: start;
 }
 
 .analyze {
   display: grid;
-  grid-template-columns: calc(4 * var(--coin-container-width)) auto;
+  grid-template-columns: calc(var(--coins-container-width) + 2px) auto;
   gap: 2rem;
   align-items: start;
 }
@@ -100,9 +100,9 @@ h1 {
   position: sticky;
   top: 10px;
 }
-.coins-list {
-  display: grid;
-  grid-template-columns: repeat(4, var(--coin-container-width));
+
+.coins-source h2 {
+  margin-left: 1rem;
 }
 
 button {
