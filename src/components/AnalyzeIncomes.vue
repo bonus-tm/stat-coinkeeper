@@ -17,7 +17,7 @@
 
     <LineChart
       ref="chartRef"
-      :data="chartData"
+      :chart-data="chartData"
       :options="chartOptions"
     />
   </div>

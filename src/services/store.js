@@ -1,5 +1,6 @@
 import {reactive, ref, toRaw, watch} from 'vue'
 import localForage from 'localforage'
+import {accountHistoryByMonths, calcAccountInitialValue} from './calculator'
 
 const CONFIG_SAVE_KEY = 'sck-config'
 const DATA_SAVE_KEY = 'sck-data'
@@ -65,24 +66,6 @@ const defaultState = {
       {
         type: 'accounts',
         title: 'Наличка',
-        color: {bg: '#ccc', border: '#ddd'},
-        coins: []
-      },
-      {
-        type: 'accounts',
-        title: 'Валюта',
-        color: {bg: '#ccc', border: '#ddd'},
-        coins: []
-      },
-      {
-        type: 'accounts',
-        title: 'Клад',
-        color: {bg: '#ccc', border: '#ddd'},
-        coins: []
-      },
-      {
-        type: 'accounts',
-        title: 'Остальное',
         color: {bg: '#ccc', border: '#ddd'},
         coins: []
       },
@@ -162,6 +145,18 @@ export const init = async () => {
   } catch (e) {
     console.log({e})
   }
+
+  // console.log('accounts', readonly.accounts)
+  // readonly.accounts.forEach(acc => {
+  //   console.log(
+  //     acc.title,
+  //     acc.currency,
+  //     calcAccountInitialValue(acc, readonly.operations),
+  //     '→',
+  //     acc.value
+  //   )
+  //   console.log(accountHistoryByMonths(acc, readonly.operations))
+  // })
 }
 
 export const setReadonly = async ({timestamp, data}) => {

@@ -10,7 +10,10 @@ export const createMonthAxis = operations => {
   let months = []
 
   let {year: firstYear, month: firstMonth} = operations[0].date
-  let {year: lastYear, month: lastMonth} = operations[operations.length - 1].date
+  let {
+    year: lastYear,
+    month: lastMonth
+  } = operations[operations.length - 1].date
 
   for (let y = firstYear; y <= lastYear; y++) {
     let startMonth = y === firstYear ? firstMonth : 0
@@ -62,10 +65,10 @@ export const calcAccountInitialValue = (account, operations) => {
   for (let i = operations.length - 1; i >= 0; i--) {
     let op = operations[i]
     if (op.source === account.title) {
-      value += op.currency === 'RUB' ? op.value : op.value2
+      value += op.currency === account.currency ? op.value : op.value2
     }
     if (op.destination === account.title) {
-      value -= op.currency === 'RUB' ? op.value : op.value2
+      value -= op.currency === account.currency ? op.value : op.value2
     }
 
     if (Number.isNaN(value)) {
@@ -74,4 +77,45 @@ export const calcAccountInitialValue = (account, operations) => {
     }
   }
   return value
+}
+
+export const accountHistoryByMonths = (account, operations) => {
+  let value = account.value
+  let months = createMonthAxis(operations)
+
+  let currentIndex = months.length
+  let currentYear = null
+  let currentMonth = null
+
+  for (let i = operations.length - 1; i >= 0; i--) {
+    let op = operations[i]
+
+    // если сменился месяц, то перейти на следующий и вписать значение
+    if (op.date.year !== currentYear || op.date.month !== currentMonth) {
+      while (
+        currentIndex > 0 &&
+        (op.date.year !== currentYear || op.date.month !== currentMonth)
+      ) {
+        currentIndex--
+        let [y, m] = months[currentIndex].split('-')
+        currentYear = Number(y)
+        currentMonth = Number(m)
+
+        months[currentIndex] = [months[currentIndex], value]
+      }
+    }
+
+    if (op.source === account.title) {
+      value += op.currency === account.currency ? op.value : op.value2
+    }
+    if (op.destination === account.title) {
+      value -= op.currency === account.currency ? op.value : op.value2
+    }
+
+    if (Number.isNaN(value)) {
+      console.log(op)
+      break
+    }
+  }
+  return Object.fromEntries(months)
 }

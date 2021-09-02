@@ -17,7 +17,7 @@
 
     <LineChart
       ref="chartRef"
-      :data="chartData"
+      :chart-data="chartData"
       :options="chartOptions"
     />
   </div>
@@ -126,7 +126,6 @@ export default {
       })
     }
     let removeHeap = index => {
-      console.log('removeHeap', index)
       state.heaps.expenses.splice(index, 1)
     }
 

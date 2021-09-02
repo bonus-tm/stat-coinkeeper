@@ -8,7 +8,11 @@
       </div>
     </div>
 
-    <LineChart ref="chartRef" :data="chartData" :options="chartOptions" />
+    <LineChart
+      ref="chartRef"
+      :chart-data="chartData"
+      :options="chartOptions"
+    />
   </div>
 </template>
 
@@ -106,6 +110,7 @@ export default {
         }
       }),
     }))
+    console.log(chartData)
 
     let chartRef = ref()
 

@@ -27,11 +27,15 @@
 
         <div>
           <AnalyzeIncomesVsExpenses />
+          <hr>
           <AnalyzeIncomes />
+          <hr>
           <AnalyzeExpenses />
         </div>
       </div>
 
+      <hr>
+      
       <div class="section">
         <CoinsAccounts />
 
@@ -63,6 +67,8 @@ import {
   LineElement,
   PointElement,
   Tooltip,
+  BarController,
+  BarElement,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {clearReadonly, setReadonly, readonly, readonlyEmpty} from './services/store'
@@ -77,8 +83,8 @@ import UploadFile from './components/UploadFile.vue'
 const pl = {
   id: 'labels-split',
   beforeInit (chart) {
-    console.log('beforeInit', chart)
-    chart.data.xLabels.forEach((value, i, labels) => {
+    // console.log('beforeInit', chart)
+    chart.data.xLabels?.forEach((value, i, labels) => {
       if (/\n/.test(value)) {
         labels[i] = value.split(/\n/)
       }
@@ -96,6 +102,8 @@ Chart.register(
   Tooltip,
   Filler,
   ChartDataLabels,
+  BarController,
+  BarElement,
   pl
 )
 
