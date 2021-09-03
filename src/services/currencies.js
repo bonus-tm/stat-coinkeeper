@@ -1,6 +1,7 @@
 import localForage from 'localforage'
 import {merge} from 'lodash'
 import fetchUrl from './fetch'
+import {date2ymd, lastDayOfMonth} from './dates'
 
 const SAVE_KEY = 'currencies'
 const API_BASE_URL = 'https://api.exchangerate.host'
@@ -41,17 +42,6 @@ const API_BASE_URL = 'https://api.exchangerate.host'
  *  }
  */
 
-/**
- *
- * @param {Date} date
- * @return {string}
- */
-const dateYMD = date => {
-  let y = date.getFullYear().toString()
-  let m = (date.getMonth() + 1).toString().padStart(2, '0')
-  let d = date.getDate().toString().padStart(2, '0')
-  return `${y}-${m}-${d}`
-}
 
 /**
  *
@@ -94,7 +84,7 @@ export default {
     }
 
     let now = new Date()
-    let today = dateYMD(now)
+    let today = date2ymd(now)
     let lastMonth = makeLastMonth(now)
 
     for (let [symbol, {
@@ -102,7 +92,7 @@ export default {
       history = {}
     }] of Object.entries(this._currencies)) {
       // 3. Текущий курс древнее вчерашнего
-      if (dateYMD(new Date(updatedAt)) !== today) {
+      if (date2ymd(new Date(updatedAt)) !== today) {
         let rate = await this._loadLatest(base, [symbol])
         merge(this._currencies, rate)
       }
@@ -120,7 +110,7 @@ export default {
   },
 
   rate (symbol, month) {
-    return this._currencies[symbol].history[month]
+    return this._currencies[symbol]?.history[month]
   },
 
   _save () {
@@ -199,11 +189,12 @@ export default {
 
     let [endYear, endMonth] = lastMonth.split('-')
     endYear = Number(endYear)
-    endMonth = (Number(endMonth) + 1).toString().padStart(2, '0')
+    endMonth = Number(endMonth).toString().padStart(2, '0')
 
     for (let year = startYear; year <= endYear; year++) {
       let start_date = `${year}-${year === startYear ? startMonth : '01'}-28`
-      let end_date = `${year}-${year === endYear ? endMonth : '12'}-01`
+      let endDay = year === endYear ? lastDayOfMonth(year, endMonth) : '31'
+      let end_date = `${year}-${year === endYear ? endMonth : '12'}-${endDay}`
 
       let response = await fetchUrl(API_BASE_URL + '/timeseries', {
         base,
@@ -219,7 +210,8 @@ export default {
         let prev
         for (let date of dates) {
           let [y, m, d] = date.split('-')
-          if (d === '01' && prev) {
+          let lastDay = lastDayOfMonth(y, m - 1).toString()
+          if (d === lastDay && prev) {
             for (let symbol of symbols) {
               result[symbol].history[prev[0]] = prev[1][symbol]
             }

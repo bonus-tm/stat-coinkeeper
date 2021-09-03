@@ -19,12 +19,13 @@
 <script>
 import {computed, ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
-import {createMonthAxis, sumByMonths} from '../services/calculator'
+import {sumByMonths} from '../services/calculator'
 import {palette, months, readonly, state} from '../services/store'
 import {humanize, hex2rgba} from '../services/numerals'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {getDataLabelBg} from '../services/canvas-colors'
+import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
 export default {
   name: 'AnalyzeIncomesVsExpenses',
@@ -77,13 +78,14 @@ export default {
         }
       },
     }
-    let monthAxis = createMonthAxis(readonly.operations)
+    let monthAxis = createMonthsAxis(
+      readonly.operations[0].date.date,
+      readonly.operations[readonly.operations.length - 1].date.date
+    )
+    console.log({monthAxis})
 
     let chartData = computed(() => ({
-      xLabels: monthAxis.map((ym, i) => {
-        let [y, m] = ym.split('-')
-        return m === '0' || i === 0 ? `${months[m]}\n${y}` : months[m]
-      }),
+      xLabels: monthsAxisLabels(monthAxis),
       datasets: heaps.value.map(heap => {
         let coinTitles = heap.coins.map(cat => cat.title)
         let data = sumByMonths(coinTitles, readonly.operations)

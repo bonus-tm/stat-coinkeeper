@@ -35,7 +35,7 @@
       </div>
 
       <hr>
-      
+
       <div class="section">
         <CoinsAccounts />
 
@@ -72,6 +72,7 @@ import {
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {clearReadonly, setReadonly, readonly, readonlyEmpty} from './services/store'
+import Currencies from './services/currencies'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from './components/AnalyzeExpenses.vue'
 import AnalyzeIncomes from './components/AnalyzeIncomes.vue'
@@ -144,6 +145,9 @@ export default {
       if (val) this.appState = this.states.noData
       else this.appState = this.states.dataRead
     }
+  },
+  created () {
+    Currencies.init('RUB', ['USD', 'EUR'])
   },
   methods: {
     async clearData () {

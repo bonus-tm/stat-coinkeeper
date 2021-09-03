@@ -32,6 +32,7 @@ import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'
 import {getDataLabelBg} from '../services/canvas-colors'
+import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
 export default {
   name: 'AnalyzeExpenses',
@@ -82,13 +83,13 @@ export default {
         }
       }
     }
-    let monthAxis = createMonthAxis(readonly.operations)
+    let monthAxis = createMonthsAxis(
+      readonly.operations[0].date.date,
+      readonly.operations[readonly.operations.length - 1].date.date
+    )
 
     let chartData = computed(() => ({
-      xLabels: monthAxis.map((ym, i) => {
-        let [y, m] = ym.split('-')
-        return m === '0' || i === 0 ? `${months[m]}\n${y}` : months[m]
-      }),
+      xLabels: monthsAxisLabels(monthAxis),
       datasets: heapsExpenses.value.map(heap => {
         let coinTitles = heap.coins.map(coin => coin.title)
         let data = sumByMonths(coinTitles, readonly.operations)

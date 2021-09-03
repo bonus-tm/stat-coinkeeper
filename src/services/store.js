@@ -31,25 +31,26 @@ export const palette = [
 //   'ноябрь',
 //   'декабрь',
 // ]
-export const months = [
-  'янв',
-  'фев',
-  'март',
-  'апр',
-  'май',
-  'июнь',
-  'июль',
-  'авг',
-  'сен',
-  'окт',
-  'ноя',
-  'дек',
-]
+export const months = {
+  '01': 'янв',
+  '02': 'фев',
+  '03': 'март',
+  '04': 'апр',
+  '05': 'май',
+  '06': 'июнь',
+  '07': 'июль',
+  '08': 'авг',
+  '09': 'сен',
+  '10': 'окт',
+  '11': 'ноя',
+  '12': 'дек',
+}
 
 export const dragging = ref(false)
 
 // heaps can be two types — accounts and operations (incomes + expenses)
 const defaultState = {
+  baseCurrency: 'RUB',
   currencyRates: {
     RUB: 1,
     USD: 73.41,

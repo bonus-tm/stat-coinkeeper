@@ -29,7 +29,8 @@
 <script>
 import {computed, ref} from 'vue'
 import {BarChart} from 'vue-chart-3'
-import {months, readonly, state} from '../services/store'
+import {readonly, state} from '../services/store'
+import Currencies from '../services/currencies'
 import ChartPie from './ChartPie.vue'
 import Coin from './Coin.vue'
 import CoinsAccounts from './CoinsAccounts.vue'
@@ -37,7 +38,7 @@ import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'
 import {accountHistoryByMonths, createMonthAxis} from '../services/calculator'
 import {getDataLabelBg} from '../services/canvas-colors'
-import {key} from 'localforage'
+import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
 export default {
   name: 'AnalyzeAccounts',
@@ -95,17 +96,26 @@ export default {
         }
       }
     }
-    let monthAxis = createMonthAxis(readonly.operations)
+    let monthAxis = createMonthsAxis(
+      readonly.operations[0].date.date,
+      readonly.operations[readonly.operations.length - 1].date.date
+    )
+
     let chartData = computed(() => ({
-      xLabels: monthAxis.map((ym, i) => {
-        let [y, m] = ym.split('-')
-        return m === '0' || i === 0 ? `${months[m]}\n${y}` : months[m]
-      }),
+      xLabels: monthsAxisLabels(monthAxis),
       datasets: heapsAccount.value.map(heap => {
         // посчитать для каждого кошелька в куче историю по месяцам
         // получим массив объектов
         let histories = heap.coins.map(account => {
-          return accountHistoryByMonths(account, readonly.operations)
+          let history = accountHistoryByMonths(account, readonly.operations)
+          if (account.currency !== state.baseCurrency) {
+            for (let [ym, value] of Object.entries(history)) {
+              let rate = Currencies.rate(account.currency, ym)
+              history[ym] = Math.round(value / rate)
+            }
+          }
+          // console.log('histories', account, history)
+          return history
         })
 
         return {
