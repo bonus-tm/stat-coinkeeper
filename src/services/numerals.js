@@ -22,6 +22,8 @@ export const humanize = value => {
  * @return {String}
  */
 export const hex2rgba = (hex, opacity = 1) => {
+  if (!hex) return `rgba(128,128,128,${opacity})`
+
   let [, r1, r2, g1, g2, b1, b2] = hex.split('')
   let r = parseInt(`${r1}${r2}`, 16)
   let g = parseInt(`${g1}${g2}`, 16)

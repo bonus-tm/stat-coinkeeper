@@ -76,23 +76,16 @@ export const accountHistoryByMonths = (account, operations) => {
   )
 
   let currentIndex = months.length
-  let currentYear = null
-  let currentMonth = null
+  let currentYM = ''
 
   for (let i = operations.length - 1; i >= 0; i--) {
     let op = operations[i]
 
     // если сменился месяц, то перейти на следующий и вписать значение
-    if (op.date.year !== currentYear || op.date.month !== currentMonth) {
-      while (
-        currentIndex > 0 &&
-        (op.date.year !== currentYear || op.date.month !== currentMonth)
-      ) {
+    if (date2ym(op.date.date) !== currentYM) {
+      while (currentIndex > 0 && date2ym(op.date.date) !== currentYM) {
         currentIndex--
-        let [y, m] = months[currentIndex].split('-')
-        currentYear = Number(y)
-        currentMonth = Number(m)
-
+        currentYM = months[currentIndex]
         months[currentIndex] = [months[currentIndex], value]
       }
     }

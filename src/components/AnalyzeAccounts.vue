@@ -129,10 +129,10 @@ export default {
           }),
           grouped: false,
           borderColor: heap.color.border,
-          backgroundColor: hex2rgba(heap.color.border, 0.2),
+          backgroundColor: hex2rgba(heap.color?.border, 0.2),
           datalabels: {
             display: false,
-            color: heap.color.border,
+            color: heap.color?.border,
             backgroundColor: getDataLabelBg(),
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
