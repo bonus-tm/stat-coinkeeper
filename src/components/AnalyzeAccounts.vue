@@ -7,6 +7,9 @@
         <HeapOfCoins
           v-model="heapsAccount[i]"
           editable
+          movable
+          @moveUp="moveHeapUp(i)"
+          @moveDown="moveHeapDown(i)"
           @remove="removeHeap(i)"
         />
       </div>
@@ -159,6 +162,18 @@ export default {
         coins: [],
       })
     }
+    let moveHeapUp = index => {
+      if (index > 0) {
+        let [heap] = state.heaps.accounts.splice(index, 1)
+        state.heaps.accounts.splice(index - 1, 0, toRaw(heap))
+      }
+    }
+    let moveHeapDown = index => {
+      if (index < state.heaps.accounts.length - 1) {
+        let [heap] = state.heaps.accounts.splice(index, 1)
+        state.heaps.accounts.splice(index + 1, 0, toRaw(heap))
+      }
+    }
     let removeHeap = index => {
       state.heaps.accounts.splice(index, 1)
     }
@@ -170,6 +185,8 @@ export default {
       chartOptions,
       chartData,
       addHeap,
+      moveHeapUp,
+      moveHeapDown,
       removeHeap,
     }
   }

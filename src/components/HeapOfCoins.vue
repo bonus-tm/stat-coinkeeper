@@ -5,6 +5,16 @@
       :style="{color: titleColor, backgroundColor: bgColor}"
     >
       <h3>{{ heap.title }}</h3>
+      <div v-if="movable">
+        <a href="#" @click.prevent="$emit('moveUp')">
+          <Icon icon="arrow-up" />
+        </a>
+      </div>
+      <div v-if="movable">
+        <a href="#" @click.prevent="$emit('moveDown')">
+          <Icon icon="arrow-down" />
+        </a>
+      </div>
       <div v-if="showEditor" v-editor>
         <a href="#" @click.prevent>
           <Icon icon="edit" />
@@ -80,14 +90,15 @@ export default {
     },
   },
   props: {
+    changeableColor: {type: Boolean, default: false},
     editable: {type: Boolean, default: false},
+    modelValue: {type: Object, default () {return {}}},
+    movable: {type: Boolean, default: false},
     removable: {type: Boolean, default: false},
     renameable: {type: Boolean, default: false},
-    changeableColor: {type: Boolean, default: false},
-    modelValue: {type: Object, default () {return {}}},
     titleColor: {type: String, default: 'black'},
   },
-  emits: ['update:modelValue', 'remove'],
+  emits: ['update:modelValue', 'remove', 'moveUp', 'moveDown'],
   setup (props, {emit}) {
     let dragover = ref(false)
     let heap = computed({
@@ -158,7 +169,7 @@ export default {
   }
   .heap-title {
     display: grid;
-    grid-template-columns: auto 1.5rem;
+    grid-template-columns: auto repeat(3, 1.5rem);
     align-items: center;
   }
   .heap-title a {
