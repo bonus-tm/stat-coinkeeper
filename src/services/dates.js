@@ -49,11 +49,6 @@ export const date2ymd = date => {
   return `${y}-${m}-${d}`
 }
 
-export const lastDayOfMonth = (y, m) => {
-  let date = new Date(y, Number(m) + 1, 0)
-  return date.getDate()
-}
-
 /**
  *
  * @param {Date} startDate

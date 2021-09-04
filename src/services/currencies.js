@@ -1,7 +1,8 @@
 import localForage from 'localforage'
 import {merge} from 'lodash'
+import {lastDayOfMonth, subMonths} from 'date-fns'
 import fetchUrl from './fetch'
-import {date2ymd, lastDayOfMonth} from './dates'
+import {date2ym, date2ymd} from './dates'
 
 const SAVE_KEY = 'currencies'
 const API_BASE_URL = 'https://api.exchangerate.host'
@@ -42,26 +43,6 @@ const API_BASE_URL = 'https://api.exchangerate.host'
  *  }
  */
 
-
-/**
- *
- * @param {Date} date
- * @return {string}
- */
-const makeLastMonth = date => {
-  let y = date.getFullYear()
-  let m = date.getMonth() + 1
-  if (m === 1) {
-    y--
-    m = 12
-  } else {
-    m--
-  }
-  y = y.toString()
-  m = m.toString().padStart(2, '0')
-  return `${y}-${m}`
-}
-
 export default {
   _base: '',
   _currencies: {},
@@ -85,7 +66,8 @@ export default {
 
     let now = new Date()
     let today = date2ymd(now)
-    let lastMonth = makeLastMonth(now)
+    let prevMonth = date2ym(subMonths(now, 1))
+    console.log({prevMonth})
 
     for (let [symbol, {
       updatedAt,
@@ -99,8 +81,8 @@ export default {
 
       // 4. История курса валюты не доходит до прошлого месяца
       let latestMonth = Object.keys(history).sort().reverse()[0]
-      if (latestMonth !== lastMonth) {
-        let history = await this._loadHistory(base, [symbol], lastMonth, latestMonth)
+      if (latestMonth !== prevMonth) {
+        let history = await this._loadHistory(base, [symbol], prevMonth, latestMonth)
         merge(this._currencies, history)
       }
     }
@@ -137,9 +119,11 @@ export default {
    * @private
    */
   async _loadRemote (base, symbols) {
-    console.log('load remove last month', makeLastMonth(new Date()))
+    console.log('load remove last month', date2ym(subMonths(new Date(), 1)))
     let rates = await this._loadLatest(base, symbols)
-    let histories = await this._loadHistory(base, symbols, makeLastMonth(new Date()))
+    let histories = await this._loadHistory(
+      base, symbols, date2ym(subMonths(new Date(), 1))
+    )
     return merge({}, rates, histories)
   },
 
@@ -171,12 +155,12 @@ export default {
    * История курсов валют по месяцам, на последний день каждого месяца
    * @param {string} base
    * @param {string[]} symbols
-   * @param {string} lastMonth предыдущий месяц для сегодняшнего дня
+   * @param {string} prevMonth предыдущий месяц для сегодняшнего дня
    * @param {string} latestMonth последний месяц в сохранённых данных
    * @return {Promise<{}>}
    * @private
    */
-  async _loadHistory (base, symbols, lastMonth, latestMonth = '2019-01') {
+  async _loadHistory (base, symbols, prevMonth, latestMonth = '2019-01') {
     let result = {}
     for (let symbol of symbols) {
       result[symbol] = {
@@ -187,13 +171,15 @@ export default {
     let [startYear, startMonth] = latestMonth.split('-')
     startYear = Number(startYear)
 
-    let [endYear, endMonth] = lastMonth.split('-')
+    let [endYear, endMonth] = prevMonth.split('-')
     endYear = Number(endYear)
     endMonth = Number(endMonth).toString().padStart(2, '0')
 
     for (let year = startYear; year <= endYear; year++) {
       let start_date = `${year}-${year === startYear ? startMonth : '01'}-28`
-      let endDay = year === endYear ? lastDayOfMonth(year, endMonth) : '31'
+      let endDay = year === endYear
+        ? lastDayOfMonth(new Date(year, endMonth - 1, 1)).getDate().toString()
+        : '31'
       let end_date = `${year}-${year === endYear ? endMonth : '12'}-${endDay}`
 
       let response = await fetchUrl(API_BASE_URL + '/timeseries', {
@@ -210,7 +196,9 @@ export default {
         let prev
         for (let date of dates) {
           let [y, m, d] = date.split('-')
-          let lastDay = lastDayOfMonth(y, m - 1).toString()
+          let lastDay = lastDayOfMonth(
+            new Date(Number(y), m - 1, 1)
+          ).getDate().toString()
           if (d === lastDay && prev) {
             for (let symbol of symbols) {
               result[symbol].history[prev[0]] = prev[1][symbol]
