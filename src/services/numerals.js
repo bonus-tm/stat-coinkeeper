@@ -5,6 +5,8 @@ const M = 10 ** 6
  * @param {Number} value
  */
 export const humanize = value => {
+  if (isNaN(value)) return ''
+
   let sign = value < 0 ? '–' : ''
 
   let abs = Math.abs(value)
