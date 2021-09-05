@@ -68,7 +68,7 @@ export default {
         },
         y: {
           type: 'linear',
-          min: 0,
+          // min: -24000,
           grid: {
             borderDash: [1, 2],
             color: 'rgba(128,128,128,0.2)',
@@ -95,7 +95,7 @@ export default {
         let data = sumByMonths(coinTitles, readonly.operations)
         return {
           label: heap.title,
-          data: monthAxis.map(ym => Math.abs(data[ym])),
+          data: monthAxis.map(ym => data[ym]),
           borderColor: heap.color.border,
           backgroundColor: hex2rgba(heap.color.border, 0.2),
           datalabels: {
