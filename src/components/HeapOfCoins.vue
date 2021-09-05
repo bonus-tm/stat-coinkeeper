@@ -20,7 +20,7 @@
       <div v-else />
 
       <div v-if="showEditor" v-editor>
-        <a href="#" @click.prevent>
+        <a href="#" class="show-editor" @click.prevent>
           <Icon icon="edit" />
         </a>
         <div>
@@ -79,7 +79,7 @@ export default {
   directives: {
     editor: {
       mounted (el) {
-        tippy(el.querySelector('a'), {
+        tippy(el.querySelector('a.show-editor'), {
           allowHTML: true,
           content: el.querySelector('div'),
           hideOnClick: true,
