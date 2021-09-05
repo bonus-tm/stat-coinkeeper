@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import {computed, ref} from 'vue'
+import {computed, ref, toRaw} from 'vue'
 import {BarChart} from 'vue-chart-3'
 import {readonly, state} from '../services/store'
 import Currencies from '../services/currencies'
@@ -39,7 +39,7 @@ import Coin from './Coin.vue'
 import CoinsAccounts from './CoinsAccounts.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'
-import {accountHistoryByMonths, createMonthAxis} from '../services/calculator'
+import {accountHistoryByMonths} from '../services/calculator'
 import {getDataLabelBg} from '../services/canvas-colors'
 import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
@@ -63,7 +63,14 @@ export default {
     let chartOptions = {
       responsive: true,
       aspectRatio: 3,
-      elements: {},
+      layout: {
+        padding: {
+          right: 20,
+        },
+      },
+      elements: {
+        bar: {},
+      },
       scales: {
         x: {
           id: 'x-axis',
@@ -95,6 +102,9 @@ export default {
             callback (value) {
               return humanize(value)
             },
+          },
+          afterFit(axis) {
+            axis.width = 50
           },
         }
       }
@@ -132,7 +142,7 @@ export default {
           }),
           grouped: false,
           borderColor: heap.color.border,
-          backgroundColor: hex2rgba(heap.color?.border, 0.2),
+          backgroundColor: hex2rgba(heap.color?.border, 0.3),
           datalabels: {
             display: false,
             color: heap.color?.border,

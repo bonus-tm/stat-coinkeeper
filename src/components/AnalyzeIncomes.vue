@@ -43,6 +43,11 @@ export default {
     let chartOptions = {
       responsive: true,
       aspectRatio: 3,
+      layout: {
+        padding: {
+          right: 20,
+        },
+      },
       elements: {
         line: {
           tension: 0.2,
@@ -80,6 +85,9 @@ export default {
               return humanize(value)
             },
           },
+          afterFit(axis) {
+            axis.width = 50
+          },
         }
       }
     }
@@ -99,6 +107,7 @@ export default {
           borderColor: heap.color.border,
           backgroundColor: hex2rgba(heap.color.border, 0.2),
           datalabels: {
+            display: 'auto',
             color: heap.color.border,
             backgroundColor: getDataLabelBg(),
             borderRadius: 3,
