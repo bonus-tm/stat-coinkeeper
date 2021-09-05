@@ -5,16 +5,20 @@
       :style="{color: titleColor, backgroundColor: bgColor}"
     >
       <h3>{{ heap.title }}</h3>
+
       <div v-if="movable">
         <a href="#" @click.prevent="$emit('moveUp')">
           <Icon icon="arrow-up" />
         </a>
       </div>
+      <div v-else />
       <div v-if="movable">
         <a href="#" @click.prevent="$emit('moveDown')">
           <Icon icon="arrow-down" />
         </a>
       </div>
+      <div v-else />
+
       <div v-if="showEditor" v-editor>
         <a href="#" @click.prevent>
           <Icon icon="edit" />
