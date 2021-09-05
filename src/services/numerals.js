@@ -5,14 +5,24 @@ const M = 10 ** 6
  * @param {Number} value
  */
 export const humanize = value => {
-  if (value >= M) {
-    value = Math.round(value * 10 / M) / 10
-    return `${value.toString()}M`
+  let sign = value < 0 ? '–' : ''
+
+  let abs = Math.abs(value)
+  let exp = ''
+
+  if (abs >= M) {
+    abs = (Math.round(abs * 10 / M) / 10).toString()
+    exp = 'M'
+  } else if (abs >= 100 * K) {
+    abs = (Math.round(abs / K)).toString()
+    exp = 'K'
+  } else if (abs >= K) {
+    abs = (Math.round(abs * 10 / K) / 10).toString()
+    exp = 'K'
+  } else {
+    abs = abs.toString()
   }
-  if (value >= K) {
-    value = Math.round(value * 10 / K) / 10
-    return `${value.toString()}K`
-  }
+  return `${sign}${abs.replace('.', ',')}${exp}`
 }
 
 /**
