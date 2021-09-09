@@ -26,8 +26,8 @@
 <script>
 import {computed, ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
-import {createMonthAxis, sumByMonths} from '../services/calculator'
-import {palette, months, readonly, state} from '../services/store'
+import {sumByMonths} from '../services/calculator'
+import {palette, readonly, state} from '../services/store'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'

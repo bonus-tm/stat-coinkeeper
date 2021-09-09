@@ -1,6 +1,5 @@
 import {reactive, ref, toRaw, watch} from 'vue'
 import localForage from 'localforage'
-import {accountHistoryByMonths, calcAccountInitialValue} from './calculator'
 
 const CONFIG_SAVE_KEY = 'sck-config'
 const DATA_SAVE_KEY = 'sck-data'
@@ -17,34 +16,6 @@ export const palette = [
   '#af52de',
   '#000000',
 ]
-// export const months = [
-//   'январь',
-//   'февраль',
-//   'март',
-//   'апрель',
-//   'май',
-//   'июнь',
-//   'июль',
-//   'август',
-//   'сентябрь',
-//   'октябрь',
-//   'ноябрь',
-//   'декабрь',
-// ]
-export const months = {
-  '01': 'янв',
-  '02': 'фев',
-  '03': 'март',
-  '04': 'апр',
-  '05': 'май',
-  '06': 'июнь',
-  '07': 'июль',
-  '08': 'авг',
-  '09': 'сен',
-  '10': 'окт',
-  '11': 'ноя',
-  '12': 'дек',
-}
 
 export const dragging = ref(false)
 
