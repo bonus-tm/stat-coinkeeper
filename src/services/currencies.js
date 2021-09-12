@@ -60,6 +60,7 @@ const YM = 'yyyy-MM'
 export default {
   _base: '',
   _currencies: {},
+  loaded: false,
 
   async init (base = 'RUB', symbols = ['USD', 'EUR']) {
     await this._restore()
@@ -115,6 +116,7 @@ export default {
 
     console.log('currencies init', this._currencies)
     await this._save()
+    this.loaded = true
   },
 
   rate (symbol, month) {

@@ -27,7 +27,7 @@
 import {computed, ref} from 'vue'
 import {BarChart, LineChart} from 'vue-chart-3'
 import {sumByMonths} from '../services/calculator'
-import {palette, readonly, state} from '../services/store'
+import store from '../services/store'
 import {hex2rgba, humanize} from '../services/numerals'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
@@ -38,7 +38,7 @@ export default {
   name: 'AnalyzeIncomesVsExpenses',
   components: {HeapOfCoins, Coin, LineChart, BarChart},
   setup () {
-    let heaps = computed(() => state.heaps.allIncomesVsExpenses)
+    let heaps = computed(() => store.state.heaps.allIncomesVsExpenses)
 
     let chartOptions = {
       responsive: true,
@@ -92,8 +92,8 @@ export default {
       },
     }
     let monthAxis = createMonthsAxis(
-      readonly.operations[0].date.date,
-      readonly.operations[readonly.operations.length - 1].date.date
+      store.readonly.operations[0].date.date,
+      store.readonly.operations[store.readonly.operations.length - 1].date.date
     )
     console.log({monthAxis})
 
@@ -101,7 +101,7 @@ export default {
       xLabels: monthsAxisLabels(monthAxis),
       datasets: heaps.value.map(heap => {
         let coinTitles = heap.coins.map(cat => cat.title)
-        let data = sumByMonths(coinTitles, readonly.operations)
+        let data = sumByMonths(coinTitles, store.readonly.operations)
         return {
           label: heap.title,
           data: monthAxis.map(ym => Math.abs(data[ym])),
@@ -180,10 +180,10 @@ export default {
     }
 
     let coinTitles = [
-      ...readonly.incomes.map(cat => cat.title),
-      ...readonly.expenses.map(cat => cat.title),
+      ...store.readonly.incomes.map(cat => cat.title),
+      ...store.readonly.expenses.map(cat => cat.title),
     ]
-    let balanceData = sumByMonths(coinTitles, readonly.operations)
+    let balanceData = sumByMonths(coinTitles, store.readonly.operations)
     console.log({balanceData})
 
     let barChartData = computed(() => ({
@@ -247,7 +247,6 @@ export default {
 
     return {
       chartRef,
-      palette,
       heaps,
       chartOptions,
       chartData,

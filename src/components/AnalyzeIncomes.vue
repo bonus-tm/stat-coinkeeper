@@ -27,7 +27,7 @@
 import {computed, ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
 import {sumByMonths} from '../services/calculator'
-import {palette, readonly, state} from '../services/store'
+import store from '../services/store'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'
@@ -38,7 +38,7 @@ export default {
   name: 'AnalyzeIncomes',
   components: {HeapOfCoins, Coin, LineChart},
   setup () {
-    let heapsIncomes = computed(() => state.heaps.incomes)
+    let heapsIncomes = computed(() => store.state.heaps.incomes)
 
     let chartOptions = {
       responsive: true,
@@ -92,15 +92,15 @@ export default {
       }
     }
     let monthAxis = createMonthsAxis(
-      readonly.operations[0].date.date,
-      readonly.operations[readonly.operations.length - 1].date.date
+      store.readonly.operations[0].date.date,
+      store.readonly.operations[store.readonly.operations.length - 1].date.date
     )
 
     let chartData = computed(() => ({
       xLabels: monthsAxisLabels(monthAxis),
       datasets: heapsIncomes.value.map(heap => {
         let coinTitles = heap.coins.map(coin => coin.title)
-        let data = sumByMonths(coinTitles, readonly.operations)
+        let data = sumByMonths(coinTitles, store.readonly.operations)
         return {
           label: heap.title,
           data: monthAxis.map(ym => data[ym]),
@@ -128,7 +128,7 @@ export default {
     let chartRef = ref()
 
     let addHeap = () => {
-      state.heaps.incomes.push({
+      store.state.heaps.incomes.push({
         type: 'operations',
         title: 'Куча',
         color: {},
@@ -137,12 +137,11 @@ export default {
     }
     let removeHeap = index => {
       console.log('removeHeap', index)
-      state.heaps.incomes.splice(index, 1)
+      store.state.heaps.incomes.splice(index, 1)
     }
 
     return {
       chartRef,
-      palette,
       heapsIncomes,
       chartOptions,
       chartData,

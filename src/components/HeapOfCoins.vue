@@ -69,7 +69,7 @@
 import {computed, ref} from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css' // optional for styling
-import {dragging, palette} from '../services/store'
+import store from '../services/store'
 import Coin from './Coin.vue'
 import Icon from './Icon.vue'
 
@@ -104,6 +104,9 @@ export default {
   },
   emits: ['update:modelValue', 'remove', 'moveUp', 'moveDown'],
   setup (props, {emit}) {
+    let dragging = store.dragging
+    let palette = store.palette
+
     let dragover = ref(false)
     let heap = computed({
       get: () => props.modelValue,

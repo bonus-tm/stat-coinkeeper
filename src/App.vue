@@ -1,48 +1,50 @@
 <template>
   <header>
     <div>
-      <div v-if="appState === states.dataRead">
+      <div v-if="loaded">
         Данные экспортированы
-        {{ dataDate }}
+        {{ dataExportedAgo }}
       </div>
     </div>
     <h1>Статистика из Coin Keeper</h1>
     <div>
-      <button v-if="appState !== states.noData" @click="clearData">
+      <button v-if="loaded" @click="clearData">
         Очистить только данные
       </button>
       &nbsp;
-      <button v-if="appState !== states.noData" @click="reset">
+      <button v-if="loaded" @click="reset">
         Удалить всё
       </button>
     </div>
   </header>
 
   <main>
-    <UploadFile v-if="appState === states.noData" @import="onDataImport" />
+    <template v-if="appInitialized">
+      <UploadFile v-if="!loaded" @import="onDataImport" />
 
-    <template v-if="appState === states.dataRead">
-      <div class="section">
-        <CoinsOperations />
+      <template v-if="loaded">
+        <div class="section">
+          <CoinsOperations />
 
-        <div>
-          <AnalyzeIncomesVsExpenses />
-          <hr>
-          <AnalyzeIncomes />
-          <hr>
-          <AnalyzeExpenses />
+          <div>
+            <AnalyzeIncomesVsExpenses />
+            <hr>
+            <AnalyzeIncomes />
+            <hr>
+            <AnalyzeExpenses />
+          </div>
         </div>
-      </div>
 
-      <hr>
+        <hr>
 
-      <div class="section">
-        <CoinsAccounts />
+        <div class="section">
+          <CoinsAccounts />
 
-        <div>
-          <AnalyzeAccounts />
+          <div>
+            <AnalyzeAccounts />
+          </div>
         </div>
-      </div>
+      </template>
     </template>
   </main>
 
@@ -58,6 +60,8 @@
 import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
 import {
+  BarController,
+  BarElement,
   CategoryScale,
   Chart,
   Filler,
@@ -67,11 +71,9 @@ import {
   LineElement,
   PointElement,
   Tooltip,
-  BarController,
-  BarElement,
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
-import {clearReadonly, setReadonly, readonly, readonlyEmpty} from './services/store'
+import store from './services/store'
 import Currencies from './services/currencies'
 import AnalyzeAccounts from './components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from './components/AnalyzeExpenses.vue'
@@ -80,8 +82,9 @@ import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
 import CoinsAccounts from './components/CoinsAccounts.vue'
 import CoinsOperations from './components/CoinsOperations.vue'
 import UploadFile from './components/UploadFile.vue'
+import {computed, onBeforeMount, ref} from 'vue'
 
-const pl = {
+const MultiStringAxisLabels = {
   id: 'labels-split',
   beforeInit (chart) {
     // console.log('beforeInit', chart)
@@ -105,7 +108,7 @@ Chart.register(
   ChartDataLabels,
   BarController,
   BarElement,
-  pl
+  MultiStringAxisLabels,
 )
 
 export default {
@@ -117,42 +120,39 @@ export default {
     AnalyzeIncomesVsExpenses,
     CoinsAccounts,
     CoinsOperations,
-    UploadFile
+    UploadFile,
   },
-  data () {
-    let states = {
-      noData: 0,
-      fileDropped: 1,
-      dataRead: 2
-    }
-    return {
-      states,
-      appState: states.noData,
-      readonlyEmpty,
-    }
-  },
-  computed: {
-    dataDate () {
-      if (!readonly.timestamp) return ''
+  setup () {
+    let appInitialized = ref(false)
+
+    let dataExportedAgo = computed(() => {
+      if (!store.readonly.timestamp) return ''
       return formatDistanceToNow(
-        new Date(readonly.timestamp),
+        new Date(store.readonly.timestamp),
         {addSuffix: true, locale: ru}
       )
-    },
-  },
-  watch: {
-    readonlyEmpty (val) {
-      if (val) this.appState = this.states.noData
-      else this.appState = this.states.dataRead
+    })
+
+    let currenciesLoaded = ref(false)
+
+    onBeforeMount(async () => {
+      await store.init()
+      await Currencies.init('RUB', ['USD', 'EUR'])
+      currenciesLoaded.value = Currencies.loaded
+      appInitialized.value = true
+    })
+
+    return {
+      appInitialized,
+      dataExportedAgo,
+      currenciesLoaded,
+      loaded: store.loaded,
     }
   },
-  created () {
-    Currencies.init('RUB', ['USD', 'EUR'])
-  },
+
   methods: {
     async clearData () {
-      this.appState = this.states.noData
-      await clearReadonly()
+      await store.clearReadonly()
     },
     reset () {
       return confirm(
@@ -162,8 +162,7 @@ export default {
     },
     async onDataImport (allData) {
       console.log(allData)
-      await setReadonly(allData)
-      this.appState = this.states.dataRead
+      await store.setReadonly(allData)
     },
   }
 }

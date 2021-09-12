@@ -39,6 +39,9 @@ export default {
     }
   },
   emits: ['import'],
+  setup () {
+
+  },
   methods: {
     onDrop (e) {
       this.dragover = false

@@ -32,7 +32,7 @@
 <script>
 import {computed, ref, toRaw} from 'vue'
 import {BarChart} from 'vue-chart-3'
-import {readonly, state} from '../services/store'
+import store from '../services/store'
 import Currencies from '../services/currencies'
 import ChartPie from './ChartPie.vue'
 import Coin from './Coin.vue'
@@ -47,14 +47,14 @@ export default {
   name: 'AnalyzeAccounts',
   components: {ChartPie, Coin, CoinsAccounts, HeapOfCoins, BarChart},
   setup () {
-    let heapsAccount = computed(() => state.heaps.accounts)
+    let heapsAccount = computed(() => store.state.heaps.accounts)
 
     let pieChartData = computed(() => {
       return heapsAccount.value.map(heap => ({
         title: heap.title,
         color: heap.color.border,
         value: heap.coins.reduce((acc, coin) => {
-          acc += coin.value * state.currencyRates[coin.currency]
+          acc += coin.value * store.state.currencyRates[coin.currency]
           return acc
         }, 0)
       }))
@@ -110,8 +110,8 @@ export default {
       }
     }
     let monthAxis = createMonthsAxis(
-      readonly.operations[0].date.date,
-      readonly.operations[readonly.operations.length - 1].date.date
+      store.readonly.operations[0].date.date,
+      store.readonly.operations[store.readonly.operations.length - 1].date.date
     )
 
     let chartData = computed(() => ({
@@ -120,8 +120,8 @@ export default {
         // посчитать для каждого кошелька в куче историю по месяцам
         // получим массив объектов
         let histories = heap.coins.map(account => {
-          let history = accountHistoryByMonths(account, readonly.operations)
-          if (account.currency !== state.baseCurrency) {
+          let history = accountHistoryByMonths(account, store.readonly.operations)
+          if (account.currency !== store.state.baseCurrency) {
             for (let [ym, value] of Object.entries(history)) {
               let rate = Currencies.rate(account.currency, ym)
               history[ym] = Math.round(value / rate)
@@ -165,7 +165,7 @@ export default {
     let chartRef = ref()
 
     let addHeap = () => {
-      state.heaps.accounts.push({
+      store.state.heaps.accounts.push({
         type: 'accounts',
         title: 'Куча',
         color: {},
@@ -174,18 +174,18 @@ export default {
     }
     let moveHeapUp = index => {
       if (index > 0) {
-        let [heap] = state.heaps.accounts.splice(index, 1)
-        state.heaps.accounts.splice(index - 1, 0, toRaw(heap))
+        let [heap] = store.state.heaps.accounts.splice(index, 1)
+        store.state.heaps.accounts.splice(index - 1, 0, toRaw(heap))
       }
     }
     let moveHeapDown = index => {
-      if (index < state.heaps.accounts.length - 1) {
-        let [heap] = state.heaps.accounts.splice(index, 1)
-        state.heaps.accounts.splice(index + 1, 0, toRaw(heap))
+      if (index < store.state.heaps.accounts.length - 1) {
+        let [heap] = store.state.heaps.accounts.splice(index, 1)
+        store.state.heaps.accounts.splice(index + 1, 0, toRaw(heap))
       }
     }
     let removeHeap = index => {
-      state.heaps.accounts.splice(index, 1)
+      store.state.heaps.accounts.splice(index, 1)
     }
 
     return {
@@ -202,6 +202,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>

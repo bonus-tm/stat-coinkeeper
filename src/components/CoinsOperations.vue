@@ -20,15 +20,15 @@
 
 <script>
 import {computed} from 'vue'
-import {readonly} from '../services/store'
+import store from '../services/store'
 import Coin from './Coin.vue'
 
 export default {
   name: 'CoinsOperations',
   components: {Coin},
   setup () {
-    let incomes = computed(() => readonly.incomes)
-    let expenses = computed(() => readonly.expenses)
+    let incomes = computed(() => store.readonly.incomes)
+    let expenses = computed(() => store.readonly.expenses)
 
     return {
       incomes,

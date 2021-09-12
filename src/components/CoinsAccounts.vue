@@ -14,13 +14,13 @@
 <script>
 import Coin from './Coin.vue'
 import {computed} from 'vue'
-import {readonly} from '../services/store'
+import store from '../services/store'
 
 export default {
   name: 'CoinsAccounts',
   components: {Coin},
   setup () {
-    let accounts = computed(() => readonly.accounts)
+    let accounts = computed(() => store.readonly.accounts)
 
     return {
       accounts,

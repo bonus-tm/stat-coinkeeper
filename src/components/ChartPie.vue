@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import {palette} from '../services/store'
+import store from '../services/store'
 
 export default {
   name: 'ChartPie',
@@ -43,7 +43,7 @@ export default {
   },
   computed: {
     palette () {
-      return palette
+      return store.palette
     },
     totalValue () {
       return this.data.reduce((total, sector) => {

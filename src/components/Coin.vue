@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import {dragging} from '../services/store'
+import store from '../services/store'
 
 export default {
   name: 'Coin',
@@ -29,11 +29,11 @@ export default {
   },
   methods: {
     onDragStart (e) {
-      dragging.value = true
+      store.dragging.value = true
       e.dataTransfer.setData('text', JSON.stringify(this.coin))
     },
     onDragEnd () {
-      dragging.value = false
+      store.dragging.value = false
     },
   }
 }
