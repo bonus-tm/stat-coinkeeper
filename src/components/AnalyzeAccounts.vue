@@ -131,6 +131,7 @@ export default {
           return history
         })
 
+        let dataLabelFontSize = 11
         return {
           label: heap.title,
           // дальше надо их одинаковые поля просуммировать
@@ -144,14 +145,18 @@ export default {
           borderColor: heap.color.border,
           backgroundColor: hex2rgba(heap.color?.border, 0.3),
           datalabels: {
-            display: false,
+            display (context) {
+              // Определить минимальное значение, в которое по высоте влезет лейбл
+              let threshold = context.chart.scales.y.max / context.chart.scales.y.maxHeight * (dataLabelFontSize + 4)
+              return context.dataset.data[context.dataIndex] > threshold
+            },
             color: heap.color?.border,
-            backgroundColor: getDataLabelBg(),
+            // backgroundColor: getDataLabelBg(),
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
-            align: 'end',
+            // align: 'end',
             font: {
-              size: 11,
+              size: dataLabelFontSize,
               weight: 'bold'
             },
             formatter (value) {
