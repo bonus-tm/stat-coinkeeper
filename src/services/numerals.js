@@ -3,8 +3,9 @@ const M = 10 ** 6
 
 /**
  * @param {Number} value
+ * @return {string}
  */
-export const humanize = value => {
+export const humanize = (value) => {
   if (isNaN(value)) return ''
 
   let sign = value < 0 ? '–' : ''
@@ -28,6 +29,41 @@ export const humanize = value => {
     abs = abs.toString()
   }
   return `${sign}${abs.replace('.', ',')}${exp}`
+}
+
+/**
+ *
+ * @param {Number} value
+ * @param {string} delimiter
+ * @return {string}
+ */
+export const format = (value, delimiter = ' ') => {
+  if (isNaN(value)) return ''
+
+  let sign = value < 0 ? '–' : ''
+  let abs = Math.abs(value)
+
+  let ml = ''
+  let th = ''
+  let un = ''
+
+  if (abs >= M) {
+    ml = Math.floor(abs / M)
+  }
+  if (abs >= K) {
+    th = Math.floor((abs - (ml * M)) / K)
+  }
+
+  if (abs >= M) {
+    th = th.toString().padStart(3, '0')
+  }
+  un = abs - (ml * M) - (th * K)
+  if (abs >= K) {
+    un = un.toString().padStart(3, '0')
+  }
+  console.log({ml,th,un})
+
+  return `${sign}${ml}${ml ? delimiter : ''}${th}${th ? delimiter : ''}${un}`
 }
 
 /**
