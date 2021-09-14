@@ -119,18 +119,6 @@ export default {
     } catch (e) {
       console.log({e})
     }
-
-    // console.log('accounts', readonly.accounts)
-    // readonly.accounts.forEach(acc => {
-    //   console.log(
-    //     acc.title,
-    //     acc.currency,
-    //     calcAccountInitialValue(acc, readonly.operations),
-    //     '→',
-    //     acc.value
-    //   )
-    //   console.log(accountHistoryByMonths(acc, readonly.operations))
-    // })
   },
 
   async setReadonly ({timestamp, data}) {
@@ -141,9 +129,24 @@ export default {
     this.readonly.expenses = data.expenses
     this.readonly.tags = data.tags
 
+    this.updateCoins([...data.accounts, ...data.incomes, ...data.expenses])
+
     await localForage.setItem(DATA_SAVE_KEY, this.readonly)
 
     this.loaded.value = true
+  },
+
+  updateCoins (coins) {
+    for (let key of Object.keys(this.state.heaps)) {
+      this.state.heaps[key].forEach(heap => {
+        if (!heap.coins) heap.coins = []
+        heap.coins.forEach((coin, index) => {
+          heap.coins[index] = coins.find(n => {
+            return n.type === coin.type && n.id === coin.id
+          })
+        })
+      })
+    }
   },
 
   async clearReadonly () {
@@ -158,5 +161,4 @@ export default {
 
     this.loaded.value = false
   },
-
 }

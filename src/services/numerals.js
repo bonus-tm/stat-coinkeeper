@@ -61,7 +61,6 @@ export const format = (value, delimiter = ' ') => {
   if (abs >= K) {
     un = un.toString().padStart(3, '0')
   }
-  console.log({ml,th,un})
 
   return `${sign}${ml}${ml ? delimiter : ''}${th}${th ? delimiter : ''}${un}`
 }
