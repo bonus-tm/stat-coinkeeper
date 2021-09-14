@@ -23,7 +23,7 @@
           {{ round(100 * sector.value / totalValue, 1) }}%
         </div>
         <div class="pie-legend-value">
-          {{ round(sector.value, 0) }}<span style="margin-left: 1.5px;">₽</span>
+          {{ format(round(sector.value, 0)) }}<span style="margin-left: 1.5px;">₽</span>
         </div>
       </template>
     </div>
@@ -32,6 +32,7 @@
 
 <script>
 import store from '../services/store'
+import {format} from '../services/numerals'
 
 export default {
   name: 'ChartPie',
@@ -75,6 +76,7 @@ export default {
       if (Number.isNaN(value)) return 0
       return Math.round(value * 10 ** precision) / 10 ** precision
     },
+    format,
   }
 }
 </script>
@@ -87,7 +89,7 @@ export default {
     margin-left: 1rem;
     display: grid;
     grid-template-columns: 30px repeat(3, auto);
-    gap: 0.5rem;
+    gap: 0.5rem 1rem;
     align-content: center;
   }
   .pie-legend-value {
