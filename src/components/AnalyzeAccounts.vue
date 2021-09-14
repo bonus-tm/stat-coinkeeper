@@ -40,7 +40,6 @@ import CoinsAccounts from './CoinsAccounts.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {hex2rgba, humanize} from '../services/numerals'
 import {accountHistoryByMonths} from '../services/calculator'
-import {getDataLabelBg} from '../services/canvas-colors'
 import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
 export default {
@@ -103,7 +102,7 @@ export default {
               return humanize(value)
             },
           },
-          afterFit(axis) {
+          afterFit (axis) {
             axis.width = 50
           },
         }
@@ -113,6 +112,26 @@ export default {
       store.readonly.operations[0].date.date,
       store.readonly.operations[store.readonly.operations.length - 1].date.date
     )
+
+    let totals = {}
+    for (let heap of heapsAccount.value) {
+      for (let account of heap.coins) {
+        let history = accountHistoryByMonths(account, store.readonly.operations)
+        if (account.currency !== store.state.baseCurrency) {
+          for (let [ym, value] of Object.entries(history)) {
+            let rate = Currencies.rate(account.currency, ym)
+            history[ym] = Math.round(value / rate)
+          }
+        }
+        for (let [ym, value] of Object.entries(history)) {
+          totals[ym] ??= 0
+          totals[ym] += value
+        }
+      }
+    }
+    console.log({totals})
+    let totalsNull = monthAxis.map(() => null)
+    let totalsData = monthAxis.map(ym => totals[ym])
 
     let chartData = computed(() => ({
       xLabels: monthsAxisLabels(monthAxis),
@@ -152,19 +171,62 @@ export default {
             },
             color: heap.color?.border,
             // backgroundColor: getDataLabelBg(),
-            borderRadius: 3,
-            padding: {top: 1, bottom: 0, left: 3, right: 3},
-            // align: 'end',
-            font: {
-              size: dataLabelFontSize,
-              weight: 'bold'
+            // borderRadius: 3,
+            // padding: {top: 1, bottom: 0, left: 3, right: 3},
+            anchor: 'center',
+            labels: {
+              value: {
+                align: 'end',
+                offset: -5,
+                font: {
+                  size: dataLabelFontSize,
+                  weight: 'bold'
+                },
+                formatter (value, context) {
+                  return humanize(value)
+                },
+              },
+              percent: {
+                align: 'start',
+                offset: -4,
+                font: {
+                  size: 9,
+                  weight: 'normal'
+                },
+                formatter (value, context) {
+                  return `${Math.round(100 * value / totalsData[context.dataIndex])}%`
+                },
+              }
             },
-            formatter (value) {
-              return humanize(value)
-            }
           }
         }
-      }),
+      }).concat([{
+        label: '',
+        data: totalsNull,
+        grouped: false,
+        skipNulls: true,
+        borderColor: 'transparent',
+        backgroundColor: 'transparent',
+        datalabels: {
+          display: true,
+          color: '#777',
+          backgroundColor: 'transparent',
+          borderRadius: 3,
+          padding: {top: 1, bottom: 0, left: 3, right: 3},
+          anchor: 'end',
+          align: 'end',
+          offset (context) {
+            return context.chart.chartArea.height - 15
+          },
+          font: {
+            size: 10,
+            weight: 'bold'
+          },
+          formatter (value, context) {
+            return humanize(totalsData[context.dataIndex])
+          }
+        }
+      }]),
     }))
 
     let chartRef = ref()
