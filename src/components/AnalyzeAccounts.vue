@@ -53,7 +53,10 @@ export default {
         title: heap.title,
         color: heap.color.border,
         value: heap.coins.reduce((acc, coin) => {
-          acc += coin.value * store.state.currencyRates[coin.currency]
+          let rate = coin.currency === store.state.baseCurrency
+            ? 1
+            : Currencies.rate(coin.currency)
+          acc += coin.value / rate
           return acc
         }, 0)
       }))
