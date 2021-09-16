@@ -24,11 +24,6 @@ export default {
   // heaps can be two types — accounts and operations (incomes + expenses)
   _defaultState: {
     baseCurrency: 'RUB',
-    currencyRates: {
-      RUB: 1,
-      USD: 73.41,
-      EUR: 89.52,
-    },
     heaps: {
       accounts: [
         {
@@ -86,7 +81,7 @@ export default {
 
   state: reactive({}),
   readonly: {},
-  loaded: ref(false),
+  hasData: ref(false),
 
   async init () {
     console.log('init')
@@ -113,9 +108,13 @@ export default {
     )
 
     try {
-      this.readonly = await localForage.getItem(DATA_SAVE_KEY) || {}
-      this.loaded.value = true
-      console.log('initial readonly user data', this.loaded.value, this.readonly)
+      this.readonly = await localForage.getItem(DATA_SAVE_KEY)
+      if (this.readonly) {
+        this.hasData.value = true
+      } else {
+        this.readonly = {}
+      }
+      console.log('initial readonly user data', this.hasData.value, this.readonly)
     } catch (e) {
       console.log({e})
     }
@@ -131,9 +130,16 @@ export default {
 
     this.updateCoins([...data.accounts, ...data.incomes, ...data.expenses])
 
+    if (
+      this.state.heaps?.allIncomesVsExpenses?.[0]?.coins?.length === 0 &&
+      this.state.heaps?.allIncomesVsExpenses?.[1]?.coins?.length === 0
+    ) {
+      this.fillDefaultHeaps(data.incomes, data.expenses)
+    }
+
     await localForage.setItem(DATA_SAVE_KEY, this.readonly)
 
-    this.loaded.value = true
+    this.hasData.value = true
   },
 
   updateCoins (coins) {
@@ -149,6 +155,11 @@ export default {
     }
   },
 
+  fillDefaultHeaps (incomes, expenses) {
+    this.state.heaps.allIncomesVsExpenses[0].coins = [...incomes]
+    this.state.heaps.allIncomesVsExpenses[1].coins = [...expenses]
+  },
+
   async clearReadonly () {
     this.readonly.timestamp = null
     this.readonly.operations = null
@@ -159,6 +170,6 @@ export default {
 
     await localForage.removeItem(DATA_SAVE_KEY)
 
-    this.loaded.value = false
+    this.hasData.value = false
   },
 }

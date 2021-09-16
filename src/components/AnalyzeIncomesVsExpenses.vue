@@ -200,7 +200,6 @@ export default {
               return context.dataset.data[context.dataIndex] !== 0
             },
             color: '#34c759',
-            backgroundColor: getDataLabelBg(),
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
             anchor: 'start',
@@ -225,7 +224,6 @@ export default {
               return context.dataset.data[context.dataIndex] !== 0
             },
             color: '#ff3b30',
-            backgroundColor: getDataLabelBg(),
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
             anchor: 'end',

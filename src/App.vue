@@ -1,18 +1,18 @@
 <template>
   <header>
     <div>
-      <div v-if="loaded">
+      <div v-if="hasData">
         Данные экспортированы
         {{ dataExportedAgo }}
       </div>
     </div>
     <h1>Статистика из Coin Keeper</h1>
     <div>
-      <button v-if="loaded" @click="clearData">
+      <button v-if="hasData" @click="clearData">
         Очистить только данные
       </button>
       &nbsp;
-      <button v-if="loaded" @click="reset">
+      <button v-if="hasData" @click="reset">
         Удалить всё
       </button>
     </div>
@@ -20,9 +20,9 @@
 
   <main>
     <template v-if="appInitialized">
-      <UploadFile v-if="!loaded" @import="onDataImport" />
+      <UploadFile v-if="!hasData" @import="onDataImport" />
 
-      <template v-if="loaded">
+      <template v-if="hasData">
         <div class="section">
           <CoinsOperations />
 
@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import {computed, onBeforeMount, ref} from 'vue'
 import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
 import {
@@ -82,7 +83,6 @@ import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
 import CoinsAccounts from './components/CoinsAccounts.vue'
 import CoinsOperations from './components/CoinsOperations.vue'
 import UploadFile from './components/UploadFile.vue'
-import {computed, onBeforeMount, ref} from 'vue'
 
 const MultiStringAxisLabels = {
   id: 'labels-split',
@@ -146,7 +146,7 @@ export default {
       appInitialized,
       dataExportedAgo,
       currenciesLoaded,
-      loaded: store.loaded,
+      hasData: store.hasData,
     }
   },
 
