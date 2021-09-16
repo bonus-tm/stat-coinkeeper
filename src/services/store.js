@@ -29,13 +29,19 @@ export default {
         {
           type: 'accounts',
           title: 'Безнал',
-          color: {bg: '#ccc', border: '#ddd'},
+          color: {bg: '#007aff', border: '#007aff'},
           coins: []
         },
         {
           type: 'accounts',
           title: 'Наличка',
-          color: {bg: '#ccc', border: '#ddd'},
+          color: {bg: '#5ac8fa', border: '#5ac8fa'},
+          coins: []
+        },
+        {
+          type: 'accounts',
+          title: 'Валюта',
+          color: {bg: '#34c759', border: '#34c759'},
           coins: []
         },
       ],
@@ -56,14 +62,14 @@ export default {
       incomes: [
         {
           type: 'operations',
-          title: 'Доходы Тоша',
+          title: 'Первая куча доходов',
           color: {bg: '#0491d1', border: '#0491d1'},
           coins: []
         },
         {
           type: 'operations',
-          title: 'Доходы Тани',
-          color: {bg: '#e53935', border: '#e53935'},
+          title: 'Вторая куча доходов',
+          color: {bg: '#ffcc00', border: '#ffcc00'},
           coins: []
         },
       ],
@@ -71,10 +77,15 @@ export default {
         {
           type: 'operations',
           title: 'Постоянные расходы',
-          color: {},
+          color: {bg: '#e53935', border: '#e53935'},
           coins: []
         },
-        {type: 'operations', title: 'Редкие', color: {}, coins: []},
+        {
+          type: 'operations',
+          title: 'Редкие',
+          color: {bg: '#ff9500', border: '#ff9500'},
+          coins: []
+        },
       ],
     }
   },
