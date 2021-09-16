@@ -120,7 +120,11 @@ export default {
   },
 
   rate (symbol, month) {
-    return this._currencies[symbol]?.history[month]
+    if (month) {
+      return this._currencies[symbol]?.history[month]
+    } else {
+      return this._currencies[symbol].latest
+    }
   },
 
   _save () {
