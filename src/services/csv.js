@@ -8,7 +8,20 @@ let csv
 const fixStr = str => str.charAt(0) === '"' ? str.slice(1, -1) : str
 const fixNum = str => Number(str.charAt(0) === '"' ? str.slice(1, -1) : str)
 const fixDate = dateStr => {
-  let [month, day, year] = fixStr(dateStr)?.split('/')
+  dateStr = fixStr(dateStr)
+  if (!dateStr) return null
+
+  let month
+  let day
+  let year
+  let sep
+  if (/^\d+\.\d+\.\d+$/.test(dateStr)) {
+    sep = '.'
+  } else {
+    sep = '/'
+  }
+  [month, day, year] = dateStr.split(sep)
+
   return {
     year: Number(year),
     month: Number(month) - 1,
@@ -65,24 +78,35 @@ export const loadData = data => {
     return false
   }
 
-  srcIncomes = srcIncomes.split('\n')
-  let incomes = formatCategories(srcIncomes, separator, 'income')
-  // console.log(incomes)
+  let incomes
+  if (srcIncomes) {
+    srcIncomes = srcIncomes.split('\n')
+    incomes = formatCategories(srcIncomes, separator, 'income')
+  }
 
-  srcAccounts = srcAccounts.split('\n')
-  let accounts = formatCategories(srcAccounts, separator, 'account')
+  let accounts
+  if (srcAccounts) {
+    srcAccounts = srcAccounts.split('\n')
+    accounts = formatCategories(srcAccounts, separator, 'account')
+  }
 
-  srcExpenses = srcExpenses.split('\n')
-  let expenses = formatCategories(srcExpenses, separator, 'expense')
+  let expenses
+  if (srcExpenses) {
+    srcExpenses = srcExpenses.split('\n')
+    expenses = formatCategories(srcExpenses, separator, 'expense')
+  }
 
-  srcTags = srcTags.split('\n')
-  let tags = formatCategories(srcTags, separator, 'tag')
+  let tags
+  if (srcTags) {
+    srcTags = srcTags.split('\n')
+    tags = formatCategories(srcTags, separator, 'tag')
+  }
 
   // 'Расход' — только расходы
   // 'Перевод' — доходы и переводы между своими счетами
   const determineOperationDirection = (type, source) => {
     if (type === 'Расход') return constants.OUT
-    if (incomes.find(income => income.title === source)) return constants.IN
+    if (incomes?.find(income => income.title === source)) return constants.IN
     return constants.TRANSFER
   }
 
