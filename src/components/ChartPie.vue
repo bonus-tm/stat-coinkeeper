@@ -31,6 +31,7 @@
 </template>
 
 <script>
+import {computed, toRefs} from 'vue'
 import store from '../services/store'
 import {format} from '../services/numerals'
 
@@ -38,30 +39,37 @@ export default {
   name: 'ChartPie',
   props: {
     data: {type: Array, required: true},
+    fieldColor: {type: String, default: 'color'},
     fieldTitle: {type: String, default: 'title'},
     fieldValue: {type: String, default: 'value'},
-    fieldColor: {type: String, default: 'color'},
   },
-  computed: {
-    palette () {
-      return store.palette
-    },
-    totalValue () {
-      return this.data.reduce((total, sector) => {
-        total += sector[this.fieldValue]
+  setup (props) {
+    let {data, fieldColor, fieldTitle, fieldValue} = toRefs(props)
+
+    let totalValue = computed(() => {
+      return data.value.reduce((total, sector) => {
+        total += sector[fieldValue.value]
         return total
       }, 0)
-    },
-    sectors () {
+    })
+
+    const round = (value, precision = 0) => {
+      if (Number.isNaN(value)) return 0
+      return Math.round(value * 10 ** precision) / 10 ** precision
+    }
+
+    let sectors = computed(() => {
       let offset = 0
-      return this.data.map(piece => {
-        let percent = this.round(100 * piece[this.fieldValue] / this.totalValue, 2)
+      return data.value
+        .sort((a, b) => b.value - a.value)
+        .map(piece => {
+        let percent = round(100 * piece[fieldValue.value] / totalValue.value, 2)
         let sector = {
           offset,
           percent,
-          value: piece[this.fieldValue],
-          title: piece[this.fieldTitle],
-          color: piece[this.fieldColor],
+          value: piece[fieldValue.value],
+          title: piece[fieldTitle.value],
+          color: piece[fieldColor.value],
         }
         offset += sector.percent
         if (offset === 100 && percent > 0) {
@@ -69,15 +77,17 @@ export default {
         }
         return sector
       })
-    },
+    })
+
+    return {
+      palette: store.palette,
+      totalValue,
+      sectors,
+
+      round,
+      format,
+    }
   },
-  methods: {
-    round (value, precision = 0) {
-      if (Number.isNaN(value)) return 0
-      return Math.round(value * 10 ** precision) / 10 ** precision
-    },
-    format,
-  }
 }
 </script>
 
