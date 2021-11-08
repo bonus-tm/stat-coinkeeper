@@ -5,6 +5,10 @@ const translit = new Translit()
 
 let csv
 
+export const split = row => {
+  return Array.from(row.matchAll(/"([^"]*)"/g), x=>x[1])
+}
+
 const fixStr = str => str.charAt(0) === '"' ? str.slice(1, -1) : str
 const fixNum = str => Number(str.charAt(0) === '"' ? str.slice(1, -1) : str)
 const fixDate = dateStr => {
@@ -51,12 +55,12 @@ const FIELDS = {
   'Текущее значение': {name: 'value', number: true},
 }
 // Преобразовать список категорий в доходах, расходах или наличии в массив объектов
-const formatCategories = (src, separator, type) => {
-  let titles = src.shift().split(separator).map(fixStr).map(str => FIELDS[str])
+export const formatCategories = (src, separator, type) => {
+  let titles = split(src.shift()).map(fixStr).map(str => FIELDS[str])
   let data = []
   for (let srcCategory of src) {
     let category = {type}
-    for (let [i, val] of srcCategory.split(separator).entries()) {
+    for (let [i, val] of split(srcCategory).entries()) {
       category[titles[i].name] = titles[i].number ? fixNum(val) : fixStr(val)
     }
     category.id = makeCategoryId(category.title)
@@ -129,12 +133,7 @@ export const loadData = data => {
       currency2,
       repeat,
       comment,
-    ] = entry.split('","')
-    // хак, чтобы нормально парсить несколько тегов через запятую —
-    // split не просто по запятой, а по кавычкам и запятой: ","
-    // а потом в первой и последней части отрезать лишнюю кавычку
-    dateStr = dateStr.substring(1)
-    comment = comment.slice(0, -1)
+    ] = split(entry)
 
     operations.push({
       date: fixDate(dateStr),
