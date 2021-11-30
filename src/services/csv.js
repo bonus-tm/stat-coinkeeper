@@ -5,26 +5,28 @@ const translit = new Translit()
 
 let csv
 
+/**
+ * Splits a row from csv to array of strings and numbers
+ * @param {string} row '"Барахло","0","42317","Plant","RUB"'
+ * @return {*[]} ['Барахло',0,42317,'Plant','RUB']
+ */
 export const split = row => {
   return Array.from(row.matchAll(/"([^"]*)"/g), x=>x[1])
 }
 
-const fixStr = str => str.charAt(0) === '"' ? str.slice(1, -1) : str
-const fixNum = str => Number(str.charAt(0) === '"' ? str.slice(1, -1) : str)
+const fixNum = str => Number(str.replace(',', '.'))
+
 const fixDate = dateStr => {
-  dateStr = fixStr(dateStr)
   if (!dateStr) return null
 
   let month
   let day
   let year
-  let sep
   if (/^\d+\.\d+\.\d+$/.test(dateStr)) {
-    sep = '.'
+    [day, month, year] = dateStr.split('.')
   } else {
-    sep = '/'
+    [month, day, year] = dateStr.split('/')
   }
-  [month, day, year] = dateStr.split(sep)
 
   return {
     year: Number(year),
@@ -54,14 +56,21 @@ const FIELDS = {
   'Валюта': {name: 'currency', number: false},
   'Текущее значение': {name: 'value', number: true},
 }
-// Преобразовать список категорий в доходах, расходах или наличии в массив объектов
+
+/**
+ * Преобразовать список категорий в доходах, расходах или наличии в массив объектов
+ * @param src
+ * @param separator
+ * @param type
+ * @return {*[]}
+ */
 export const formatCategories = (src, separator, type) => {
-  let titles = split(src.shift()).map(fixStr).map(str => FIELDS[str])
+  let titles = split(src.shift()).map(str => FIELDS[str])
   let data = []
   for (let srcCategory of src) {
     let category = {type}
     for (let [i, val] of split(srcCategory).entries()) {
-      category[titles[i].name] = titles[i].number ? fixNum(val) : fixStr(val)
+      category[titles[i].name] = titles[i].number ? fixNum(val) : val
     }
     category.id = makeCategoryId(category.title)
     data.push(category)
@@ -137,15 +146,15 @@ export const loadData = data => {
 
     operations.push({
       date: fixDate(dateStr),
-      direction: determineOperationDirection(fixStr(direction), fixStr(source)),
-      source: fixStr(source),
-      destination: fixStr(destination),
+      direction: determineOperationDirection(direction, source),
+      source,
+      destination,
       value: fixNum(value),
       value2: fixNum(value2),
-      currency: fixStr(currency),
-      currency2: fixStr(currency2),
-      tags: fixStr(tags).split(', '),
-      comment: fixStr(comment),
+      currency,
+      currency2,
+      tags,
+      comment,
     })
   }
   // console.log(operations)

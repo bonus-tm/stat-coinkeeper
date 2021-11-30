@@ -93,3 +93,13 @@ test('Parse categories', () => {
   let cats = formatCategories(categories.split('\n'), sep, 'income')
   expect(cats.length).toBe(7)
 })
+
+const accounts = `"Название","Текущее значение","Иконка","Валюта"
+"Сбер Тош","1397","Card","RUB"
+"Евры","2679,45","Bonus","EUR"`
+test('Parse account values with comma decimals', () => {
+  let accs = formatCategories(accounts.split('\n'), sep, 'account')
+  expect(accs.length).toBe(2)
+  expect(accs[0].value).toBe(1397)
+  expect(accs[1].value).toBe(2679.45)
+})

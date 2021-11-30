@@ -98,6 +98,7 @@ export const accountHistoryByMonths = (account, operations) => {
     }
 
     if (Number.isNaN(value)) {
+      console.error('accountHistoryByMonths: value is NaN', {op, account})
       console.log(op)
       break
     }
