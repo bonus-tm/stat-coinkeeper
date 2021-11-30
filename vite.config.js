@@ -8,5 +8,6 @@ export default defineConfig({
   base: '/stat-coinkeeper/',
   build: {
     outDir: 'docs',
+    chunkSizeWarningLimit: 700,
   }
 })
