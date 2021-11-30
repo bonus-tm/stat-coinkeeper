@@ -13,20 +13,20 @@
     "url": "https://github.com/bonus-tm/stat-coinkeeper"
   },
   "dependencies": {
-    "chart.js": "^3.5.1",
+    "chart.js": "^3.6.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "cyrillic-to-translit-js": "^3.1.0",
-    "date-fns": "^2.23.0",
+    "date-fns": "^2.27.0",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "tippy.js": "^6.3.1",
-    "vue": "^3.0.5",
-    "vue-chart-3": "^0.5.7"
+    "tippy.js": "^6.3.7",
+    "vue": "^3.2.20",
+    "vue-chart-3": "^3.0.3"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.6.0",
-    "@vue/compiler-sfc": "^3.2.6",
-    "jest": "^27.2.2",
-    "vite": "^2.5.1"
+    "@vitejs/plugin-vue": "^1.10.1",
+    "@vue/compiler-sfc": "^3.2.23",
+    "jest": "^27.4.2",
+    "vite": "^2.6.14"
   }
 }

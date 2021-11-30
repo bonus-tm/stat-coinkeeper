@@ -15,16 +15,16 @@ export const humanize = (value) => {
 
   if (abs >= M * 10) {
     abs = (Math.round(abs * 100 / M) / 100).toString()
-    exp = 'м'
+    // exp = 'м'
   } else if (abs >= M) {
     abs = (Math.round(abs * 1000 / M) / 1000).toString()
-    exp = 'м'
+    // exp = 'м'
   } else if (abs >= 100 * K) {
     abs = (Math.round(abs / K)).toString()
-    exp = 'к'
+    // exp = 'к'
   } else if (abs >= K) {
     abs = (Math.round(abs * 10 / K) / 10).toString()
-    exp = 'к'
+    // exp = 'к'
   } else {
     abs = abs.toString()
   }
