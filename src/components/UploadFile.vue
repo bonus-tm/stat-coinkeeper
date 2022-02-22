@@ -59,8 +59,17 @@ export default {
 
       let reader = new FileReader()
       reader.onload = () => {
-        let data = loadData(reader.result)
-        this.$emit('import', {timestamp: file.lastModified, data})
+        try {
+          let data = loadData(reader.result)
+          this.$emit('import', {timestamp: file.lastModified, data})
+        } catch (error) {
+          alert(
+            'Какая-то ошибка при импорте данных.\n' +
+            'Надо копаться в консоли и разбираться.\n' +
+            'csv.loadData failed'
+          )
+          console.log('csv.loadData failed', {error})
+        }
       }
       reader.readAsText(file)
     },

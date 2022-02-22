@@ -162,7 +162,16 @@ export default {
     },
     async onDataImport (allData) {
       console.log(allData)
-      await store.setReadonly(allData)
+      try {
+        await store.setReadonly(allData)
+      } catch (error) {
+        alert(
+          'Какая-то ошибка при импорте данных.\n' +
+          'Надо копаться в консоли и разбираться.\n' +
+          'store.setReadonly failed'
+        )
+        console.log('store.setReadonly failed', {error})
+      }
     },
   }
 }
