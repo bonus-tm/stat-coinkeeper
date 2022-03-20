@@ -127,8 +127,19 @@ export const loadData = data => {
   srcOperations.shift()
 
   let operations = []
+  let currentRow = ''
   for (let entry of srcOperations) {
     if (!entry) break
+
+    currentRow += entry
+
+    // В последнем поле (коммент) могут быть переносы строки,
+    // поэтому если строка не оканчивается кавычкой,
+    // то добавить следующую строку через пробел
+    if (currentRow[currentRow.length - 1] !== '"') {
+      currentRow += ' '
+      continue
+    }
 
     let [
       dateStr,
@@ -142,7 +153,7 @@ export const loadData = data => {
       currency2,
       repeat,
       comment,
-    ] = split(entry)
+    ] = split(currentRow)
 
     operations.push({
       date: fixDate(dateStr),
@@ -156,6 +167,7 @@ export const loadData = data => {
       tags,
       comment,
     })
+    currentRow = ''
   }
   // console.log(operations)
 
