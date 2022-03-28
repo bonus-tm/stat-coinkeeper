@@ -45,7 +45,7 @@
         </div>
       </div>
     </div>
-    <div class="dropzone coins-container">
+    <div class="dropzone ck-coins-container">
       <div
         v-show="dragging"
         class="dz-cover"

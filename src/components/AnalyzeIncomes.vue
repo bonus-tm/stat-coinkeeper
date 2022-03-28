@@ -1,26 +1,30 @@
 <template>
-  <h2>Анализ доходов</h2>
-
-  <div class="analyze">
-    <div>
-      <div v-for="(heap, i) of heapsIncomes" :key="`h-in-${i}`">
-        <HeapOfCoins
-          v-model="heapsIncomes[i]"
-          editable
-          @remove="removeHeap(i)"
-        />
-      </div>
-      <button @click="addHeap">
-        Добавить кучу
-      </button>
+  <SlidePanel v-model:show="show" :title="'Доходы'" operations>
+    <div v-for="(heap, i) of heapsIncomes" :key="`h-in-${i}`">
+      <HeapOfCoins
+        v-model="heapsIncomes[i]"
+        editable
+        @remove="removeHeap(i)"
+      />
     </div>
+    <button @click="addHeap">
+      Добавить кучу
+    </button>
+  </SlidePanel>
 
+  <section>
+    <h2>
+      <button class="btn-icon">
+        <Icon icon="gear" @click="show = true" />
+      </button>
+      Анализ доходов
+    </h2>
     <LineChart
       ref="chartRef"
       :chart-data="chartData"
       :options="chartOptions"
     />
-  </div>
+  </section>
 </template>
 
 <script>
@@ -30,13 +34,15 @@ import {sumByMonths} from '../services/calculator'
 import store from '../services/store'
 import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
+import Icon from './Icon.vue'
+import SlidePanel from './SlidePanel.vue'
 import {hex2rgba, humanize} from '../services/numerals'
 import {getDataLabelBg} from '../services/canvas-colors'
 import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
 export default {
   name: 'AnalyzeIncomes',
-  components: {HeapOfCoins, Coin, LineChart},
+  components: {Icon, SlidePanel, HeapOfCoins, Coin, LineChart},
   setup () {
     let heapsIncomes = computed(() => store.state.heaps.incomes)
 
@@ -85,7 +91,7 @@ export default {
               return humanize(value)
             },
           },
-          afterFit(axis) {
+          afterFit (axis) {
             axis.width = 50
           },
         }
@@ -140,7 +146,9 @@ export default {
       store.state.heaps.incomes.splice(index, 1)
     }
 
+    let show = ref(false)
     return {
+      show,
       chartRef,
       heapsIncomes,
       chartOptions,

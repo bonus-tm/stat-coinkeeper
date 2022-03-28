@@ -8,11 +8,15 @@
 
   --dropzone-hover-bg-color: lightsteelblue;
 
-  --nav-bg: #ddd;
+  --nav-bg: var(--bg-color);
   --nav-color: var(--text-color);
-  --ornament: rgba(80,120,250,1);
+  --ornament: rgb(213 223 255);
   --footer-color: #777;
 
+  --divider: rgba(0, 0, 0, 0.1);
+
+  --panel-cover: rgba(0 0 0 / 10%);
+  --panel-shadow: 10px 0 25px rgb(0 0 0 / 15%);
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -21,8 +25,13 @@
     --font-weight: 400;
     --dropzone-hover-bg-color: darkslateblue;
 
-    --nav-bg: #111;
+    --nav-bg: var(--bg-color);
     --ornament: rgb(83 110 197);
+
+    --divider: rgba(255, 255, 255, 0.3);
+
+    --panel-cover: rgba(255 255 255 / 3%);
+    --panel-shadow: 10px 0 15px rgb(255 255 255 / 5%);
   }
 }
 * {
@@ -78,48 +87,24 @@ h1 {
   text-align: center;
 }
 
-hr {
-  border-width: 0;
-  border-top-width: 1px;
-  border-color: rgba(0, 0, 0, 0.1);
-}
-@media (prefers-color-scheme: dark) {
-  hr {
-    border-color: rgba(255, 255, 255, 0.3);
-  }
-}
 
 .fade-enter-active,
 .fade-leave-active {
   pointer-events: none;
-  transition: opacity 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+  transition: opacity 0.2s ease;
 }
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
 
-.section {
-  display: grid;
-  grid-template-columns: var(--coins-container-width) auto;
-  gap: 2rem;
-  align-items: start;
+section {
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--divider);
 }
 
-.analyze {
-  display: grid;
-  grid-template-columns: calc(var(--coins-container-width) + 2px) auto;
-  gap: 2rem;
-  align-items: start;
-}
-
-.coins-source {
-  position: sticky;
-  top: 10px;
-}
-
-.coins-source h2 {
-  margin-left: 1rem;
+section > h2 {
+  padding: 0 1rem;
 }
 
 button {
@@ -152,4 +137,10 @@ button:focus {
 
 button:active {
   transform: scale(0.99);
+}
+
+button.btn-icon {
+  padding: 0.3rem;
+  display: inline-flex;
+  align-content: center;
 }

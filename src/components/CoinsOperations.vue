@@ -1,14 +1,13 @@
 <template>
-  <div class="coins-source">
-    <h2>Операции</h2>
-    <div class="coins-container">
+  <div>
+    <div class="ck-coins-container">
       <Coin
         v-for="(income, i) of incomes"
         :key="`inc-${i}`"
         :coin="income"
       />
     </div>
-    <div class="coins-container">
+    <div class="ck-coins-container">
       <Coin
         v-for="(expense, i) of expenses"
         :key="`inc-${i}`"

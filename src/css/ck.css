@@ -29,7 +29,7 @@
   }
 }
 
-.coins-container {
+.ck-coins-container {
   display: grid;
   grid-template-columns: repeat(4, var(--coin-container-width));
   grid-gap: calc(var(--icon-wrapper-size) / 3) calc(var(--icon-wrapper-size) / 10);

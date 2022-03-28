@@ -1,22 +1,27 @@
 <template>
-  <h2>Анализ наличности</h2>
-
-  <div class="analyze">
-    <div>
-      <div v-for="(heap, i) of heapsAccount" :key="`h-ex-${i}`">
-        <HeapOfCoins
-          v-model="heapsAccount[i]"
-          editable
-          movable
-          @moveUp="moveHeapUp(i)"
-          @moveDown="moveHeapDown(i)"
-          @remove="removeHeap(i)"
-        />
-      </div>
-      <button @click="addHeap">
-        Добавить кучу
-      </button>
+  <SlidePanel v-model:show="show" :title="'Наличность'" accounts>
+    <div v-for="(heap, i) of heapsAccount" :key="`h-ex-${i}`">
+      <HeapOfCoins
+        v-model="heapsAccount[i]"
+        editable
+        movable
+        @moveUp="moveHeapUp(i)"
+        @moveDown="moveHeapDown(i)"
+        @remove="removeHeap(i)"
+      />
     </div>
+    <button @click="addHeap">
+      Добавить кучу
+    </button>
+  </SlidePanel>
+
+  <section>
+    <h2>
+      <button class="btn-icon">
+        <Icon icon="gear" @click="show = true" />
+      </button>
+      Анализ наличности
+    </h2>
 
     <div>
       <BarChart
@@ -26,7 +31,7 @@
       />
       <ChartPie :data="pieChartData" />
     </div>
-  </div>
+  </section>
 </template>
 
 <script>
@@ -38,13 +43,15 @@ import ChartPie from './ChartPie.vue'
 import Coin from './Coin.vue'
 import CoinsAccounts from './CoinsAccounts.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
+import Icon from './Icon.vue'
+import SlidePanel from './SlidePanel.vue'
 import {hex2rgba, humanize} from '../services/numerals'
 import {accountHistoryByMonths} from '../services/calculator'
 import {createMonthsAxis, monthsAxisLabels} from '../services/dates'
 
 export default {
   name: 'AnalyzeAccounts',
-  components: {ChartPie, Coin, CoinsAccounts, HeapOfCoins, BarChart},
+  components: {SlidePanel, Icon, ChartPie, Coin, CoinsAccounts, HeapOfCoins, BarChart},
   setup () {
     let heapsAccount = computed(() => store.state.heaps.accounts)
 
@@ -258,7 +265,9 @@ export default {
       store.state.heaps.accounts.splice(index, 1)
     }
 
+    let show = ref(false)
     return {
+      show,
       heapsAccount,
       pieChartData,
       chartRef,

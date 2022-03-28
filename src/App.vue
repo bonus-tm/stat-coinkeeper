@@ -23,27 +23,10 @@
       <UploadFile v-if="!hasData" @import="onDataImport" />
 
       <template v-if="hasData">
-        <div class="section">
-          <CoinsOperations />
-
-          <div>
-            <AnalyzeIncomesVsExpenses />
-            <hr>
-            <AnalyzeIncomes />
-            <hr>
-            <AnalyzeExpenses />
-          </div>
-        </div>
-
-        <hr>
-
-        <div class="section">
-          <CoinsAccounts />
-
-          <div>
-            <AnalyzeAccounts />
-          </div>
-        </div>
+        <AnalyzeIncomesVsExpenses />
+        <AnalyzeIncomes />
+        <AnalyzeExpenses />
+        <AnalyzeAccounts />
       </template>
     </template>
   </main>
@@ -83,6 +66,7 @@ import AnalyzeIncomesVsExpenses from './components/AnalyzeIncomesVsExpenses.vue'
 import CoinsAccounts from './components/CoinsAccounts.vue'
 import CoinsOperations from './components/CoinsOperations.vue'
 import UploadFile from './components/UploadFile.vue'
+import SlidePanel from './components/SlidePanel.vue'
 
 const MultiStringAxisLabels = {
   id: 'labels-split',
@@ -114,6 +98,7 @@ Chart.register(
 export default {
   name: 'App',
   components: {
+    SlidePanel,
     AnalyzeAccounts,
     AnalyzeExpenses,
     AnalyzeIncomes,

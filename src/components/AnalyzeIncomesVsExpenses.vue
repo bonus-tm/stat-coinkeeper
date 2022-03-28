@@ -1,21 +1,23 @@
 <template>
-  <h2>Анализ доходов и расходов</h2>
-
-  <div class="analyze">
-    <div>
-      <div v-for="(heap, i) of heaps" :key="`h-in-ex-${i}`">
-        <HeapOfCoins v-model="heaps[i]" changeable-color />
-      </div>
+  <SlidePanel v-model:show="show" :title="'Расходы и доходы'" operations>
+    <div v-for="(heap, i) of heaps" :key="`h-in-ex-${i}`">
+      <HeapOfCoins v-model="heaps[i]" changeable-color />
     </div>
+  </SlidePanel>
 
-    <div>
-      <LineChart
-        ref="chartRef"
-        :chart-data="chartData"
-        :options="chartOptions"
-      />
-    </div>
-  </div>
+  <section>
+    <h2>
+      <button class="btn-icon">
+        <Icon icon="gear" @click="show = true" />
+      </button>
+      Анализ доходов и расходов
+    </h2>
+    <LineChart
+      ref="chartRef"
+      :chart-data="chartData"
+      :options="chartOptions"
+    />
+  </section>
 </template>
 
 <script>
@@ -27,10 +29,12 @@ import Coin from './Coin.vue'
 import HeapOfCoins from './HeapOfCoins.vue'
 import {createMonthsAxis} from '../services/dates'
 import {incomeVsExpensesMonthly} from '../services/prep-chart-data.js'
+import SlidePanel from './SlidePanel.vue'
+import Icon from './Icon.vue'
 
 export default {
   name: 'AnalyzeIncomesVsExpenses',
-  components: {HeapOfCoins, Coin, LineChart, BarChart},
+  components: {Icon, SlidePanel, HeapOfCoins, Coin, LineChart, BarChart},
   setup () {
     let heaps = computed(() => store.state.heaps.allIncomesVsExpenses)
 
@@ -129,7 +133,9 @@ export default {
 
     let chartRef = ref()
 
+    let show = ref(false)
     return {
+      show,
       chartRef,
       heaps,
       chartOptions,
