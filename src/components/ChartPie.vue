@@ -1,3 +1,50 @@
+<script setup>
+import {computed, toRefs} from 'vue'
+import {format} from '@/services/numerals'
+
+const props = defineProps({
+  data: {type: Array, required: true},
+  fieldColor: {type: String, default: 'color'},
+  fieldTitle: {type: String, default: 'title'},
+  fieldValue: {type: String, default: 'value'},
+})
+
+let {data, fieldColor, fieldTitle, fieldValue} = toRefs(props)
+
+let totalValue = computed(() => {
+  return data.value.reduce((total, sector) => {
+    total += sector[fieldValue.value]
+    return total
+  }, 0)
+})
+
+const round = (value, precision = 0) => {
+  if (Number.isNaN(value)) return 0
+  return Math.round(value * 10 ** precision) / 10 ** precision
+}
+
+let sectors = computed(() => {
+  let offset = 0
+  return data.value
+    .sort((a, b) => b.value - a.value)
+    .map(piece => {
+      let percent = round(100 * piece[fieldValue.value] / totalValue.value, 2)
+      let sector = {
+        offset,
+        percent,
+        value: piece[fieldValue.value],
+        title: piece[fieldTitle.value],
+        color: piece[fieldColor.value],
+      }
+      offset += sector.percent
+      if (offset === 100 && percent > 0) {
+        sector.percent += 1
+      }
+      return sector
+    })
+})
+</script>
+
 <template>
   <div class="pie-container">
     <svg viewBox="0 0 64 64" class="pie">
@@ -30,100 +77,39 @@
   </div>
 </template>
 
-<script>
-import {computed, toRefs} from 'vue'
-import store from '../services/store'
-import {format} from '../services/numerals'
-
-export default {
-  name: 'ChartPie',
-  props: {
-    data: {type: Array, required: true},
-    fieldColor: {type: String, default: 'color'},
-    fieldTitle: {type: String, default: 'title'},
-    fieldValue: {type: String, default: 'value'},
-  },
-  setup (props) {
-    let {data, fieldColor, fieldTitle, fieldValue} = toRefs(props)
-
-    let totalValue = computed(() => {
-      return data.value.reduce((total, sector) => {
-        total += sector[fieldValue.value]
-        return total
-      }, 0)
-    })
-
-    const round = (value, precision = 0) => {
-      if (Number.isNaN(value)) return 0
-      return Math.round(value * 10 ** precision) / 10 ** precision
-    }
-
-    let sectors = computed(() => {
-      let offset = 0
-      return data.value
-        .sort((a, b) => b.value - a.value)
-        .map(piece => {
-        let percent = round(100 * piece[fieldValue.value] / totalValue.value, 2)
-        let sector = {
-          offset,
-          percent,
-          value: piece[fieldValue.value],
-          title: piece[fieldTitle.value],
-          color: piece[fieldColor.value],
-        }
-        offset += sector.percent
-        if (offset === 100 && percent > 0) {
-          sector.percent += 1
-        }
-        return sector
-      })
-    })
-
-    return {
-      palette: store.palette,
-      totalValue,
-      sectors,
-
-      round,
-      format,
-    }
-  },
+<style scoped>
+.pie-container {
+  display: flex;
 }
-</script>
-
-<style>
-  .pie-container {
-    display: flex;
-  }
-  .pie-legend {
-    margin-left: 1rem;
-    display: grid;
-    grid-template-columns: 30px repeat(3, auto);
-    gap: 0.5rem 1rem;
-    align-content: center;
-  }
-  .pie-legend-value {
-    text-align: right;
-  }
-  .pie-legend-color {
-    width: 30px;
-    height: 1rem;
-    border-radius: 1px;
-  }
+.pie-legend {
+  margin-left: 1rem;
+  display: grid;
+  grid-template-columns: 30px repeat(3, auto);
+  gap: 0.5rem 1rem;
+  align-content: center;
+}
+.pie-legend-value {
+  text-align: right;
+}
+.pie-legend-color {
+  width: 30px;
+  height: 1rem;
+  border-radius: 1px;
+}
+.pie {
+  width: 150px;
+  transform: rotate(-90deg);
+  background-color: rgba(40, 40, 40, 0.1);
+  border-radius: 50%;
+}
+@media (prefers-color-scheme: dark) {
   .pie {
-    width: 150px;
-    transform: rotate(-90deg);
-    background-color: rgba(40,40,40, 0.1);
-    border-radius: 50%;
+    background-color: rgba(230, 230, 230, 0.1);
   }
-  @media (prefers-color-scheme: dark) {
-    .pie {
-      background-color: rgba(230,230,230, 0.1);
-    }
-  }
+}
 
-  .pie circle {
-    fill: none;
-    stroke-width: 32;
-  }
+.pie circle {
+  fill: none;
+  stroke-width: 32;
+}
 </style>

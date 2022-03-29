@@ -1,3 +1,84 @@
+<script setup>
+import {computed, ref} from 'vue'
+import tippy from 'tippy.js'
+import 'tippy.js/dist/tippy.css' // optional for styling
+import store from '@/services/store'
+import Coin from '@/components/Coin.vue'
+import Icon from '@/components/Icon.vue'
+
+const vEditor = {
+  mounted (el) {
+    tippy(el.querySelector('a.show-editor'), {
+      allowHTML: true,
+      content: el.querySelector('div'),
+      hideOnClick: true,
+      interactive: true,
+      placement: 'right-start',
+      trigger: 'click',
+      onShown (instance) {
+        instance.popper.querySelector('.tippy-content input').focus()
+      },
+    })
+  }
+}
+const props = defineProps({
+  changeableColor: {type: Boolean, default: false},
+  editable: {type: Boolean, default: false},
+  modelValue: {type: Object, default () {return {}}},
+  movable: {type: Boolean, default: false},
+  removable: {type: Boolean, default: false},
+  renameable: {type: Boolean, default: false},
+  titleColor: {type: String, default: 'black'},
+})
+const emit = defineEmits(['update:modelValue', 'remove', 'moveUp', 'moveDown'])
+
+let dragging = store.dragging
+let palette = store.palette
+
+let dragover = ref(false)
+let heap = computed({
+  get: () => props.modelValue,
+  set: value => emit('update:modelValue', value),
+})
+
+let bgColor = computed(() => props.modelValue?.color?.border || palette[0])
+
+let showEditor = computed(() => {
+  return props.editable ||
+    props.renameable ||
+    props.removable ||
+    props.changeableColor
+})
+
+let onDragEnter = () => {
+  dragover.value = true
+}
+let onDragLeave = () => {
+  dragover.value = false
+}
+let onDrop = e => {
+  e.preventDefault()
+  dragover.value = false
+  let coin = JSON.parse(e.dataTransfer.getData('text'))
+
+  let inHeap = props.modelValue.coins.find(cat => cat.id === coin.id)
+  let isAcceptedType =
+    (props.modelValue.type === 'accounts' && coin.type === 'account') ||
+    (props.modelValue.type === 'operations' && ['income', 'expense'].includes(coin.type))
+
+  if (isAcceptedType && !inHeap) {
+    props.modelValue.coins.push(coin)
+  }
+}
+let remove = coinId => {
+  let i = props.modelValue.coins.findIndex(cat => cat.id === coinId)
+  if (i !== -1) props.modelValue.coins.splice(i, 1)
+}
+let setColor = color => {
+  props.modelValue.color.border = color
+}
+</script>
+
 <template>
   <div class="heap" :style="{borderColor: bgColor}">
     <div
@@ -65,158 +146,56 @@
   </div>
 </template>
 
-<script>
-import {computed, ref} from 'vue'
-import tippy from 'tippy.js'
-import 'tippy.js/dist/tippy.css' // optional for styling
-import store from '../services/store'
-import Coin from './Coin.vue'
-import Icon from './Icon.vue'
-
-export default {
-  name: 'HeapOfCoins',
-  components: {Icon, Coin},
-  directives: {
-    editor: {
-      mounted (el) {
-        tippy(el.querySelector('a.show-editor'), {
-          allowHTML: true,
-          content: el.querySelector('div'),
-          hideOnClick: true,
-          interactive: true,
-          placement: 'right-start',
-          trigger: 'click',
-          onShown (instance) {
-            instance.popper.querySelector('.tippy-content input').focus()
-          },
-        })
-      }
-    },
-  },
-  props: {
-    changeableColor: {type: Boolean, default: false},
-    editable: {type: Boolean, default: false},
-    modelValue: {type: Object, default () {return {}}},
-    movable: {type: Boolean, default: false},
-    removable: {type: Boolean, default: false},
-    renameable: {type: Boolean, default: false},
-    titleColor: {type: String, default: 'black'},
-  },
-  emits: ['update:modelValue', 'remove', 'moveUp', 'moveDown'],
-  setup (props, {emit}) {
-    let dragging = store.dragging
-    let palette = store.palette
-
-    let dragover = ref(false)
-    let heap = computed({
-      get: () => props.modelValue,
-      set: value => emit('update:modelValue', value),
-    })
-
-    let bgColor = computed(() => props.modelValue?.color?.border || palette[0])
-
-    let showEditor = computed(() => {
-      return props.editable ||
-        props.renameable ||
-        props.removable ||
-        props.changeableColor
-    })
-
-    let onDragEnter = () => {
-      dragover.value = true
-    }
-    let onDragLeave = () => {
-      dragover.value = false
-    }
-    let onDrop = e => {
-      e.preventDefault()
-      dragover.value = false
-      let coin = JSON.parse(e.dataTransfer.getData('text'))
-
-      let inHeap = props.modelValue.coins.find(cat => cat.id === coin.id)
-      let isAcceptedType =
-        (props.modelValue.type === 'accounts' && coin.type === 'account') ||
-        (props.modelValue.type === 'operations' && ['income', 'expense'].includes(coin.type))
-
-      if (isAcceptedType && !inHeap) {
-        props.modelValue.coins.push(coin)
-      }
-    }
-    let remove = coinId => {
-      let i = props.modelValue.coins.findIndex(cat => cat.id === coinId)
-      if (i !== -1) props.modelValue.coins.splice(i, 1)
-    }
-    let setColor = color => {
-      props.modelValue.color.border = color
-    }
-
-    return {
-      bgColor,
-      palette,
-      dragging,
-      dragover,
-      heap,
-      showEditor,
-      onDragEnter,
-      onDragLeave,
-      onDrop,
-      remove,
-      setColor,
-    }
-  },
-}
-</script>
-
 <style scoped>
-  .heap {
-    border-width: 1px;
-    border-style: solid;
-    border-radius: 2px;
-    margin-bottom: 1rem;
-  }
-  .heap-title {
-    display: grid;
-    grid-template-columns: auto repeat(3, 1.5rem);
-    align-items: center;
-  }
-  .heap-title a {
-    color: #000;
-    padding: 0.2rem;
-  }
-  h3 {
-    font-weight: 400;
-    margin: 0;
-    padding: 0.2rem;
-    border-top-left-radius: 2px;
-    border-top-right-radius: 2px;
-  }
+.heap {
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+  margin-bottom: 1rem;
+}
+.heap-title {
+  display: grid;
+  grid-template-columns: auto repeat(3, 1.5rem);
+  align-items: center;
+}
+.heap-title a {
+  color: #000;
+  padding: 0.2rem;
+}
+h3 {
+  font-weight: 400;
+  margin: 0;
+  padding: 0.2rem;
+  border-top-left-radius: 2px;
+  border-top-right-radius: 2px;
+}
 
-  .palette-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 2rem);
-    margin-top: 1rem;
-    gap: 2px;
-  }
-  .palette-color {
-    height: 2rem;
-  }
+.palette-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 2rem);
+  margin-top: 1rem;
+  gap: 2px;
+}
+.palette-color {
+  height: 2rem;
+}
 
-  .dropzone {
-    position: relative;
-    min-height: 4rem;
-  }
-  .dz-cover {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: var(--dropzone-hover-bg-color);
-    opacity: 0.2;
-    z-index: 10;
-  }
-  .dragover {
-    background-color: var(--dropzone-hover-bg-color);
-    opacity: 0.5;
-  }
+.dropzone {
+  position: relative;
+  min-height: 4rem;
+}
+.dz-cover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: var(--dropzone-hover-bg-color);
+  opacity: 0.2;
+  z-index: 10;
+}
+.dragover {
+  background-color: var(--dropzone-hover-bg-color);
+  opacity: 0.5;
+}
 </style>

@@ -1,3 +1,11 @@
+<script setup>
+import {computed} from 'vue'
+import store from '@/services/store'
+import Coin from '@/components/Coin.vue'
+
+let accounts = computed(() => store.readonly.accounts)
+</script>
+
 <template>
   <div class="ck-coins-container">
     <Coin
@@ -7,21 +15,3 @@
     />
   </div>
 </template>
-
-<script>
-import Coin from './Coin.vue'
-import {computed} from 'vue'
-import store from '../services/store'
-
-export default {
-  name: 'CoinsAccounts',
-  components: {Coin},
-  setup () {
-    let accounts = computed(() => store.readonly.accounts)
-
-    return {
-      accounts,
-    }
-  }
-}
-</script>

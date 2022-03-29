@@ -1,3 +1,50 @@
+<script setup>
+import {ref} from 'vue'
+import {loadData} from '@/services/csv'
+
+const emit = defineEmits(['import'])
+
+const MAX_FILE_SIZE = 1024 ** 2
+
+const dragover = ref(false)
+const fileInput = ref(null)
+
+const onDrop = e => {
+  dragover.value = false
+  let file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0]
+  // console.log(file)
+
+  if (file.type !== 'text/csv') {
+    alert('Годятся только CSV-файлы')
+    return
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    alert(`Файл великоват — ${file.size} байт,\nа можно максимум ${MAX_FILE_SIZE} байт`)
+    return
+  }
+
+  let reader = new FileReader()
+  reader.onload = () => {
+    try {
+      let data = loadData(reader.result)
+      emit('import', {timestamp: file.lastModified, data})
+    } catch (error) {
+      alert(
+        'Какая-то ошибка при импорте данных.\n' +
+        'Надо копаться в консоли и разбираться.\n' +
+        'csv.loadData failed'
+      )
+      console.log('csv.loadData failed', {error})
+    }
+  }
+  reader.readAsText(file)
+}
+
+const openChooseFile = () => {
+  fileInput.value.click()
+}
+</script>
+
 <template>
   <p>
     Инструкция по экспорту данных:
@@ -26,82 +73,28 @@
   </div>
 </template>
 
-<script>
-import {loadData} from '../services/csv'
-
-const MAX_FILE_SIZE = 1024 ** 2
-
-export default {
-  name: 'UploadFile',
-  data () {
-    return {
-      dragover: false
-    }
-  },
-  emits: ['import'],
-  setup () {
-
-  },
-  methods: {
-    onDrop (e) {
-      this.dragover = false
-      let file = e.dataTransfer ? e.dataTransfer.files[0] : e.target.files[0]
-      // console.log(file)
-
-      if (file.type !== 'text/csv') {
-        alert('Годятся только CSV-файлы')
-        return
-      }
-      if (file.size > MAX_FILE_SIZE) {
-        alert(`Файл великоват — ${file.size} байт,\nа можно максимум ${MAX_FILE_SIZE} байт`)
-        return
-      }
-
-      let reader = new FileReader()
-      reader.onload = () => {
-        try {
-          let data = loadData(reader.result)
-          this.$emit('import', {timestamp: file.lastModified, data})
-        } catch (error) {
-          alert(
-            'Какая-то ошибка при импорте данных.\n' +
-            'Надо копаться в консоли и разбираться.\n' +
-            'csv.loadData failed'
-          )
-          console.log('csv.loadData failed', {error})
-        }
-      }
-      reader.readAsText(file)
-    },
-    openChooseFile () {
-      this.$refs.fileInput.click()
-    },
-  }
-}
-</script>
-
 <style scoped>
-  p {
-    text-align: center;
-  }
-  .dropzone {
-    position: absolute;
-    top: 3rem;
-    bottom: 1.5rem;
-    left: 1.5rem;
-    right: 1.5rem;
-    border: 4px dashed mediumslateblue;
-    border-radius: 0.5rem;
-    padding: 2rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .dragover {
-    background-color: var(--dropzone-hover-bg-color);
-    opacity: 0.5;
-  }
-  input {
-    display: none;
-  }
+p {
+  text-align: center;
+}
+.dropzone {
+  position: absolute;
+  top: 3rem;
+  bottom: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  border: 4px dashed mediumslateblue;
+  border-radius: 0.5rem;
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dragover {
+  background-color: var(--dropzone-hover-bg-color);
+  opacity: 0.5;
+}
+input {
+  display: none;
+}
 </style>

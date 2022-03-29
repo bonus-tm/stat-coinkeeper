@@ -1,3 +1,13 @@
+<script setup>
+/**
+ * Иконки из бутстрапа:
+ * https://icons.getbootstrap.com/
+ */
+defineProps({
+  icon: {type: String, required: true},
+})
+</script>
+
 <template>
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -26,16 +36,3 @@
     </template>
   </svg>
 </template>
-
-<script>
-/**
- * Иконки из бутстрапа:
- * https://icons.getbootstrap.com/
- */
-export default {
-  name: 'Icon',
-  props: {
-    icon: {type: String, required: true},
-  }
-}
-</script>

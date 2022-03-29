@@ -1,3 +1,18 @@
+<script setup>
+import store from '@/services/store'
+
+const props = defineProps({
+  coin: {type: Object, required: true},
+})
+const onDragStart = e => {
+  store.dragging.value = true
+  e.dataTransfer.setData('text', JSON.stringify(coin))
+}
+const onDragEnd = () => {
+  store.dragging.value = false
+}
+</script>
+
 <template>
   <div
     :class="`ck-coin_${coin.type}`"
@@ -18,23 +33,3 @@
     </div>
   </div>
 </template>
-
-<script>
-import store from '../services/store'
-
-export default {
-  name: 'Coin',
-  props: {
-    coin: {type: Object, required: true},
-  },
-  methods: {
-    onDragStart (e) {
-      store.dragging.value = true
-      e.dataTransfer.setData('text', JSON.stringify(this.coin))
-    },
-    onDragEnd () {
-      store.dragging.value = false
-    },
-  }
-}
-</script>
