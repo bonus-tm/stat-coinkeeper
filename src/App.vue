@@ -2,21 +2,7 @@
 import {computed, onBeforeMount, ref} from 'vue'
 import {formatDistanceToNow} from 'date-fns'
 import {ru} from 'date-fns/locale'
-import ChartDataLabels from 'chartjs-plugin-datalabels'
-import {
-  BarController,
-  BarElement,
-  CategoryScale,
-  Chart,
-  Filler,
-  Legend,
-  LinearScale,
-  LineController,
-  LineElement,
-  PointElement,
-  Tooltip,
-} from 'chart.js'
-
+import '@/services/chart'
 import store from '@/services/store'
 import Currencies from '@/services/currencies'
 
@@ -25,33 +11,6 @@ import AnalyzeExpenses from '@/components/AnalyzeExpenses.vue'
 import AnalyzeIncomes from '@/components/AnalyzeIncomes.vue'
 import AnalyzeIncomesVsExpenses from '@/components/AnalyzeIncomesVsExpenses.vue'
 import UploadFile from '@/components/UploadFile.vue'
-
-const MultiStringAxisLabels = {
-  id: 'labels-split',
-  beforeInit (chart) {
-    // console.log('beforeInit', chart)
-    chart.data.xLabels?.forEach((value, i, labels) => {
-      if (/\n/.test(value)) {
-        labels[i] = value.split(/\n/)
-      }
-    })
-  },
-}
-
-Chart.register(
-  Legend,
-  LineController,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Filler,
-  ChartDataLabels,
-  BarController,
-  BarElement,
-  MultiStringAxisLabels,
-)
 
 let appInitialized = ref(false)
 
