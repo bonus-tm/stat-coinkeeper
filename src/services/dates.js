@@ -11,12 +11,12 @@ const pad = (value, num = 2) => value.toString().padStart(num, '0')
 /**
  * Date() → '2019'
  * @param {Date} d
- * @param {Boolean} number
+ * @param {Boolean} asNumber
  * @return {string|Number}
  */
-export const date2y = (d, number = false) => {
+export const date2y = (d, asNumber = false) => {
   let y = d.getFullYear()
-  return number ? y : y.toString()
+  return asNumber ? y : y.toString()
 }
 
 /**

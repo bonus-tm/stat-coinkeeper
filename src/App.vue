@@ -1,10 +1,9 @@
 <script setup>
-import {computed, onBeforeMount, ref} from 'vue'
-import {formatDistanceToNow} from 'date-fns'
+import {computed} from 'vue'
+import {formatDistanceToNow, lightFormat} from 'date-fns'
 import {ru} from 'date-fns/locale'
 import '@/services/chart'
-import store from '@/services/store'
-import Currencies from '@/services/currencies'
+import {clearData, fillData, hasData, lastOperationDate, ready} from '@/services/store'
 
 import AnalyzeAccounts from '@/components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from '@/components/AnalyzeExpenses.vue'
@@ -12,30 +11,13 @@ import AnalyzeIncomes from '@/components/AnalyzeIncomes.vue'
 import AnalyzeIncomesVsExpenses from '@/components/AnalyzeIncomesVsExpenses.vue'
 import UploadFile from '@/components/UploadFile.vue'
 
-let appInitialized = ref(false)
-
 let dataExportedAgo = computed(() => {
-  if (!store.readonly.timestamp) return ''
+  if (!lastOperationDate.value) return ''
   return formatDistanceToNow(
-    new Date(store.readonly.timestamp),
+    lastOperationDate.value,
     {addSuffix: true, locale: ru}
   )
 })
-
-let currenciesLoaded = ref(false)
-
-onBeforeMount(async () => {
-  await store.init()
-  await Currencies.init('RUB', ['USD', 'EUR'])
-  currenciesLoaded.value = Currencies.loaded
-  appInitialized.value = true
-})
-
-const {hasData} = store
-
-const clearData = async () => {
-  await store.clearReadonly()
-}
 
 const reset = () => {
   return confirm(
@@ -43,28 +25,15 @@ const reset = () => {
     'Будут удалены все данные, кучи и их настройки цвета, названия прочее.'
   )
 }
-
-const onDataImport = async allData => {
-  console.log(allData)
-  try {
-    await store.setReadonly(allData)
-  } catch (error) {
-    alert(
-      'Какая-то ошибка при импорте данных.\n' +
-      'Надо копаться в консоли и разбираться.\n' +
-      'store.setReadonly failed'
-    )
-    console.log('store.setReadonly failed', {error})
-  }
-}
 </script>
 
 <template>
   <header>
     <div>
       <div v-if="hasData">
-        Данные экспортированы
-        {{ dataExportedAgo }}
+        Последняя операция
+        {{ dataExportedAgo }},
+        {{ lightFormat(lastOperationDate, 'dd.MM.yyyy') }}
       </div>
     </div>
     <h1>Статистика из Coin Keeper</h1>
@@ -80,8 +49,11 @@ const onDataImport = async allData => {
   </header>
 
   <main>
-    <template v-if="appInitialized">
-      <UploadFile v-if="!hasData" @import="onDataImport" />
+    <p v-if="!ready">
+      Loading...
+    </p>
+    <template v-if="ready">
+      <UploadFile v-if="!hasData" @import="fillData" />
 
       <template v-if="hasData">
         <AnalyzeIncomesVsExpenses />

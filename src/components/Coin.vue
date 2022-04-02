@@ -1,15 +1,15 @@
 <script setup>
-import store from '@/services/store'
+import {dragging} from '@/services/store'
 
 const props = defineProps({
   coin: {type: Object, required: true},
 })
 const onDragStart = e => {
-  store.dragging.value = true
-  e.dataTransfer.setData('text', JSON.stringify(coin))
+  dragging.value = true
+  e.dataTransfer.setData('text', JSON.stringify(props.coin))
 }
 const onDragEnd = () => {
-  store.dragging.value = false
+  dragging.value = false
 }
 </script>
 

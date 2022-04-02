@@ -1,186 +1,176 @@
-import {reactive, ref, toRaw, watch} from 'vue'
+import {computed, reactive, ref, toRaw, watch} from 'vue'
 import localForage from 'localforage'
 
-const CONFIG_SAVE_KEY = 'sck-config'
-const DATA_SAVE_KEY = 'sck-data'
+export const ready = ref(false)
+export const dragging = ref(false)
 
+export const settings = reactive({
+  baseCurrency: 'RUB',
+  palette: {
+    light: [
+      '#cccccc',
+      '#ff3b30',
+      '#ff9500',
+      '#ffcc00',
+      '#34c759',
+      '#5ac8fa',
+      '#007aff',
+      '#5856d6',
+      '#af52de',
+      '#000000',
+    ],
+    dark: [
+      '#cccccc',
+      '#ff3b30',
+      '#ff9500',
+      '#ffcc00',
+      '#34c759',
+      '#5ac8fa',
+      '#007aff',
+      '#5856d6',
+      '#af52de',
+      '#000000',
+    ],
+  },
+})
+watch(settings, value => localForage.setItem('settings', toRaw(value)))
 
-export default {
-  palette: [
-    '#cccccc',
-    '#ff3b30',
-    '#ff9500',
-    '#ffcc00',
-    '#34c759',
-    '#5ac8fa',
-    '#007aff',
-    '#5856d6',
-    '#af52de',
-    '#000000',
+export const heaps = reactive({
+  accounts: [
+    {
+      type: 'accounts',
+      title: 'Безнал',
+      color: {bg: '#007aff', border: '#007aff'},
+      coins: []
+    },
+    {
+      type: 'accounts',
+      title: 'Наличка',
+      color: {bg: '#5ac8fa', border: '#5ac8fa'},
+      coins: []
+    },
+    {
+      type: 'accounts',
+      title: 'Валюта',
+      color: {bg: '#34c759', border: '#34c759'},
+      coins: []
+    },
   ],
+  allIncomesVsExpenses: [
+    {
+      type: 'operations',
+      title: 'Все доходы',
+      color: {bg: '#0491d1', border: '#0491d1'},
+      coins: []
+    },
+    {
+      type: 'operations',
+      title: 'Все расходы',
+      color: {bg: '#e53935', border: '#e53935'},
+      coins: []
+    },
+  ],
+  incomes: [
+    {
+      type: 'operations',
+      title: 'Первая куча доходов',
+      color: {bg: '#0491d1', border: '#0491d1'},
+      coins: []
+    },
+    {
+      type: 'operations',
+      title: 'Вторая куча доходов',
+      color: {bg: '#ffcc00', border: '#ffcc00'},
+      coins: []
+    },
+  ],
+  expenses: [
+    {
+      type: 'operations',
+      title: 'Постоянные расходы',
+      color: {bg: '#e53935', border: '#e53935'},
+      coins: []
+    },
+    {
+      type: 'operations',
+      title: 'Редкие',
+      color: {bg: '#ff9500', border: '#ff9500'},
+      coins: []
+    },
+  ],
+})
+watch(heaps, value => localForage.setItem('heaps', toRaw(value)))
 
-  dragging: ref(false),
+export const ckData = reactive({
+  operations: [],
+  incomes: [],
+  accounts: [],
+  expenses: [],
+  tags: [],
+})
 
-  // heaps can be two types — accounts and operations (incomes + expenses)
-  _defaultState: {
-    baseCurrency: 'RUB',
-    heaps: {
-      accounts: [
-        {
-          type: 'accounts',
-          title: 'Безнал',
-          color: {bg: '#007aff', border: '#007aff'},
-          coins: []
-        },
-        {
-          type: 'accounts',
-          title: 'Наличка',
-          color: {bg: '#5ac8fa', border: '#5ac8fa'},
-          coins: []
-        },
-        {
-          type: 'accounts',
-          title: 'Валюта',
-          color: {bg: '#34c759', border: '#34c759'},
-          coins: []
-        },
-      ],
-      allIncomesVsExpenses: [
-        {
-          type: 'operations',
-          title: 'Все доходы',
-          color: {bg: '#0491d1', border: '#0491d1'},
-          coins: []
-        },
-        {
-          type: 'operations',
-          title: 'Все расходы',
-          color: {bg: '#e53935', border: '#e53935'},
-          coins: []
-        },
-      ],
-      incomes: [
-        {
-          type: 'operations',
-          title: 'Первая куча доходов',
-          color: {bg: '#0491d1', border: '#0491d1'},
-          coins: []
-        },
-        {
-          type: 'operations',
-          title: 'Вторая куча доходов',
-          color: {bg: '#ffcc00', border: '#ffcc00'},
-          coins: []
-        },
-      ],
-      expenses: [
-        {
-          type: 'operations',
-          title: 'Постоянные расходы',
-          color: {bg: '#e53935', border: '#e53935'},
-          coins: []
-        },
-        {
-          type: 'operations',
-          title: 'Редкие',
-          color: {bg: '#ff9500', border: '#ff9500'},
-          coins: []
-        },
-      ],
-    }
-  },
+const load = async (key, obj) => {
+  let value = await localForage.getItem(key)
+  Object.assign(obj, value)
+}
 
-  state: reactive({}),
-  readonly: {},
-  hasData: ref(false),
+export const hasData = computed(() => {
+  return ckData.operations.length || ckData.accounts.length
+})
 
-  async init () {
-    console.log('init')
-    let initial
-    try {
-      initial = await localForage.getItem(CONFIG_SAVE_KEY)
-      console.log('initial', initial)
-    } catch (e) {
-      console.log({e})
-    }
-    if (initial) {
-      this.state = reactive({...initial})
-    } else {
-      this.state = reactive({...this._defaultState})
-    }
+export const lastOperationDate = computed(() => {
+  return ckData.operations.at(-1).date.date
+})
 
-    watch(
-      () => this.state,
-      async state => {
-        console.log('state change observed', state)
-        await localForage.setItem(CONFIG_SAVE_KEY, toRaw(state))
-      },
-      {deep: true}
-    )
+export const initStore = async () => {
+  console.log('initialize store')
+  try {
+    await Promise.all([
+      load('settings', settings),
+      load('heaps', heaps),
+      load('data', ckData),
+    ])
+    console.log('store initialized', {settings, heaps, ckData})
 
-    try {
-      this.readonly = await localForage.getItem(DATA_SAVE_KEY)
-      if (this.readonly) {
-        this.hasData.value = true
-      } else {
-        this.readonly = {}
-      }
-      console.log('initial readonly user data', this.hasData.value, this.readonly)
-    } catch (e) {
-      console.log({e})
-    }
-  },
+    ready.value = true
+  } catch (e) {
+    console.log({e})
+  }
+}
 
-  async setReadonly ({timestamp, data}) {
-    this.readonly.timestamp = timestamp
-    this.readonly.operations = data.operations
-    this.readonly.incomes = data.incomes
-    this.readonly.accounts = data.accounts
-    this.readonly.expenses = data.expenses
-    this.readonly.tags = data.tags
-
-    this.updateCoins([...data.accounts, ...data.incomes, ...data.expenses])
-
-    if (
-      this.state.heaps?.allIncomesVsExpenses?.[0]?.coins?.length === 0 &&
-      this.state.heaps?.allIncomesVsExpenses?.[1]?.coins?.length === 0
-    ) {
-      this.fillDefaultHeaps(data.incomes, data.expenses)
-    }
-
-    await localForage.setItem(DATA_SAVE_KEY, this.readonly)
-
-    this.hasData.value = true
-  },
-
-  updateCoins (coins) {
-    for (let key of Object.keys(this.state.heaps)) {
-      this.state.heaps[key].forEach(heap => {
-        if (!heap.coins) heap.coins = []
-        heap.coins.forEach((coin, index) => {
-          heap.coins[index] = coins.find(n => {
-            return n.type === coin.type && n.id === coin.id
-          })
+const updateCoins = coins => {
+  for (let key of Object.keys(heaps)) {
+    heaps[key].forEach(heap => {
+      if (!heap.coins) heap.coins = []
+      heap.coins.forEach((coin, index) => {
+        heap.coins[index] = coins.find(n => {
+          return n.type === coin.type && n.id === coin.id
         })
       })
-    }
-  },
-
-  fillDefaultHeaps (incomes, expenses) {
-    this.state.heaps.allIncomesVsExpenses[0].coins = [...incomes]
-    this.state.heaps.allIncomesVsExpenses[1].coins = [...expenses]
-  },
-
-  async clearReadonly () {
-    this.readonly.timestamp = null
-    this.readonly.operations = null
-    this.readonly.incomes = null
-    this.readonly.accounts = null
-    this.readonly.expenses = null
-    this.readonly.tags = null
-
-    await localForage.removeItem(DATA_SAVE_KEY)
-
-    this.hasData.value = false
-  },
+    })
+  }
 }
+
+const fillDefaultHeaps = (incomes, expenses) => {
+  heaps.allIncomesVsExpenses[0].coins = [...incomes]
+  heaps.allIncomesVsExpenses[1].coins = [...expenses]
+}
+
+export const fillData = data => {
+  console.log('fill ck data', data)
+
+  Object.assign(ckData, data)
+  updateCoins([...data.accounts, ...data.incomes, ...data.expenses])
+  if (
+    !heaps.allIncomesVsExpenses?.[0]?.coins?.length &&
+    !heaps.allIncomesVsExpenses?.[1]?.coins?.length
+  ) {
+    fillDefaultHeaps(data.incomes, data.expenses)
+  }
+
+  console.log('ck data filled', {heaps, ckData})
+
+  return localForage.setItem('data', toRaw(ckData))
+}
+
+export const clearData = () => localForage.removeItem('data')

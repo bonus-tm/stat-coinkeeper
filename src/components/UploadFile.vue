@@ -26,8 +26,7 @@ const onDrop = e => {
   let reader = new FileReader()
   reader.onload = () => {
     try {
-      let data = loadData(reader.result)
-      emit('import', {timestamp: file.lastModified, data})
+      emit('import', loadData(reader.result))
     } catch (error) {
       alert(
         'Какая-то ошибка при импорте данных.\n' +

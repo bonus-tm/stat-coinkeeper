@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
-import store from '@/services/store'
+import {ckData, heaps, lastOperationDate} from '@/services/store'
 import {sumByMonths} from '@/services/calculator'
 import {getDataLabelBg} from '@/services/canvas-colors'
 import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
@@ -10,8 +10,6 @@ import {hex2rgba, humanize} from '@/services/numerals'
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
 import SlidePanel from '@/components/SlidePanel.vue'
-
-let heapsIncomes = computed(() => store.state.heaps.incomes)
 
 let chartOptions = {
   responsive: true,
@@ -65,15 +63,15 @@ let chartOptions = {
   }
 }
 let monthAxis = createMonthsAxis(
-  store.readonly.operations[0].date.date,
-  store.readonly.operations[store.readonly.operations.length - 1].date.date
+  ckData.operations[0].date.date,
+  lastOperationDate.value
 )
 
 let chartData = computed(() => ({
   xLabels: monthsAxisLabels(monthAxis),
-  datasets: heapsIncomes.value.map(heap => {
+  datasets: heaps.incomes.map(heap => {
     let coinTitles = heap.coins.map(coin => coin.title)
-    let data = sumByMonths(coinTitles, store.readonly.operations)
+    let data = sumByMonths(coinTitles, ckData.operations)
     return {
       label: heap.title,
       data: monthAxis.map(ym => data[ym]),
@@ -101,7 +99,7 @@ let chartData = computed(() => ({
 let chartRef = ref()
 
 let addHeap = () => {
-  store.state.heaps.incomes.push({
+  heaps.incomes.push({
     type: 'operations',
     title: 'Куча',
     color: {},
@@ -110,7 +108,7 @@ let addHeap = () => {
 }
 let removeHeap = index => {
   console.log('removeHeap', index)
-  store.state.heaps.incomes.splice(index, 1)
+  heaps.incomes.splice(index, 1)
 }
 
 let show = ref(false)
@@ -118,9 +116,9 @@ let show = ref(false)
 
 <template>
   <SlidePanel v-model:show="show" :title="'Доходы'" operations>
-    <div v-for="(heap, i) of heapsIncomes" :key="`h-in-${i}`">
+    <div v-for="(heap, i) of heaps.incomes" :key="`h-in-${i}`">
       <HeapOfCoins
-        v-model="heapsIncomes[i]"
+        v-model="heaps.incomes[i]"
         editable
         @remove="removeHeap(i)"
       />

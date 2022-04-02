@@ -1,14 +1,14 @@
 import {computed} from 'vue'
-import {monthsAxisLabels} from './dates.js'
-import {sumByMonths} from './calculator.js'
-import store from './store.js'
-import {hex2rgba, humanize} from './numerals.js'
-import {getDataLabelBg} from './canvas-colors.js'
+import {ckData} from '@/services/store'
+import {monthsAxisLabels} from '@/services/dates'
+import {sumByMonths} from '@/services/calculator'
+import {hex2rgba, humanize} from '@/services/numerals'
+import {getDataLabelBg} from '@/services/canvas-colors'
 
 export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
-  let incomesVsExpensesDataset = heaps.value.map(heap => {
+  let incomesVsExpensesDataset = heaps.map(heap => {
       let coinTitles = heap.coins.map(cat => cat.title)
-      let data = sumByMonths(coinTitles, store.readonly.operations)
+      let data = sumByMonths(coinTitles, ckData.operations)
       return {
         yAxisID: 'yIE',
         label: heap.title,
@@ -34,10 +34,10 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
     })
 
   let coinTitles = [
-    ...store.readonly.incomes.map(cat => cat.title),
-    ...store.readonly.expenses.map(cat => cat.title),
+    ...ckData.incomes.map(cat => cat.title),
+    ...ckData.expenses.map(cat => cat.title),
   ]
-  let balanceData = sumByMonths(coinTitles, store.readonly.operations)
+  let balanceData = sumByMonths(coinTitles, ckData.operations)
   console.log({balanceData})
   let balanceDataset = [
     {

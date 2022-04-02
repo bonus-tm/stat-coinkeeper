@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref, toRaw} from 'vue'
 import {BarChart} from 'vue-chart-3'
-import store from '@/services/store'
+import {ckData, heaps, lastOperationDate, settings} from '@/services/store'
 import Currencies from '@/services/currencies'
 import {hex2rgba, humanize} from '@/services/numerals'
 import {accountHistoryByMonths} from '@/services/calculator'
@@ -12,14 +12,12 @@ import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
 import SlidePanel from '@/components/SlidePanel.vue'
 
-let heapsAccount = computed(() => store.state.heaps.accounts)
-
 let pieChartData = computed(() => {
-  return heapsAccount.value.map(heap => ({
+  return heaps.accounts.map(heap => ({
     title: heap.title,
     color: heap.color.border,
     value: heap.coins.reduce((acc, coin) => {
-      let rate = coin.currency === store.state.baseCurrency
+      let rate = coin.currency === settings.baseCurrency
         ? 1
         : Currencies.rate(coin.currency)
       acc += coin.value / rate
@@ -78,15 +76,15 @@ let chartOptions = {
   }
 }
 let monthAxis = createMonthsAxis(
-  store.readonly.operations[0].date.date,
-  store.readonly.operations[store.readonly.operations.length - 1].date.date
+  ckData.operations[0].date.date,
+  lastOperationDate.value
 )
 
 let totals = {}
-for (let heap of heapsAccount.value) {
+for (let heap of heaps.accounts) {
   for (let account of heap.coins) {
-    let history = accountHistoryByMonths(account, store.readonly.operations)
-    if (account.currency !== store.state.baseCurrency) {
+    let history = accountHistoryByMonths(account, ckData.operations)
+    if (account.currency !== settings.baseCurrency) {
       for (let [ym, value] of Object.entries(history)) {
         let rate = Currencies.rate(account.currency, ym)
         history[ym] = Math.round(value / rate)
@@ -104,12 +102,12 @@ let totalsData = monthAxis.map(ym => totals[ym])
 
 let chartData = computed(() => ({
   xLabels: monthsAxisLabels(monthAxis),
-  datasets: heapsAccount.value.map(heap => {
+  datasets: heaps.accounts.map(heap => {
     // посчитать для каждого кошелька в куче историю по месяцам
     // получим массив объектов
     let histories = heap.coins.map(account => {
-      let history = accountHistoryByMonths(account, store.readonly.operations)
-      if (account.currency !== store.state.baseCurrency) {
+      let history = accountHistoryByMonths(account, ckData.operations)
+      if (account.currency !== settings.baseCurrency) {
         for (let [ym, value] of Object.entries(history)) {
           let rate = Currencies.rate(account.currency, ym)
           history[ym] = Math.round(value / rate)
@@ -201,7 +199,7 @@ let chartData = computed(() => ({
 let chartRef = ref()
 
 let addHeap = () => {
-  store.state.heaps.accounts.push({
+  heaps.accounts.push({
     type: 'accounts',
     title: 'Куча',
     color: {},
@@ -210,18 +208,18 @@ let addHeap = () => {
 }
 let moveHeapUp = index => {
   if (index > 0) {
-    let [heap] = store.state.heaps.accounts.splice(index, 1)
-    store.state.heaps.accounts.splice(index - 1, 0, toRaw(heap))
+    let [heap] = heaps.accounts.splice(index, 1)
+    heaps.accounts.splice(index - 1, 0, toRaw(heap))
   }
 }
 let moveHeapDown = index => {
-  if (index < store.state.heaps.accounts.length - 1) {
-    let [heap] = store.state.heaps.accounts.splice(index, 1)
-    store.state.heaps.accounts.splice(index + 1, 0, toRaw(heap))
+  if (index < heaps.accounts.length - 1) {
+    let [heap] = heaps.accounts.splice(index, 1)
+    heaps.accounts.splice(index + 1, 0, toRaw(heap))
   }
 }
 let removeHeap = index => {
-  store.state.heaps.accounts.splice(index, 1)
+  heaps.accounts.splice(index, 1)
 }
 
 let show = ref(false)
@@ -229,9 +227,9 @@ let show = ref(false)
 
 <template>
   <SlidePanel v-model:show="show" :title="'Наличность'" accounts>
-    <div v-for="(heap, i) of heapsAccount" :key="`h-ex-${i}`">
+    <div v-for="(heap, i) of heaps.accounts" :key="`h-ex-${i}`">
       <HeapOfCoins
-        v-model="heapsAccount[i]"
+        v-model="heaps.accounts[i]"
         editable
         movable
         @moveUp="moveHeapUp(i)"
