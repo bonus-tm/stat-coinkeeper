@@ -1,96 +1,57 @@
 <script setup>
 import {ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
-import {ckData, heaps, lastOperationDate} from '@/services/store'
-import {humanize} from '@/services/numerals'
+
+import {defaultChartOptions, defaultScaleX} from '@/services/chart'
 import {createMonthsAxis} from '@/services/dates'
+import {humanize} from '@/services/numerals'
 import {incomeVsExpensesMonthly} from '@/services/prep-chart-data'
+import {ckData, colors, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import SlidePanel from '@/components/SlidePanel.vue'
 import Icon from '@/components/Icon.vue'
 
+const scaleY = {
+  type: 'linear',
+  position: 'left',
+  stack: 'incomes-vs-expenses',
+  grid: {
+    color (context) {
+      return context.tick.value === 0
+        ? colors.value.borderColor
+        : colors.value.gridColor
+    },
+    borderColor: colors.value.borderColor,
+    tickColor: colors.value.tickColor,
+  },
+  ticks: {
+    // stepSize: 200000,
+    callback (value) {
+      return humanize(value)
+    },
+  },
+  afterFit (axis) {
+    axis.width = 50
+  },
+}
+
 let chartOptions = {
-  responsive: true,
+  ...defaultChartOptions,
   aspectRatio: 2,
-  layout: {
-    padding: {
-      right: 20,
-    },
-  },
-  elements: {
-    line: {
-      tension: 0.2,
-      fill: true,
-    }
-  },
   scales: {
-    x: {
-      id: 'x-axis',
-      type: 'category',
-      grid: {
-        borderDash: [1, 3],
-        color: 'rgba(128,128,128,0.4)',
-        borderColor: 'rgba(128,128,128,0.5)',
-        tickColor: 'rgba(128,128,128,0.5)',
-        tickLength: 5,
-      },
-      ticks: {
-        maxRotation: 0,
-        padding: 5,
-        autoSkip: false,
-      }
-    },
+    x: defaultScaleX,
     // scale for balance
     yBalance: {
-      type: 'linear',
+      ...scaleY,
       stacked: 'single',
-      position: 'left',
-      stack: 'incomes-vs-expenses',
       stackWeight: 1,
-      grid: {
-        color (context) {
-          return context.tick.value === 0
-            ? 'rgba(128,128,128,0.5)'
-            : 'rgba(128,128,128,0.1)'
-        },
-        borderColor: 'rgba(128,128,128,0.5)',
-        tickColor: 'rgba(128,128,128,0.5)',
-      },
-      ticks: {
-        // stepSize: 200000,
-        callback (value) {
-          return humanize(value)
-        },
-      },
-      afterFit (axis) {
-        axis.width = 50
-      },
     },
     // scale for incomes vs expenses
     yIE: {
-      type: 'linear',
-      position: 'left',
-      stack: 'incomes-vs-expenses',
+      ...scaleY,
       stackWeight: 3,
       min: 0,
-      grid: {
-        color (context) {
-          return context.tick.value === 0
-            ? 'rgba(128,128,128,0.5)'
-            : 'rgba(128,128,128,0.1)'
-        },
-        borderColor: 'rgba(128,128,128,0.5)',
-        tickColor: 'rgba(128,128,128,0.5)',
-      },
-      ticks: {
-        callback (value) {
-          return humanize(value)
-        },
-      },
-      afterFit (axis) {
-        axis.width = 50
-      },
     },
   },
 }

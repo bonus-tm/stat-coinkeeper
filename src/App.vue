@@ -2,7 +2,6 @@
 import {computed} from 'vue'
 import {formatDistanceToNow, lightFormat} from 'date-fns'
 import {ru} from 'date-fns/locale'
-import '@/services/chart'
 import {clearData, fillData, hasData, lastOperationDate, ready} from '@/services/store'
 
 import AnalyzeAccounts from '@/components/AnalyzeAccounts.vue'

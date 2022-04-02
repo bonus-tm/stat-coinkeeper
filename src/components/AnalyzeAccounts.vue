@@ -1,11 +1,13 @@
 <script setup>
 import {computed, ref, toRaw} from 'vue'
 import {BarChart} from 'vue-chart-3'
-import {ckData, heaps, lastOperationDate, settings} from '@/services/store'
-import Currencies from '@/services/currencies'
-import {hex2rgba, humanize} from '@/services/numerals'
+
 import {accountHistoryByMonths} from '@/services/calculator'
+import {defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
+import Currencies from '@/services/currencies'
 import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
+import {hex2rgba, humanize} from '@/services/numerals'
+import {ckData, heaps, lastOperationDate, settings} from '@/services/store'
 
 import ChartPie from '@/components/ChartPie.vue'
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
@@ -27,52 +29,13 @@ let pieChartData = computed(() => {
 })
 
 let chartOptions = {
-  responsive: true,
-  aspectRatio: 3,
-  layout: {
-    padding: {
-      right: 20,
-    },
-  },
+  ...defaultChartOptions,
   elements: {
     bar: {},
   },
   scales: {
-    x: {
-      id: 'x-axis',
-      type: 'category',
-      grid: {
-        borderDash: [1, 3],
-        color: 'rgba(128,128,128,0.4)',
-        borderColor: 'rgba(128,128,128,0.5)',
-        tickColor: 'rgba(128,128,128,0.5)',
-        tickLength: 5,
-      },
-      ticks: {
-        maxRotation: 0,
-        padding: 5,
-        autoSkip: false,
-      }
-    },
-    y: {
-      stacked: true,
-      type: 'linear',
-      min: 0,
-      grid: {
-        borderDash: [1, 2],
-        color: 'rgba(128,128,128,0.2)',
-        borderColor: 'rgba(128,128,128,0.5)',
-        tickColor: 'rgba(128,128,128,0.5)',
-      },
-      ticks: {
-        callback (value) {
-          return humanize(value)
-        },
-      },
-      afterFit (axis) {
-        axis.width = 50
-      },
-    }
+    x: defaultScaleX,
+    y: {...defaultScaleY, min: 0, stacked: true},
   }
 }
 let monthAxis = createMonthsAxis(

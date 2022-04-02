@@ -1,8 +1,8 @@
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, ref, toRefs} from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css' // optional for styling
-import {dragging, settings} from '@/services/store'
+import {colors, dragging} from '@/services/store'
 import Coin from '@/components/Coin.vue'
 import Icon from '@/components/Icon.vue'
 
@@ -16,7 +16,7 @@ const vEditor = {
       placement: 'right-start',
       trigger: 'click',
       onShown (instance) {
-        instance.popper.querySelector('.tippy-content input').focus()
+        instance.popper.querySelector('.tippy-content input')?.focus()
       },
     })
   }
@@ -32,15 +32,15 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'remove', 'moveUp', 'moveDown'])
 
-let palette = settings.palette.light
-
 let dragover = ref(false)
 let heap = computed({
   get: () => props.modelValue,
   set: value => emit('update:modelValue', value),
 })
 
-let bgColor = computed(() => props.modelValue?.color?.border || palette[0])
+let bgColor = computed(() => {
+  return props.modelValue?.color?.border || colors.value.palette[0]
+})
 
 let showEditor = computed(() => {
   return props.editable ||
@@ -109,7 +109,7 @@ let setColor = color => {
           </div>
           <div v-if="editable || changeableColor" class="palette-grid">
             <div
-              v-for="(color, i) in palette"
+              v-for="(color, i) in colors.palette"
               :key="`c-${i}`"
               :style="{backgroundColor: color}"
               class="palette-color"

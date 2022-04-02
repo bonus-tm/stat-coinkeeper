@@ -2,6 +2,7 @@ import {createApp} from 'vue'
 import localForage from 'localforage'
 import {initStore} from '@/services/store'
 import Currencies from '@/services/currencies'
+import {initChart} from '@/services/chart'
 
 import App from '@/App.vue'
 import '@/css/main.css'
@@ -11,6 +12,8 @@ localForage.config({
   name: 'coin-keeper-stat',
   storeName: 'sck',
 })
+
+initChart()
 
 createApp(App).mount('#app')
 

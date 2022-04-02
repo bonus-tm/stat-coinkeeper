@@ -4,36 +4,57 @@ import localForage from 'localforage'
 export const ready = ref(false)
 export const dragging = ref(false)
 
+// тёмный режим включён или нет
+export const isDark = ref(
+  window.matchMedia('(prefers-color-scheme: dark)').matches
+)
+
 export const settings = reactive({
   baseCurrency: 'RUB',
-  palette: {
-    light: [
-      '#cccccc',
-      '#ff3b30',
-      '#ff9500',
-      '#ffcc00',
-      '#34c759',
-      '#5ac8fa',
-      '#007aff',
-      '#5856d6',
-      '#af52de',
-      '#000000',
-    ],
-    dark: [
-      '#cccccc',
-      '#ff3b30',
-      '#ff9500',
-      '#ffcc00',
-      '#34c759',
-      '#5ac8fa',
-      '#007aff',
-      '#5856d6',
-      '#af52de',
-      '#000000',
-    ],
+  colors: {
+    light: {
+      gridColor: 'rgba(128,128,128,0.1)',
+      borderColor: 'rgba(128,128,128,0.5)',
+      tickColor: 'rgba(128,128,128,0.5)',
+      labelBgColor: 'rgba(255, 255, 255, 0.6)',
+      palette: [
+        '#cccccc',
+        '#ff3b30',
+        '#ff9500',
+        '#ffcc00',
+        '#34c759',
+        '#5ac8fa',
+        '#007aff',
+        '#5856d6',
+        '#af52de',
+        '#000000',
+      ],
+    },
+    dark: {
+      gridColor: 'rgba(128,128,128,0.1)',
+      borderColor: 'rgba(128,128,128,0.5)',
+      tickColor: 'rgba(128,128,128,0.5)',
+      labelBgColor: 'rgba(0, 0, 0, 0.4)',
+      palette: [
+        '#cccccc',
+        '#ff3b30',
+        '#ff9500',
+        '#ffcc00',
+        '#34c759',
+        '#5ac8fa',
+        '#007aff',
+        '#5856d6',
+        '#af52de',
+        '#000000',
+      ],
+    },
   },
 })
 watch(settings, value => localForage.setItem('settings', toRaw(value)))
+
+export const colors = computed(() => {
+  return settings.colors[isDark.value ? 'dark' : 'light']
+})
 
 export const heaps = reactive({
   accounts: [
@@ -123,6 +144,11 @@ export const lastOperationDate = computed(() => {
 })
 
 export const initStore = async () => {
+  window.matchMedia('(prefers-color-scheme: dark)')
+    .addEventListener('change', e => {
+      isDark.value = e.matches
+    })
+
   console.log('initialize store')
   try {
     await Promise.all([
