@@ -3,6 +3,7 @@ import localForage from 'localforage'
 import {initStore} from '@/services/store'
 import Currencies from '@/services/currencies'
 import {initChart} from '@/services/chart'
+import {startDarkModeWatch} from '@/services/colors'
 
 import App from '@/App.vue'
 import '@/css/main.css'
@@ -16,6 +17,8 @@ localForage.config({
 initChart()
 
 createApp(App).mount('#app')
+
+startDarkModeWatch()
 
 await Promise.all([
   initStore(),

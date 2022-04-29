@@ -1,8 +1,9 @@
 <script setup>
-import {computed, ref, toRefs} from 'vue'
+import {computed, ref} from 'vue'
 import tippy from 'tippy.js'
 import 'tippy.js/dist/tippy.css' // optional for styling
-import {colors, dragging} from '@/services/store'
+import {palette} from '@/services/colors'
+import {dragging} from '@/services/store'
 import Coin from '@/components/Coin.vue'
 import Icon from '@/components/Icon.vue'
 
@@ -39,7 +40,7 @@ let heap = computed({
 })
 
 let bgColor = computed(() => {
-  return props.modelValue?.color?.border || colors.value.palette[0]
+  return palette.value[props.modelValue?.color || 0]
 })
 
 let showEditor = computed(() => {
@@ -73,8 +74,8 @@ let remove = coinId => {
   let i = props.modelValue.coins.findIndex(cat => cat.id === coinId)
   if (i !== -1) props.modelValue.coins.splice(i, 1)
 }
-let setColor = color => {
-  props.modelValue.color.border = color
+let setColor = colorKey => {
+  props.modelValue.color = colorKey
 }
 </script>
 
@@ -109,11 +110,11 @@ let setColor = color => {
           </div>
           <div v-if="editable || changeableColor" class="palette-grid">
             <div
-              v-for="(color, i) in colors.palette"
-              :key="`c-${i}`"
+              v-for="(color, colorKey) in palette"
+              :key="`c-${colorKey}`"
               :style="{backgroundColor: color}"
               class="palette-color"
-              @click="setColor(color)"
+              @click="setColor(colorKey)"
             />
           </div>
           <div v-if="editable || removable" style="margin-top: 1rem;text-align: right">

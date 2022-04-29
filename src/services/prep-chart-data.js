@@ -1,8 +1,9 @@
 import {computed} from 'vue'
 import {monthsAxisLabels} from '@/services/dates'
 import {sumByMonths} from '@/services/calculator'
-import {hex2rgba, humanize} from '@/services/numerals'
-import {ckData, colors} from '@/services/store'
+import {changeOpacity, colors, palette} from '@/services/colors'
+import {humanize} from '@/services/numerals'
+import {ckData} from '@/services/store'
 
 export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
   let coinTitles = [
@@ -21,13 +22,13 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
         label: 'Доход',
         data: monthAxis.map(ym => balanceData[ym] >= 0 ? balanceData[ym] : 0),
         grouped: false,
-        borderColor: '#34c759',
-        backgroundColor: hex2rgba('#34c759', 0.2),
+        borderColor: palette.value.green,
+        backgroundColor: changeOpacity(palette.value.green, 0.2),
         datalabels: {
           display (context) {
             return context.dataset.data[context.dataIndex] !== 0
           },
-          color: '#34c759',
+          color: palette.value.green,
           borderRadius: 3,
           padding: {top: 1, bottom: 0, left: 3, right: 3},
           anchor: 'start',
@@ -47,13 +48,13 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
         label: 'Убыток',
         data: monthAxis.map(ym => balanceData[ym] < 0 ? balanceData[ym] : 0),
         grouped: false,
-        borderColor: '#ff3b30',
-        backgroundColor: hex2rgba('#ff3b30', 0.2),
+        borderColor: palette.value.red,
+        backgroundColor: changeOpacity(palette.value.red, 0.2),
         datalabels: {
           display (context) {
             return context.dataset.data[context.dataIndex] !== 0
           },
-          color: '#ff3b30',
+          color: palette.value.red,
           borderRadius: 3,
           padding: {top: 1, bottom: 0, left: 3, right: 3},
           anchor: 'end',
@@ -74,12 +75,12 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
           yAxisID: 'yIE',
           label: heap.title,
           data: monthAxis.map(ym => Math.abs(data[ym])),
-          borderColor: heap.color.border,
-          backgroundColor: hex2rgba(heap.color.border, 0.2),
+          borderColor: palette.value[heap.color],
+          backgroundColor: changeOpacity(heap.color, 0.2),
           datalabels: {
             display: 'auto',
-            color: heap.color.border,
-            backgroundColor: colors.value.labelBgColor,
+            color: palette.value[heap.color],
+            backgroundColor: colors.value.chartLabelBgColor,
             borderRadius: 3,
             padding: {top: 1, bottom: 0, left: 3, right: 3},
             align: 'end',

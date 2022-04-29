@@ -42,7 +42,7 @@ const YM = 'yyyy-MM'
  *  использовать сегодняшний курс)
  *
  *  Структура данных о валютах:
- *  _base: 'RUB'
+ *  baseCurrency: 'RUB'
  *  _currencies: {
  *    USD: {
  *      latest: 0.01521,
@@ -58,16 +58,16 @@ const YM = 'yyyy-MM'
  */
 
 export default {
-  _base: '',
   _currencies: {},
+  baseCurrency: '',
   loaded: false,
 
   async init (base = 'RUB', symbols = ['USD', 'EUR']) {
     await this._restore()
 
     // 1. Базовая валюта не совпадает
-    if (this._base !== base) {
-      this._base = base
+    if (this.baseCurrency !== base) {
+      this.baseCurrency = base
       merge(
         this._currencies,
         await this._loadLatest(base, symbols),
@@ -129,7 +129,7 @@ export default {
 
   _save () {
     return localForage.setItem(SAVE_KEY, {
-      base: this._base,
+      base: this.baseCurrency,
       currencies: this._currencies,
     })
   },
@@ -139,7 +139,7 @@ export default {
       base = '',
       currencies = {}
     } = (await localForage.getItem(SAVE_KEY)) || {}
-    this._base = base
+    this.baseCurrency = base
     this._currencies = currencies
   },
 

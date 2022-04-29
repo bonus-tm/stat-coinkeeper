@@ -4,9 +4,10 @@ import {LineChart} from 'vue-chart-3'
 
 import {sumByMonths} from '@/services/calculator'
 import {defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
+import {changeOpacity, colors, palette} from '@/services/colors'
 import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
-import {hex2rgba, humanize} from '@/services/numerals'
-import {ckData, colors, heaps, lastOperationDate} from '@/services/store'
+import {humanize} from '@/services/numerals'
+import {ckData, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
@@ -34,12 +35,12 @@ let chartData = computed(() => ({
       return {
         label: heap.title,
         data: monthAxis.map(ym => Math.abs(data[ym])),
-        borderColor: heap.color.border,
-        backgroundColor: hex2rgba(heap.color.border, 0.2),
+        borderColor: palette.value[heap.color],
+        backgroundColor: changeOpacity(heap.color, 0.2),
         datalabels: {
           display: 'auto',
-          color: heap.color.border,
-          backgroundColor: colors.value.labelBgColor,
+          color: palette.value[heap.color],
+          backgroundColor: colors.value.chartLabelBgColor,
           borderRadius: 3,
           padding: {top: 1, bottom: 0, left: 3, right: 3},
           align: 'end',
@@ -62,7 +63,7 @@ let addHeap = () => {
   heaps.expenses.push({
     type: 'operations',
     title: 'Куча',
-    color: {},
+    color: 'gray',
     coins: [],
   })
 }

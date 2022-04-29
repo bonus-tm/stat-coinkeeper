@@ -4,9 +4,10 @@ import {LineChart} from 'vue-chart-3'
 
 import {defaultChartOptions, defaultScaleX} from '@/services/chart'
 import {createMonthsAxis} from '@/services/dates'
+import {colors} from '@/services/colors'
 import {humanize} from '@/services/numerals'
 import {incomeVsExpensesMonthly} from '@/services/prep-chart-data'
-import {ckData, colors, heaps, lastOperationDate} from '@/services/store'
+import {ckData, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import SlidePanel from '@/components/SlidePanel.vue'
@@ -19,11 +20,11 @@ const scaleY = {
   grid: {
     color (context) {
       return context.tick.value === 0
-        ? colors.value.borderColor
-        : colors.value.gridColor
+        ? colors.value.chartBorderColor
+        : colors.value.chartGridColor
     },
-    borderColor: colors.value.borderColor,
-    tickColor: colors.value.tickColor,
+    borderColor: colors.value.chartBorderColor,
+    tickColor: colors.value.chartTickColor,
   },
   ticks: {
     // stepSize: 200000,

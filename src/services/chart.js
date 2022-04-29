@@ -12,8 +12,8 @@ import {
   Tooltip
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
+import {colors} from '@/services/colors'
 import {humanize} from '@/services/numerals'
-import {colors} from '@/services/store'
 
 export const initChart = () => {
   const MultiStringAxisLabels = {
@@ -44,8 +44,6 @@ export const initChart = () => {
   )
 }
 
-// const {borderColor, gridColor: color, tickColor} = toRefs(colors)
-
 export const defaultChartOptions = {
   responsive: true,
   aspectRatio: 3,
@@ -67,9 +65,14 @@ export const defaultScaleX = {
   type: 'category',
   grid: {
     // borderDash: [1, 3],
-    color: colors.value.gridColor,
-    borderColor: colors.value.borderColor,
-    tickColor: colors.value.tickColor,
+    // color: colors.value.chartGridColor,
+    color (context) {
+      return Array.isArray(context.tick?.label) && context.tick.label[0] === 'янв'
+        ? colors.value.chartBorderColor
+        : colors.value.chartGridColor
+    },
+    borderColor: colors.value.chartBorderColor,
+    tickColor: colors.value.chartTickColor,
     tickLength: 5,
   },
   ticks: {
@@ -82,9 +85,9 @@ export const defaultScaleY = {
   type: 'linear',
   grid: {
     // borderDash: [1, 2],
-    color: colors.value.gridColor,
-    borderColor: colors.value.borderColor,
-    tickColor: colors.value.tickColor,
+    color: colors.value.chartGridColor,
+    borderColor: colors.value.chartBorderColor,
+    tickColor: colors.value.chartTickColor,
   },
   ticks: {
     callback (value) {

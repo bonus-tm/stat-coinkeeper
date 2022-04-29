@@ -4,119 +4,67 @@ import localForage from 'localforage'
 export const ready = ref(false)
 export const dragging = ref(false)
 
-// тёмный режим включён или нет
-export const isDark = ref(
-  window.matchMedia('(prefers-color-scheme: dark)').matches
-)
-
-export const settings = reactive({
-  baseCurrency: 'RUB',
-  colors: {
-    light: {
-      gridColor: 'rgba(128,128,128,0.1)',
-      borderColor: 'rgba(128,128,128,0.5)',
-      tickColor: 'rgba(128,128,128,0.5)',
-      labelBgColor: 'rgba(255, 255, 255, 0.6)',
-      palette: [
-        '#cccccc',
-        '#ff3b30',
-        '#ff9500',
-        '#ffcc00',
-        '#34c759',
-        '#5ac8fa',
-        '#007aff',
-        '#5856d6',
-        '#af52de',
-        '#000000',
-      ],
-    },
-    dark: {
-      gridColor: 'rgba(128,128,128,0.1)',
-      borderColor: 'rgba(128,128,128,0.5)',
-      tickColor: 'rgba(128,128,128,0.5)',
-      labelBgColor: 'rgba(0, 0, 0, 0.4)',
-      palette: [
-        '#cccccc',
-        '#ff3b30',
-        '#ff9500',
-        '#ffcc00',
-        '#34c759',
-        '#5ac8fa',
-        '#007aff',
-        '#5856d6',
-        '#af52de',
-        '#000000',
-      ],
-    },
-  },
-})
-watch(settings, value => localForage.setItem('settings', toRaw(value)))
-
-export const colors = computed(() => {
-  return settings.colors[isDark.value ? 'dark' : 'light']
-})
-
 export const heaps = reactive({
   accounts: [
     {
       type: 'accounts',
       title: 'Безнал',
-      color: {bg: '#007aff', border: '#007aff'},
-      coins: []
+      color: 'blue',
+      coins: [],
     },
     {
       type: 'accounts',
       title: 'Наличка',
-      color: {bg: '#5ac8fa', border: '#5ac8fa'},
-      coins: []
+      color: 'cyan',
+      coins: [],
     },
     {
       type: 'accounts',
       title: 'Валюта',
-      color: {bg: '#34c759', border: '#34c759'},
-      coins: []
+      color: 'green',
+      coins: [],
     },
   ],
   allIncomesVsExpenses: [
     {
       type: 'operations',
       title: 'Все доходы',
-      color: {bg: '#0491d1', border: '#0491d1'},
-      coins: []
+      color: 'cyan',
+      coins: [],
     },
     {
       type: 'operations',
       title: 'Все расходы',
-      color: {bg: '#e53935', border: '#e53935'},
-      coins: []
+      color: 'red',
+      coins: [],
     },
   ],
   incomes: [
     {
       type: 'operations',
       title: 'Первая куча доходов',
-      color: {bg: '#0491d1', border: '#0491d1'},
-      coins: []
+      color: 'cyan',
+      coins: [],
     },
     {
       type: 'operations',
       title: 'Вторая куча доходов',
-      color: {bg: '#ffcc00', border: '#ffcc00'},
-      coins: []
+      color: 'yellow',
+      coins: [],
     },
   ],
   expenses: [
     {
       type: 'operations',
       title: 'Постоянные расходы',
-      color: {bg: '#e53935', border: '#e53935'},
-      coins: []
+      color: 'red',
+      coins: [],
     },
     {
       type: 'operations',
       title: 'Редкие',
-      color: {bg: '#ff9500', border: '#ff9500'},
-      coins: []
+      color: 'orange',
+      coins: [],
     },
   ],
 })
@@ -144,19 +92,13 @@ export const lastOperationDate = computed(() => {
 })
 
 export const initStore = async () => {
-  window.matchMedia('(prefers-color-scheme: dark)')
-    .addEventListener('change', e => {
-      isDark.value = e.matches
-    })
-
   console.log('initialize store')
   try {
     await Promise.all([
-      load('settings', settings),
       load('heaps', heaps),
       load('data', ckData),
     ])
-    console.log('store initialized', {settings, heaps, ckData})
+    console.log('store initialized', {heaps, ckData})
 
     ready.value = true
   } catch (e) {

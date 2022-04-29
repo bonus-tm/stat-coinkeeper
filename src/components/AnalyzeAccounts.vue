@@ -5,9 +5,10 @@ import {BarChart} from 'vue-chart-3'
 import {accountHistoryByMonths} from '@/services/calculator'
 import {defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
 import Currencies from '@/services/currencies'
+import {changeOpacity, palette} from '@/services/colors'
 import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
-import {hex2rgba, humanize} from '@/services/numerals'
-import {ckData, heaps, lastOperationDate, settings} from '@/services/store'
+import {humanize} from '@/services/numerals'
+import {ckData, heaps, lastOperationDate} from '@/services/store'
 
 import ChartPie from '@/components/ChartPie.vue'
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
@@ -17,9 +18,9 @@ import SlidePanel from '@/components/SlidePanel.vue'
 let pieChartData = computed(() => {
   return heaps.accounts.map(heap => ({
     title: heap.title,
-    color: heap.color.border,
+    color: palette.value[heap.color],
     value: heap.coins.reduce((acc, coin) => {
-      let rate = coin.currency === settings.baseCurrency
+      let rate = coin.currency === Currencies.baseCurrency
         ? 1
         : Currencies.rate(coin.currency)
       acc += coin.value / rate
@@ -47,7 +48,7 @@ let totals = {}
 for (let heap of heaps.accounts) {
   for (let account of heap.coins) {
     let history = accountHistoryByMonths(account, ckData.operations)
-    if (account.currency !== settings.baseCurrency) {
+    if (account.currency !== Currencies.baseCurrency) {
       for (let [ym, value] of Object.entries(history)) {
         let rate = Currencies.rate(account.currency, ym)
         history[ym] = Math.round(value / rate)
@@ -70,7 +71,7 @@ let chartData = computed(() => ({
     // получим массив объектов
     let histories = heap.coins.map(account => {
       let history = accountHistoryByMonths(account, ckData.operations)
-      if (account.currency !== settings.baseCurrency) {
+      if (account.currency !== Currencies.baseCurrency) {
         for (let [ym, value] of Object.entries(history)) {
           let rate = Currencies.rate(account.currency, ym)
           history[ym] = Math.round(value / rate)
@@ -91,15 +92,15 @@ let chartData = computed(() => ({
         }, 0)
       }),
       grouped: false,
-      borderColor: heap.color.border,
-      backgroundColor: hex2rgba(heap.color?.border, 0.3),
+      borderColor: palette.value[heap.color],
+      backgroundColor: changeOpacity(heap.color, 0.3),
       datalabels: {
         display (context) {
           // Определить минимальное значение, в которое по высоте влезет лейбл
           let threshold = context.chart.scales.y.max / context.chart.scales.y.maxHeight * (dataLabelFontSize + 4)
           return context.dataset.data[context.dataIndex] > threshold
         },
-        color: heap.color?.border,
+        color: palette.value[heap.color],
         // backgroundColor: getDataLabelBg(),
         // borderRadius: 3,
         // padding: {top: 1, bottom: 0, left: 3, right: 3},
@@ -165,7 +166,7 @@ let addHeap = () => {
   heaps.accounts.push({
     type: 'accounts',
     title: 'Куча',
-    color: {},
+    color: 'gray',
     coins: [],
   })
 }
