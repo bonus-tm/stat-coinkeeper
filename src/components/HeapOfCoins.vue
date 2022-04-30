@@ -118,7 +118,7 @@ let setColor = colorKey => {
             />
           </div>
           <div v-if="editable || removable" style="margin-top: 1rem;text-align: right">
-            <button @click="$emit('remove')">
+            <button class="btn" @click="$emit('remove')">
               <Icon icon="remove" />
               Удалить кучу
             </button>

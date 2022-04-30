@@ -37,11 +37,11 @@ const reset = () => {
     </div>
     <h1>Статистика из Coin Keeper</h1>
     <div>
-      <button v-if="hasData" @click="clearData">
+      <button v-if="hasData" class="btn" @click="clearData">
         Очистить только данные
       </button>
       &nbsp;
-      <button v-if="hasData" @click="reset">
+      <button v-if="hasData" class="btn" @click="reset">
         Удалить всё
       </button>
     </div>

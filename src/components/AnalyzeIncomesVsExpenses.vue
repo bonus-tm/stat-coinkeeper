@@ -10,7 +10,7 @@ import {incomeVsExpensesMonthly} from '@/services/prep-chart-data'
 import {ckData, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
-import SlidePanel from '@/components/SlidePanel.vue'
+import HeapsConfig from '@/components/HeapsConfig.vue'
 import Icon from '@/components/Icon.vue'
 
 const scaleY = {
@@ -72,16 +72,16 @@ let show = ref(false)
 </script>
 
 <template>
-  <SlidePanel v-model:show="show" :title="'Расходы и доходы'" operations>
+  <HeapsConfig v-model:show="show" :title="'Расходы и доходы'" operations>
     <div v-for="(heap, i) of heaps.allIncomesVsExpenses" :key="`h-in-ex-${i}`">
       <HeapOfCoins v-model="heaps.allIncomesVsExpenses[i]" changeable-color />
     </div>
-  </SlidePanel>
+  </HeapsConfig>
 
   <section>
     <h2>
-      <button class="btn-icon">
-        <Icon icon="gear" @click="show = true" />
+      <button class="btn btn-icon" @click="show = true">
+        <Icon icon="gear" />
       </button>
       Анализ доходов и расходов
     </h2>

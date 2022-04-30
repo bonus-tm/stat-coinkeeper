@@ -21,7 +21,10 @@ const emit = defineEmits(['update:show'])
       />
     </transition>
     <div class="panel" :class="{show}">
-      <h2>{{ title }}</h2>
+      <h2>
+        <span>{{ title }}</span>
+        <button class="close" @click="emit('update:show', false)">×</button>
+      </h2>
       <div class="panel-coins">
         <CoinsAccounts v-if="accounts" />
         <CoinsOperations v-if="operations" />
@@ -68,6 +71,10 @@ const emit = defineEmits(['update:show'])
 
 h2 {
   grid-area: title;
+  margin-block-start: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .panel-coins {
   grid-area: coins;

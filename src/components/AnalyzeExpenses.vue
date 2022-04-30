@@ -11,7 +11,7 @@ import {ckData, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
-import SlidePanel from '@/components/SlidePanel.vue'
+import HeapsConfig from '@/components/HeapsConfig.vue'
 
 let chartOptions = {
   ...defaultChartOptions,
@@ -75,7 +75,7 @@ let show = ref(false)
 </script>
 
 <template>
-  <SlidePanel v-model:show="show" :title="'Расходы'" operations>
+  <HeapsConfig v-model:show="show" :title="'Расходы'" operations>
     <div v-for="(heap, i) of heaps.expenses" :key="`h-ex-${i}`">
       <HeapOfCoins
         v-model="heaps.expenses[i]"
@@ -83,15 +83,15 @@ let show = ref(false)
         @remove="removeHeap(i)"
       />
     </div>
-    <button @click="addHeap">
+    <button class="btn" @click="addHeap">
       Добавить кучу
     </button>
-  </SlidePanel>
+  </HeapsConfig>
 
   <section>
     <h2>
-      <button class="btn-icon">
-        <Icon icon="gear" @click="show = true" />
+      <button class="btn btn-icon" @click="show = true">
+        <Icon icon="gear" />
       </button>
       Анализ расходов
     </h2>

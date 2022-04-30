@@ -13,7 +13,7 @@ import {ckData, heaps, lastOperationDate} from '@/services/store'
 import ChartPie from '@/components/ChartPie.vue'
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
-import SlidePanel from '@/components/SlidePanel.vue'
+import HeapsConfig from '@/components/HeapsConfig.vue'
 
 let pieChartData = computed(() => {
   return heaps.accounts.map(heap => ({
@@ -190,7 +190,7 @@ let show = ref(false)
 </script>
 
 <template>
-  <SlidePanel v-model:show="show" :title="'Наличность'" accounts>
+  <HeapsConfig v-model:show="show" :title="'Наличность'" accounts>
     <div v-for="(heap, i) of heaps.accounts" :key="`h-ex-${i}`">
       <HeapOfCoins
         v-model="heaps.accounts[i]"
@@ -201,15 +201,15 @@ let show = ref(false)
         @remove="removeHeap(i)"
       />
     </div>
-    <button @click="addHeap">
+    <button class="btn" @click="addHeap">
       Добавить кучу
     </button>
-  </SlidePanel>
+  </HeapsConfig>
 
   <section>
     <h2>
-      <button class="btn-icon">
-        <Icon icon="gear" @click="show = true" />
+      <button class="btn btn-icon" @click="show = true">
+        <Icon icon="gear" />
       </button>
       Анализ наличности
     </h2>

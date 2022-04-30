@@ -109,7 +109,31 @@ section > h2 {
 
 button {
   display: inline-block;
+  background: none;
   border: none;
+  margin: 0;
+  text-decoration: none;
+  font-family: sans-serif;
+  cursor: pointer;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+.close {
+  font-size: 1.5rem;
+  line-height: 1.5;
+  font-weight: 300;
+  padding: 0 0.5rem;
+  color: #999;
+  transition: color 250ms ease, transform 150ms ease;
+}
+.close:hover {
+  color: #000;
+}
+.close:active {
+  transform: scale(0.9);
+}
+.btn {
+  display: inline-block;
   border-radius: 4px;
   padding: 0.3rem 1.5rem;
   margin: 0;
@@ -121,25 +145,24 @@ button {
   cursor: pointer;
   text-align: center;
   transition: background 250ms ease-in-out, transform 150ms ease;
-  -webkit-appearance: none;
-  -moz-appearance: none;
 }
 
-button:hover,
-button:focus {
+.btn:hover,
+.btn:focus {
   background: linear-gradient(135deg, var(--button-bg2) 0%, var(--button-bg) 100%);
 }
 
-button:focus {
+.btn:focus {
   /*outline: 1px solid #aaa;*/
   /*outline-offset: 2px;*/
 }
 
-button:active {
+button:active,
+.btn:active {
   transform: scale(0.99);
 }
 
-button.btn-icon {
+.btn-icon {
   padding: 0.3rem;
   display: inline-flex;
   align-content: center;
