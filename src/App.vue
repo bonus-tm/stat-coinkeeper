@@ -1,51 +1,16 @@
 <script setup>
-import {computed} from 'vue'
-import {formatDistanceToNow, lightFormat} from 'date-fns'
-import {ru} from 'date-fns/locale'
-import {clearData, fillData, hasData, lastOperationDate, ready} from '@/services/store'
+import {fillData, hasData, ready} from '@/services/store'
 
 import AnalyzeAccounts from '@/components/AnalyzeAccounts.vue'
 import AnalyzeExpenses from '@/components/AnalyzeExpenses.vue'
 import AnalyzeIncomes from '@/components/AnalyzeIncomes.vue'
 import AnalyzeIncomesVsExpenses from '@/components/AnalyzeIncomesVsExpenses.vue'
+import AppHeader from '@/components/AppHeader.vue'
 import UploadFile from '@/components/UploadFile.vue'
-
-let dataExportedAgo = computed(() => {
-  if (!lastOperationDate.value) return ''
-  return formatDistanceToNow(
-    lastOperationDate.value,
-    {addSuffix: true, locale: ru}
-  )
-})
-
-const reset = () => {
-  return confirm(
-    'Удалить всю инфу и настройки?\n' +
-    'Будут удалены все данные, кучи и их настройки цвета, названия прочее.'
-  )
-}
 </script>
 
 <template>
-  <header>
-    <div>
-      <div v-if="hasData">
-        Последняя операция
-        {{ dataExportedAgo }},
-        {{ lightFormat(lastOperationDate, 'dd.MM.yyyy') }}
-      </div>
-    </div>
-    <h1>Статистика из Coin Keeper</h1>
-    <div>
-      <button v-if="hasData" class="btn" @click="clearData">
-        Очистить только данные
-      </button>
-      &nbsp;
-      <button v-if="hasData" class="btn" @click="reset">
-        Удалить всё
-      </button>
-    </div>
-  </header>
+  <AppHeader />
 
   <main>
     <p v-if="!ready">
