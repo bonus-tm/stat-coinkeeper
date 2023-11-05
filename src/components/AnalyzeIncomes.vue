@@ -28,7 +28,8 @@ let monthAxis = createMonthsAxis(
 let chartData = computed(() => ({
   xLabels: monthsAxisLabels(monthAxis),
   datasets: [
-    {type: 'bar'}, // чтобы точки выравнивались посередине между линиями сетки
+    {type: 'bar', label: '', backgroundColor: 'transparent'},
+    // ↑ это чтобы точки выравнивались посередине между линиями сетки
     ...heaps.incomes.map(heap => {
       let data = sumByMonths(heap.coins, ckData.operations)
       return {

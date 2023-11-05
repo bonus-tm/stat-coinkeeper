@@ -136,7 +136,7 @@ export const loadData = data => {
     // В последнем поле (коммент) могут быть переносы строки,
     // поэтому если строка не оканчивается кавычкой,
     // то добавить следующую строку через пробел
-    if (currentRow[currentRow.length - 1] !== '"') {
+    if (currentRow.at(-1) !== '"') {
       currentRow += ' '
       continue
     }
