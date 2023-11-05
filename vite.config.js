@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import {dirname, resolve} from 'path'
 import {fileURLToPath} from 'url'
 import {defineConfig} from 'vite'
@@ -15,5 +16,6 @@ export default defineConfig({
       '@': resolve(_dirname, './src'),
     }
   },
-  plugins: [vue()]
+  plugins: [vue()],
+  test: {},
 })

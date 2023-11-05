@@ -1,4 +1,5 @@
-import {loadData, split, formatCategories} from '../src/services/csv'
+import {expect, test} from 'vitest'
+import {loadData, split, formatCategories} from '@/services/csv'
 
 test('Empty file', () => {
   expect(loadData('')).toBe(false)
