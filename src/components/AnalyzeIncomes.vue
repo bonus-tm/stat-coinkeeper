@@ -30,8 +30,7 @@ let chartData = computed(() => ({
   datasets: [
     {type: 'bar'}, // чтобы точки выравнивались посередине между линиями сетки
     ...heaps.incomes.map(heap => {
-      let coinTitles = heap.coins.map(coin => coin.title)
-      let data = sumByMonths(coinTitles, ckData.operations)
+      let data = sumByMonths(heap.coins, ckData.operations)
       return {
         label: heap.title,
         data: monthAxis.map(ym => data[ym]),

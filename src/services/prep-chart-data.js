@@ -6,11 +6,8 @@ import {humanize} from '@/services/numerals'
 import {ckData} from '@/services/store'
 
 export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
-  let coinTitles = [
-    ...ckData.incomes.map(cat => cat.title),
-    ...ckData.expenses.map(cat => cat.title),
-  ]
-  let balanceData = sumByMonths(coinTitles, ckData.operations)
+  let coins = [...ckData.incomes, ...ckData.expenses]
+  let balanceData = sumByMonths(coins, ckData.operations)
   console.log({balanceData})
 
   return computed(() => ({
@@ -69,8 +66,7 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
         }
       },
       ...heaps.map(heap => {
-        let coinTitles = heap.coins.map(cat => cat.title)
-        let data = sumByMonths(coinTitles, ckData.operations)
+        let data = sumByMonths(heap.coins, ckData.operations)
         return {
           yAxisID: 'yIE',
           label: heap.title,
