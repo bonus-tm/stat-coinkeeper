@@ -4,7 +4,7 @@ import {loadData} from '@/services/csv'
 
 const emit = defineEmits(['import'])
 
-const MAX_FILE_SIZE = 1024 ** 2
+const MAX_FILE_SIZE = 5 * (1024 ** 2)
 
 const dragover = ref(false)
 const fileInput = ref(null)
