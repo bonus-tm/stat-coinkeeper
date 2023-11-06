@@ -18,17 +18,6 @@ export const date2y = (d, asNumber = false) => {
 }
 
 /**
- * Date() → '03'
- * @param {Date} d
- * @param {Boolean} number
- * @return {string|Number}
- */
-export const date2m = (d, number = false) => {
-  let m = d.getMonth() + 1
-  return number ? m : pad(m)
-}
-
-/**
  * Date() → '2' — номер квартала в году
  * @param {Date} d
  * @param {Boolean} number
@@ -41,6 +30,24 @@ export const date2q = (d, number = false) => {
   if (m > 6) q = 3
   if (m > 9) q = 4
   return number ? q : q.toString()
+}
+
+/**
+ * Date() → '2012-2' — год и квартал
+ * @param {Date} date
+ * @return {string}
+ */
+export const date2yq = date => `${date2y(date)}-${date2q(date)}`
+
+/**
+ * Date() → '03'
+ * @param {Date} d
+ * @param {Boolean} number
+ * @return {string|Number}
+ */
+export const date2m = (d, number = false) => {
+  let m = d.getMonth() + 1
+  return number ? m : pad(m)
 }
 
 /**

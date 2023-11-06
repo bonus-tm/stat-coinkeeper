@@ -1,34 +1,42 @@
 import * as constants from '../constants'
-import {date2ym} from './dates'
+import {date2y, date2ym, date2yq} from './dates'
 import {createAxis} from '@/services/chart.js'
 
+const periodIndexGetters = {
+  month: date2ym,
+  quarter: date2yq,
+  year: date2y,
+}
+
 /**
- * Помесячное суммирование доходов и расходов выбранных категорий
- * @param {Array} coins выбранные категории расходов и источников доходов
- * @param {Array} operations
+ * Суммирование доходов и расходов выбранных категорий по заданному масштабу
+ * @param {'month'|'quarter'|'year'} timescale
+ * @param {[]} coins выбранные категории расходов и источников доходов
+ * @param {[]} operations
  * @return {{}} {'2019-01': 12345, '2019-02': 45678, ...}
  */
-export const sumByMonths = (coins, operations) => {
-  let months = {}
+export const sumPeriods = (timescale, coins, operations) => {
+  let periods = {}
   for (let op of operations) {
     let isExpense = op.direction === 'out' &&
       coins.some(coin => coin.type === 'expense' && coin.title === op.destination)
     let isIncome = op.direction === 'in' &&
       coins.some(coin => coin.type === 'income' && coin.title === op.source)
+
     if (isExpense || isIncome) {
-      let ym = date2ym(op.date.date)
-      if (typeof months[ym] === 'undefined') {
-        months[ym] = 0
+      let index = periodIndexGetters[timescale](op.date.date)
+      if (typeof periods[index] === 'undefined') {
+        periods[index] = 0
       }
       if (op.direction === constants.IN) {
-        months[ym] += op.value
+        periods[index] += op.value
       }
       if (op.direction === constants.OUT) {
-        months[ym] -= op.value
+        periods[index] -= op.value
       }
     }
   }
-  return months
+  return periods
 }
 
 /**

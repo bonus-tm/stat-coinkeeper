@@ -1,12 +1,12 @@
 import {computed} from 'vue'
-import {sumByMonths} from '@/services/calculator'
+import {sumPeriods} from '@/services/calculator'
 import {changeOpacity, colors, palette} from '@/services/colors'
 import {humanize} from '@/services/numerals'
-import {ckData} from '@/services/store'
+import {ckData, timescale} from '@/services/store'
 
 export const incomeVsExpensesMonthly = (axis, axisLabels, heaps) => {
   let coins = [...ckData.incomes, ...ckData.expenses]
-  let balanceData = sumByMonths(coins, ckData.operations)
+  let balanceData = sumPeriods(timescale.value, coins, ckData.operations)
   console.log({balanceData})
 
   return computed(() => ({
@@ -65,7 +65,7 @@ export const incomeVsExpensesMonthly = (axis, axisLabels, heaps) => {
         },
       },
       ...heaps.map(heap => {
-        let data = sumByMonths(heap.coins, ckData.operations)
+        let data = sumPeriods(timescale.value, heap.coins, ckData.operations)
         return {
           yAxisID: 'yIE',
           label: heap.title,
