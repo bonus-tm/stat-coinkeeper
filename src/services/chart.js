@@ -2,7 +2,7 @@ import {
   BarController,
   BarElement,
   CategoryScale,
-  Chart,
+  Chart as ChartJS,
   Filler,
   Legend,
   LinearScale,
@@ -22,7 +22,7 @@ export const initChart = () => {
     id: 'labels-split',
     beforeInit (chart) {
       // console.log('beforeInit', chart)
-      chart.data.xLabels?.forEach((value, i, labels) => {
+      chart.data.labels?.forEach((value, i, labels) => {
         if (/\n/.test(value)) {
           labels[i] = value.split(/\n/)
         }
@@ -30,7 +30,7 @@ export const initChart = () => {
     },
   }
 
-  Chart.register(
+  ChartJS.register(
     Legend,
     LineController,
     CategoryScale,
@@ -48,7 +48,7 @@ export const initChart = () => {
 
 export const defaultChartOptions = {
   responsive: true,
-  aspectRatio: 3,
+  aspectRatio: 5,
   layout: {
     padding: {
       right: 20,
@@ -66,7 +66,6 @@ export const defaultScaleX = {
   id: 'x-axis',
   type: 'category',
   grid: {
-    // borderDash: [1, 3],
     // color: colors.value.chartGridColor,
     color (context) {
       let label = ''
@@ -79,7 +78,10 @@ export const defaultScaleX = {
         ? colors.value.chartBorderColor
         : colors.value.chartGridColor
     },
-    borderColor: colors.value.chartBorderColor,
+    border: {
+      color: colors.value.chartBorderColor,
+      // dash: [1, 3],
+    },
     tickColor: colors.value.chartTickColor,
     tickLength: 5,
   },
@@ -92,10 +94,12 @@ export const defaultScaleX = {
 export const defaultScaleY = {
   type: 'linear',
   grid: {
-    // borderDash: [1, 2],
     color: colors.value.chartGridColor,
-    borderColor: colors.value.chartBorderColor,
     tickColor: colors.value.chartTickColor,
+    border: {
+      color: colors.value.chartBorderColor,
+      // dash: [1, 2],
+    },
   },
   ticks: {
     callback (value) {

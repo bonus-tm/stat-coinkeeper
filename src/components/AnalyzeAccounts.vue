@@ -1,6 +1,6 @@
 <script setup>
 import {computed, ref, toRaw} from 'vue'
-import {BarChart} from 'vue-chart-3'
+import {Bar} from 'vue-chartjs'
 
 import {accountHistoryByMonths} from '@/services/calculator'
 import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
@@ -66,7 +66,7 @@ let totalsNull = axis.map(() => null)
 let totalsData = axis.map(ym => totals[ym])
 
 let chartData = computed(() => ({
-  xLabels: axisLabels,
+  labels: axisLabels,
   datasets: heaps.accounts.map(heap => {
     // посчитать для каждого кошелька в куче историю по месяцам
     // получим массив объектов
@@ -216,11 +216,13 @@ let show = ref(false)
     </h2>
 
     <div>
-      <BarChart
-        ref="chartRef"
-        :chart-data="chartData"
-        :options="chartOptions"
-      />
+      <div class="line-container">
+        <Bar
+          ref="chartRef"
+          :data="chartData"
+          :options="chartOptions"
+        />
+      </div>
       <ChartPie :data="pieChartData" />
     </div>
   </section>

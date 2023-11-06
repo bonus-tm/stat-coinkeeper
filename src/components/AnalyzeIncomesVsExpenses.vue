@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import {LineChart} from 'vue-chart-3'
+import {Line} from 'vue-chartjs'
 
 import {createAxis, defaultChartOptions, defaultScaleX} from '@/services/chart'
 import {colors} from '@/services/colors'
@@ -38,7 +38,7 @@ const scaleY = {
 
 let chartOptions = {
   ...defaultChartOptions,
-  aspectRatio: 2,
+  aspectRatio: 4,
   scales: {
     x: defaultScaleX,
     // scale for balance
@@ -86,10 +86,12 @@ let show = ref(false)
       </button>
       Анализ доходов и расходов
     </h2>
-    <LineChart
-      ref="chartRef"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
+    <div class="line-bar-container">
+      <Line
+        ref="chartRef"
+        :data="chartData"
+        :options="chartOptions"
+      />
+    </div>
   </section>
 </template>

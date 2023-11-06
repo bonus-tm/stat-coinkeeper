@@ -1,6 +1,6 @@
 <script setup>
 import {ref, watchEffect} from 'vue'
-import {LineChart} from 'vue-chart-3'
+import {Line} from 'vue-chartjs'
 
 import {sumPeriods} from '@/services/calculator'
 import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
@@ -21,7 +21,7 @@ let chartOptions = {
   },
 }
 let chartData = ref({
-  xLabels: [],
+  labels: [],
   datasets: [],
 })
 
@@ -32,7 +32,7 @@ watchEffect(() => {
     step: appSettings.timeStep,
     wholeYear: appSettings.roundToWholeYear,
   })
-  chartData.value.xLabels = axisLabels
+  chartData.value.labels = axisLabels
   chartData.value.datasets = [
     {type: 'bar', label: '', backgroundColor: 'transparent'},
     // ↑ это чтобы точки выравнивались посередине между линиями сетки
@@ -100,10 +100,12 @@ let show = ref(false)
       </button>
       Анализ доходов
     </h2>
-    <LineChart
-      ref="chartRef"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
+    <div class="line-container">
+      <Line
+        ref="chartRef"
+        :data="chartData"
+        :options="chartOptions"
+      />
+    </div>
   </section>
 </template>

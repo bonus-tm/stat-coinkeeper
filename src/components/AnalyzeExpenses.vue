@@ -1,6 +1,6 @@
 <script setup>
 import {computed, ref} from 'vue'
-import {LineChart} from 'vue-chart-3'
+import {Line} from 'vue-chartjs'
 
 import {sumPeriods} from '@/services/calculator'
 import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
@@ -27,7 +27,7 @@ let {axis, axisLabels} = createAxis({
 })
 
 let chartData = computed(() => ({
-  xLabels: axisLabels,
+  labels: axisLabels,
   datasets: [
     {type: 'bar', label: '', backgroundColor: 'transparent'},
     // ↑ это чтобы точки выравнивались посередине между линиями сетки
@@ -96,10 +96,12 @@ let show = ref(false)
       </button>
       Анализ расходов
     </h2>
-    <LineChart
-      ref="chartRef"
-      :chart-data="chartData"
-      :options="chartOptions"
-    />
+    <div class="line-container">
+      <Line
+        ref="chartRef"
+        :data="chartData"
+        :options="chartOptions"
+      />
+    </div>
   </section>
 </template>

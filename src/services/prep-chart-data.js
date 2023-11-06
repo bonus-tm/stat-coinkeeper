@@ -10,7 +10,7 @@ export const incomeVsExpensesMonthly = (axis, axisLabels, heaps) => {
   console.log({balanceData})
 
   return computed(() => ({
-    xLabels: axisLabels,
+    labels: axisLabels,
     datasets: [
       {
         type: 'bar',

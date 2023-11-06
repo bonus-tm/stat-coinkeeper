@@ -14,7 +14,7 @@
     "url": "https://github.com/bonus-tm/stat-coinkeeper"
   },
   "dependencies": {
-    "chart.js": "^3.7.1",
+    "chart.js": "^4.4.0",
     "chartjs-plugin-datalabels": "^2.0.0",
     "cyrillic-to-translit-js": "^3.2.1",
     "date-fns": "^2.30.0",
@@ -22,7 +22,7 @@
     "lodash": "^4.17.21",
     "tippy.js": "^6.3.7",
     "vue": "^3.3.7",
-    "vue-chart-3": "^3.1.8"
+    "vue-chartjs": "^5.2.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.4.0",
