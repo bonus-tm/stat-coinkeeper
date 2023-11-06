@@ -4,6 +4,14 @@ import localForage from 'localforage'
 export const ready = ref(false)
 export const dragging = ref(false)
 
+/**
+ * Масштаб графиков — по месяцам, кварталам или годам
+ * 'month'|'quarter'|'year'
+ */
+export const timescale = ref('quarter')
+
+export const alignTimeScaleByYear = ref(true)
+
 export const heaps = reactive({
   accounts: [
     {

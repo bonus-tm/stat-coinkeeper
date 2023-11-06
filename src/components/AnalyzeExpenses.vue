@@ -3,9 +3,8 @@ import {computed, ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
 
 import {sumByMonths} from '@/services/calculator'
-import {defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
+import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
 import {changeOpacity, colors, palette} from '@/services/colors'
-import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
 import {humanize} from '@/services/numerals'
 import {ckData, heaps, lastOperationDate} from '@/services/store'
 
@@ -20,13 +19,13 @@ let chartOptions = {
     y: {...defaultScaleY, min: 0},
   },
 }
-let monthAxis = createMonthsAxis(
+let {axis, axisLabels} = createAxis(
   ckData.operations[0].date.date,
-  lastOperationDate.value
+  lastOperationDate.value,
 )
 
 let chartData = computed(() => ({
-  xLabels: monthsAxisLabels(monthAxis),
+  xLabels: axisLabels,
   datasets: [
     {type: 'bar', label: '', backgroundColor: 'transparent'},
     // ↑ это чтобы точки выравнивались посередине между линиями сетки
@@ -34,7 +33,7 @@ let chartData = computed(() => ({
       let data = sumByMonths(heap.coins, ckData.operations)
       return {
         label: heap.title,
-        data: monthAxis.map(ym => Math.abs(data[ym])),
+        data: axis.map(ym => Math.abs(data[ym])),
         borderColor: palette.value[heap.color],
         backgroundColor: changeOpacity(heap.color, 0.2),
         datalabels: {
@@ -46,15 +45,15 @@ let chartData = computed(() => ({
           align: 'end',
           font: {
             size: 11,
-            weight: 'bold'
+            weight: 'bold',
           },
           formatter (value) {
             return humanize(value)
-          }
-        }
+          },
+        },
       }
     }),
-  ]
+  ],
 }))
 
 let chartRef = ref()

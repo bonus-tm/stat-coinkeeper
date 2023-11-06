@@ -3,10 +3,9 @@ import {computed, ref, toRaw} from 'vue'
 import {BarChart} from 'vue-chart-3'
 
 import {accountHistoryByMonths} from '@/services/calculator'
-import {defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
+import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
 import Currencies from '@/services/currencies'
 import {changeOpacity, palette} from '@/services/colors'
-import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
 import {humanize} from '@/services/numerals'
 import {ckData, heaps, lastOperationDate} from '@/services/store'
 
@@ -25,7 +24,7 @@ let pieChartData = computed(() => {
         : Currencies.rate(coin.currency)
       acc += coin.value / rate
       return acc
-    }, 0)
+    }, 0),
   }))
 })
 
@@ -37,11 +36,11 @@ let chartOptions = {
   scales: {
     x: defaultScaleX,
     y: {...defaultScaleY, min: 0, stacked: true},
-  }
+  },
 }
-let monthAxis = createMonthsAxis(
+let {axis, axisLabels} = createAxis(
   ckData.operations[0].date.date,
-  lastOperationDate.value
+  lastOperationDate.value,
 )
 
 let totals = {}
@@ -61,11 +60,11 @@ for (let heap of heaps.accounts) {
   }
 }
 console.log({totals})
-let totalsNull = monthAxis.map(() => null)
-let totalsData = monthAxis.map(ym => totals[ym])
+let totalsNull = axis.map(() => null)
+let totalsData = axis.map(ym => totals[ym])
 
 let chartData = computed(() => ({
-  xLabels: monthsAxisLabels(monthAxis),
+  xLabels: axisLabels,
   datasets: heaps.accounts.map(heap => {
     // посчитать для каждого кошелька в куче историю по месяцам
     // получим массив объектов
@@ -85,7 +84,7 @@ let chartData = computed(() => ({
     return {
       label: heap.title,
       // дальше надо их одинаковые поля просуммировать
-      data: monthAxis.map(ym => {
+      data: axis.map(ym => {
         return histories.reduce((sum, history) => {
           sum += history[ym]
           return sum
@@ -111,7 +110,7 @@ let chartData = computed(() => ({
             offset: -5,
             font: {
               size: dataLabelFontSize,
-              weight: 'bold'
+              weight: 'bold',
             },
             formatter (value, context) {
               return humanize(value)
@@ -122,14 +121,14 @@ let chartData = computed(() => ({
             offset: -4,
             font: {
               size: 9,
-              weight: 'normal'
+              weight: 'normal',
             },
             formatter (value, context) {
               return `${Math.round(100 * value / totalsData[context.dataIndex])}%`
             },
-          }
+          },
         },
-      }
+      },
     }
   }).concat([{
     label: '',
@@ -151,12 +150,12 @@ let chartData = computed(() => ({
       },
       font: {
         size: 10,
-        weight: 'bold'
+        weight: 'bold',
       },
       formatter (value, context) {
         return humanize(totalsData[context.dataIndex])
-      }
-    }
+      },
+    },
   }]),
 }))
 

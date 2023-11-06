@@ -1,11 +1,10 @@
 <script setup>
-import {computed, ref} from 'vue'
+import {ref, watchEffect} from 'vue'
 import {LineChart} from 'vue-chart-3'
 
 import {sumByMonths} from '@/services/calculator'
-import {defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
+import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
 import {changeOpacity, colors, palette} from '@/services/colors'
-import {createMonthsAxis, monthsAxisLabels} from '@/services/dates'
 import {humanize} from '@/services/numerals'
 import {ckData, heaps, lastOperationDate} from '@/services/store'
 
@@ -13,6 +12,7 @@ import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
 import HeapsConfig from '@/components/HeapsConfig.vue'
 
+let chartRef = ref()
 let chartOptions = {
   ...defaultChartOptions,
   scales: {
@@ -20,21 +20,25 @@ let chartOptions = {
     y: defaultScaleY,
   },
 }
-let monthAxis = createMonthsAxis(
-  ckData.operations[0].date.date,
-  lastOperationDate.value
-)
+let chartData = ref({
+  xLabels: [],
+  datasets: [],
+})
 
-let chartData = computed(() => ({
-  xLabels: monthsAxisLabels(monthAxis),
-  datasets: [
+watchEffect(() => {
+  let {axis, axisLabels} = createAxis(
+    ckData.operations[0].date.date,
+    lastOperationDate.value,
+  )
+  chartData.value.xLabels = axisLabels
+  chartData.value.datasets = [
     {type: 'bar', label: '', backgroundColor: 'transparent'},
     // ↑ это чтобы точки выравнивались посередине между линиями сетки
     ...heaps.incomes.map(heap => {
       let data = sumByMonths(heap.coins, ckData.operations)
       return {
         label: heap.title,
-        data: monthAxis.map(ym => data[ym]),
+        data: axis.map(ym => data[ym]),
         borderColor: palette.value[heap.color],
         backgroundColor: changeOpacity(heap.color, 0.2),
         datalabels: {
@@ -46,7 +50,7 @@ let chartData = computed(() => ({
           align: 'end',
           font: {
             size: 11,
-            weight: 'bold'
+            weight: 'bold',
           },
           formatter (value) {
             return humanize(value)
@@ -55,9 +59,7 @@ let chartData = computed(() => ({
       }
     }),
   ]
-}))
-
-let chartRef = ref()
+})
 
 let addHeap = () => {
   heaps.incomes.push({

@@ -1,23 +1,22 @@
 import {computed} from 'vue'
-import {monthsAxisLabels} from '@/services/dates'
 import {sumByMonths} from '@/services/calculator'
 import {changeOpacity, colors, palette} from '@/services/colors'
 import {humanize} from '@/services/numerals'
 import {ckData} from '@/services/store'
 
-export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
+export const incomeVsExpensesMonthly = (axis, axisLabels, heaps) => {
   let coins = [...ckData.incomes, ...ckData.expenses]
   let balanceData = sumByMonths(coins, ckData.operations)
   console.log({balanceData})
 
   return computed(() => ({
-    xLabels: monthsAxisLabels(monthAxis),
+    xLabels: axisLabels,
     datasets: [
       {
         type: 'bar',
         yAxisID: 'yBalance',
         label: 'Доход',
-        data: monthAxis.map(ym => balanceData[ym] >= 0 ? balanceData[ym] : 0),
+        data: axis.map(ym => balanceData[ym] >= 0 ? balanceData[ym] : 0),
         grouped: false,
         borderColor: palette.value.green,
         backgroundColor: changeOpacity(palette.value.green, 0.2),
@@ -32,18 +31,18 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
           align: 'start',
           font: {
             size: 11,
-            weight: 'bold'
+            weight: 'bold',
           },
           formatter (value) {
             return humanize(value)
-          }
-        }
+          },
+        },
       },
       {
         type: 'bar',
         yAxisID: 'yBalance',
         label: 'Убыток',
-        data: monthAxis.map(ym => balanceData[ym] < 0 ? balanceData[ym] : 0),
+        data: axis.map(ym => balanceData[ym] < 0 ? balanceData[ym] : 0),
         grouped: false,
         borderColor: palette.value.red,
         backgroundColor: changeOpacity(palette.value.red, 0.2),
@@ -58,19 +57,19 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
           align: 'end',
           font: {
             size: 11,
-            weight: 'bold'
+            weight: 'bold',
           },
           formatter (value) {
             return humanize(value)
-          }
-        }
+          },
+        },
       },
       ...heaps.map(heap => {
         let data = sumByMonths(heap.coins, ckData.operations)
         return {
           yAxisID: 'yIE',
           label: heap.title,
-          data: monthAxis.map(ym => Math.abs(data[ym])),
+          data: axis.map(ym => Math.abs(data[ym])),
           borderColor: palette.value[heap.color],
           backgroundColor: changeOpacity(heap.color, 0.2),
           datalabels: {
@@ -82,7 +81,7 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
             align: 'end',
             font: {
               size: 11,
-              weight: 'bold'
+              weight: 'bold',
             },
             formatter (value) {
               return humanize(value)
@@ -90,6 +89,6 @@ export const incomeVsExpensesMonthly = (monthAxis, heaps) => {
           },
         }
       }),
-    ]
+    ],
   }))
 }

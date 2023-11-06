@@ -1,18 +1,6 @@
 import * as constants from '../constants'
-import {createMonthsAxis, date2ym} from './dates'
-
-/**
- * Делает массив со всеми месяцами подряд с первого до последнего,
- * когда были операции
- * @param {Array} operations
- * @return {string[]} ['2019-01', '2019-02', ..., '2020-12', '2021-01']
- */
-export const createMonthAxis = operations => {
-  return createMonthsAxis(
-    operations[0].date.date,
-    operations[operations.length - 1].date.date
-  )
-}
+import {date2ym} from './dates'
+import {createAxis} from '@/services/chart.js'
 
 /**
  * Помесячное суммирование доходов и расходов выбранных категорий
@@ -71,9 +59,9 @@ export const calcAccountInitialValue = (account, operations) => {
 
 export const accountHistoryByMonths = (account, operations) => {
   let value = account.value
-  let months = createMonthsAxis(
+  let months = createAxis(
     operations[0].date.date,
-    operations[operations.length - 1].date.date
+    operations[operations.length - 1].date.date,
   )
 
   let currentIndex = months.length

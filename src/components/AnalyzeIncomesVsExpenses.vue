@@ -2,8 +2,7 @@
 import {ref} from 'vue'
 import {LineChart} from 'vue-chart-3'
 
-import {defaultChartOptions, defaultScaleX} from '@/services/chart'
-import {createMonthsAxis} from '@/services/dates'
+import {createAxis, defaultChartOptions, defaultScaleX} from '@/services/chart'
 import {colors} from '@/services/colors'
 import {humanize} from '@/services/numerals'
 import {incomeVsExpensesMonthly} from '@/services/prep-chart-data'
@@ -57,13 +56,13 @@ let chartOptions = {
   },
 }
 
-let monthAxis = createMonthsAxis(
+let {axis, axisLabels} = createAxis(
   ckData.operations[0].date.date,
-  lastOperationDate.value
+  lastOperationDate.value,
 )
-console.log({monthAxis})
+console.log({monthAxis: axis})
 
-let chartData = incomeVsExpensesMonthly(monthAxis, heaps.allIncomesVsExpenses)
+let chartData = incomeVsExpensesMonthly(axis, axisLabels, heaps.allIncomesVsExpenses)
 console.log('income vs expenses chartData', chartData)
 
 let chartRef = ref()
@@ -72,7 +71,7 @@ let show = ref(false)
 </script>
 
 <template>
-  <HeapsConfig v-model:show="show" :title="'Расходы и доходы'" operations>
+  <HeapsConfig v-model:show="show" operations title="Расходы и доходы">
     <div v-for="(heap, i) of heaps.allIncomesVsExpenses" :key="`h-in-ex-${i}`">
       <HeapOfCoins v-model="heaps.allIncomesVsExpenses[i]" changeable-color />
     </div>
