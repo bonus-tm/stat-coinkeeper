@@ -2,6 +2,12 @@ export const IN = 'in'
 export const OUT = 'out'
 export const TRANSFER = 'transfer'
 
+export const TIME_STEPS = [
+  {title: 'Месяц', value: 'month'},
+  {title: 'Квартал', value: 'quarter'},
+  {title: 'Год', value: 'year'},
+]
+
 export const MONTHS_LABELS_RUS = {
   '01': 'янв',
   '02': 'фев',

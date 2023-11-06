@@ -6,7 +6,7 @@ import {createAxis, defaultChartOptions, defaultScaleX} from '@/services/chart'
 import {colors} from '@/services/colors'
 import {humanize} from '@/services/numerals'
 import {incomeVsExpensesMonthly} from '@/services/prep-chart-data'
-import {ckData, heaps, lastOperationDate} from '@/services/store'
+import {appSettings, ckData, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import HeapsConfig from '@/components/HeapsConfig.vue'
@@ -56,10 +56,12 @@ let chartOptions = {
   },
 }
 
-let {axis, axisLabels} = createAxis(
-  ckData.operations[0].date.date,
-  lastOperationDate.value,
-)
+let {axis, axisLabels} = createAxis({
+  startDate: ckData.operations[0].date.date,
+  endDate: lastOperationDate.value,
+  step: appSettings.timeStep,
+  wholeYear: appSettings.roundToWholeYear,
+})
 console.log({monthAxis: axis})
 
 let chartData = incomeVsExpensesMonthly(axis, axisLabels, heaps.allIncomesVsExpenses)

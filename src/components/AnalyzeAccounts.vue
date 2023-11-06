@@ -7,7 +7,7 @@ import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/s
 import Currencies from '@/services/currencies'
 import {changeOpacity, palette} from '@/services/colors'
 import {humanize} from '@/services/numerals'
-import {ckData, heaps, lastOperationDate} from '@/services/store'
+import {appSettings, ckData, heaps, lastOperationDate} from '@/services/store'
 
 import ChartPie from '@/components/ChartPie.vue'
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
@@ -38,10 +38,12 @@ let chartOptions = {
     y: {...defaultScaleY, min: 0, stacked: true},
   },
 }
-let {axis, axisLabels} = createAxis(
-  ckData.operations[0].date.date,
-  lastOperationDate.value,
-)
+let {axis, axisLabels} = createAxis({
+  startDate: ckData.operations[0].date.date,
+  endDate: lastOperationDate.value,
+  step: appSettings.timeStep,
+  wholeYear: appSettings.roundToWholeYear,
+})
 
 let totals = {}
 for (let heap of heaps.accounts) {

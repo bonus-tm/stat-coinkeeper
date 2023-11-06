@@ -6,7 +6,7 @@ import {sumPeriods} from '@/services/calculator'
 import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
 import {changeOpacity, colors, palette} from '@/services/colors'
 import {humanize} from '@/services/numerals'
-import {ckData, heaps, lastOperationDate, timescale} from '@/services/store'
+import {appSettings, ckData, heaps, lastOperationDate} from '@/services/store'
 
 import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
@@ -26,16 +26,18 @@ let chartData = ref({
 })
 
 watchEffect(() => {
-  let {axis, axisLabels} = createAxis(
-    ckData.operations[0].date.date,
-    lastOperationDate.value,
-  )
+  let {axis, axisLabels} = createAxis({
+    startDate: ckData.operations[0].date.date,
+    endDate: lastOperationDate.value,
+    step: appSettings.timeStep,
+    wholeYear: appSettings.roundToWholeYear,
+  })
   chartData.value.xLabels = axisLabels
   chartData.value.datasets = [
     {type: 'bar', label: '', backgroundColor: 'transparent'},
     // ↑ это чтобы точки выравнивались посередине между линиями сетки
     ...heaps.incomes.map(heap => {
-      let data = sumPeriods(timescale.value, heap.coins, ckData.operations)
+      let data = sumPeriods(appSettings.timeStep, heap.coins, ckData.operations)
       return {
         label: heap.title,
         data: axis.map(ym => data[ym]),

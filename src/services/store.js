@@ -4,13 +4,13 @@ import localForage from 'localforage'
 export const ready = ref(false)
 export const dragging = ref(false)
 
-/**
- * Масштаб графиков — по месяцам, кварталам или годам
- * 'month'|'quarter'|'year'
- */
-export const timescale = ref('quarter')
-
-export const alignTimeScaleByYear = ref(true)
+export const appSettings = reactive({
+  // Шаг графиков — по месяцам, кварталам или годам
+  timeStep: 'month',
+  // Выравнивать ли графики по годам
+  roundToWholeYear: true,
+})
+watch(appSettings, value => localForage.setItem('appSettings', toRaw(value)))
 
 export const heaps = reactive({
   accounts: [
@@ -103,10 +103,11 @@ export const initStore = async () => {
   console.log('initialize store')
   try {
     await Promise.all([
+      load('appSettings', appSettings),
       load('heaps', heaps),
       load('data', ckData),
     ])
-    console.log('store initialized', {heaps, ckData})
+    console.log('store initialized', {appSettings, heaps, ckData})
 
     ready.value = true
   } catch (e) {

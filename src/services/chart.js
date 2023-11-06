@@ -13,11 +13,9 @@ import {
 } from 'chart.js'
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import {colors} from '@/services/colors'
-import {MONTHS_LABELS_RUS, MONTHS_LABELS_RUS_SINGLE_LETTER, QUARTER_LABELS} from '@/constants'
+import {MONTHS_LABELS_RUS, QUARTER_LABELS} from '@/constants'
 import {date2m, date2q, date2y, pad} from '@/services/dates'
 import {humanize} from '@/services/numerals'
-import {unref} from 'vue'
-import {alignTimeScaleByYear, timescale} from '@/services/store'
 
 export const initChart = () => {
   const MultiStringAxisLabels = {
@@ -60,7 +58,7 @@ export const defaultChartOptions = {
     line: {
       tension: 0.2,
       fill: true,
-    }
+    },
   },
   scales: {},
 }
@@ -111,21 +109,23 @@ export const defaultScaleY = {
 
 /**
  *
- * @param startDate
- * @param endDate
+ * @param startDate {Date}
+ * @param endDate {Date}
+ * @param step {'month'|'quarter'|'year'} шаг графика
+ * @param wholeYear {boolean} дополнять ли пустыми месяцами до целого года
  * @return {{axisLabels: string[], axis: string[]}}
  */
-export const createAxis = (startDate, endDate) => {
+export const createAxis = ({startDate, endDate, step, wholeYear}) => {
   let axis = []
   let axisLabels = []
 
-  switch (timescale.value) {
+  switch (step) {
     case 'month':
-      axis = createMonthsAxis(startDate, endDate, alignTimeScaleByYear.value)
+      axis = createMonthsAxis(startDate, endDate, wholeYear)
       axisLabels = createMonthsAxisLabels(axis)
       break
     case 'quarter':
-      axis = createQuarterAxis(startDate, endDate, alignTimeScaleByYear.value)
+      axis = createQuarterAxis(startDate, endDate, wholeYear)
       axisLabels = createQuarterAxisLabels(axis)
       break
     case 'year':
@@ -135,19 +135,18 @@ export const createAxis = (startDate, endDate) => {
   return {axis, axisLabels}
 }
 
-
 /**
  * Ось по месяцам
  * @param {Date} startDate
  * @param {Date} endDate
- * @param {boolean} alignByYear дополнять ли пустыми месяцами до целого года
+ * @param {boolean} wholeYear дополнять ли пустыми месяцами до целого года
  * @return {string[]}
  */
-const createMonthsAxis = (startDate, endDate, alignByYear = false) => {
+const createMonthsAxis = (startDate, endDate, wholeYear) => {
   let firstYear = date2y(startDate, true)
-  let firstMonth = alignByYear ? 1 : date2m(startDate, true)
+  let firstMonth = wholeYear ? 1 : date2m(startDate, true)
   let lastYear = date2y(endDate, true)
-  let lastMonth = alignByYear ? 12 : date2m(endDate, true)
+  let lastMonth = wholeYear ? 12 : date2m(endDate, true)
 
   let months = []
   for (let y = firstYear; y <= lastYear; y++) {
@@ -164,13 +163,13 @@ const createMonthsAxis = (startDate, endDate, alignByYear = false) => {
  * Ось по кварталам
  * @param startDate
  * @param endDate
- * @param {boolean} alignByYear дополнять ли пустыми кварталами до целого года
+ * @param {boolean} wholeYear дополнять ли пустыми кварталами до целого года
  */
-const createQuarterAxis = (startDate, endDate, alignByYear = true) => {
+const createQuarterAxis = (startDate, endDate, wholeYear) => {
   let firstYear = date2y(startDate, true)
-  let firstQuarter = alignByYear ? 1 : date2q(startDate, true)
+  let firstQuarter = wholeYear ? 1 : date2q(startDate, true)
   let lastYear = date2y(endDate, true)
-  let lastQuarter = alignByYear ? 4 : date2q(endDate, true)
+  let lastQuarter = wholeYear ? 4 : date2q(endDate, true)
 
   let quarters = []
   for (let y = firstYear; y <= lastYear; y++) {
@@ -219,7 +218,7 @@ const createMonthsAxisLabels = (axis, monthsLabels = MONTHS_LABELS_RUS) => {
  * @param {Object} quarterLabels
  * @return {string[]}
  */
-const createQuarterAxisLabels = (axis, quarterLabels= QUARTER_LABELS) => {
+const createQuarterAxisLabels = (axis, quarterLabels = QUARTER_LABELS) => {
   return axis.map((yq, i) => {
     let [y, q] = yq.split('-')
     return q === '1' || i === 0 ? `${quarterLabels[q]}\n${y}` : quarterLabels[q]

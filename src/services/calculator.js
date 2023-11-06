@@ -1,6 +1,6 @@
-import * as constants from '../constants'
-import {date2y, date2ym, date2yq} from './dates'
-import {createAxis} from '@/services/chart.js'
+import * as constants from '@/constants'
+import {createAxis} from '@/services/chart'
+import {date2y, date2ym, date2yq} from '@/services/dates'
 
 const periodIndexGetters = {
   month: date2ym,
@@ -67,10 +67,12 @@ export const calcAccountInitialValue = (account, operations) => {
 
 export const accountHistoryByMonths = (account, operations) => {
   let value = account.value
-  let months = createAxis(
-    operations[0].date.date,
-    operations[operations.length - 1].date.date,
-  )
+  let {axis: months} = createAxis({
+    startDate: operations[0].date.date,
+    endDate: operations[operations.length - 1].date.date,
+    step: 'month',
+    wholeYear: true,
+  })
 
   let currentIndex = months.length
   let currentYM = ''
