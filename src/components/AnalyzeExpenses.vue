@@ -12,53 +12,54 @@ import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
 import HeapsConfig from '@/components/HeapsConfig.vue'
 
-let chartOptions = {
+const chartRef = ref()
+const chartOptions = {
   ...defaultChartOptions,
   scales: {
     x: defaultScaleX,
     y: {...defaultScaleY, min: 0},
   },
 }
-let {axis, axisLabels} = createAxis({
-  startDate: ckData.operations[0].date.date,
-  endDate: lastOperationDate.value,
-  step: appSettings.timeStep,
-  wholeYear: appSettings.roundToWholeYear,
+const chartData = computed(() => {
+  let {axis, axisLabels} = createAxis({
+    startDate: ckData.operations[0].date.date,
+    endDate: lastOperationDate.value,
+    step: appSettings.timeStep,
+    wholeYear: appSettings.roundToWholeYear,
+  })
+
+  return {
+    labels: axisLabels,
+    datasets: [
+      {type: 'bar', label: '', backgroundColor: 'transparent'},
+      // ↑ это чтобы точки выравнивались посередине между линиями сетки
+      ...heaps.expenses.map(heap => {
+        let data = sumPeriods(appSettings.timeStep, heap.coins, ckData.operations)
+        return {
+          label: heap.title,
+          data: axis.map(ym => Math.abs(data[ym])),
+          borderColor: palette.value[heap.color],
+          backgroundColor: changeOpacity(heap.color, 0.2),
+          datalabels: {
+            display: 'auto',
+            color: palette.value[heap.color],
+            backgroundColor: colors.value.chartLabelBgColor,
+            borderRadius: 3,
+            padding: {top: 1, bottom: 0, left: 3, right: 3},
+            align: 'end',
+            font: {
+              size: 11,
+              weight: 'bold',
+            },
+            formatter (value) {
+              return humanize(value)
+            },
+          },
+        }
+      }),
+    ],
+  }
 })
-
-let chartData = computed(() => ({
-  labels: axisLabels,
-  datasets: [
-    {type: 'bar', label: '', backgroundColor: 'transparent'},
-    // ↑ это чтобы точки выравнивались посередине между линиями сетки
-    ...heaps.expenses.map(heap => {
-      let data = sumPeriods(appSettings.timeStep, heap.coins, ckData.operations)
-      return {
-        label: heap.title,
-        data: axis.map(ym => Math.abs(data[ym])),
-        borderColor: palette.value[heap.color],
-        backgroundColor: changeOpacity(heap.color, 0.2),
-        datalabels: {
-          display: 'auto',
-          color: palette.value[heap.color],
-          backgroundColor: colors.value.chartLabelBgColor,
-          borderRadius: 3,
-          padding: {top: 1, bottom: 0, left: 3, right: 3},
-          align: 'end',
-          font: {
-            size: 11,
-            weight: 'bold',
-          },
-          formatter (value) {
-            return humanize(value)
-          },
-        },
-      }
-    }),
-  ],
-}))
-
-let chartRef = ref()
 
 let addHeap = () => {
   heaps.expenses.push({

@@ -20,8 +20,8 @@ import {humanize} from '@/services/numerals'
 export const initChart = () => {
   const MultiStringAxisLabels = {
     id: 'labels-split',
-    beforeInit (chart) {
-      // console.log('beforeInit', chart)
+    beforeLayout (chart) {
+      // console.log('beforeLayout', chart)
       chart.data.labels?.forEach((value, i, labels) => {
         if (/\n/.test(value)) {
           labels[i] = value.split(/\n/)

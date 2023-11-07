@@ -28,7 +28,8 @@ let pieChartData = computed(() => {
   }))
 })
 
-let chartOptions = {
+const chartRef = ref()
+const chartOptions = {
   ...defaultChartOptions,
   elements: {
     bar: {},
@@ -38,39 +39,17 @@ let chartOptions = {
     y: {...defaultScaleY, min: 0, stacked: true},
   },
 }
-let {axis, axisLabels} = createAxis({
-  startDate: ckData.operations[0].date.date,
-  endDate: lastOperationDate.value,
-  step: appSettings.timeStep,
-  wholeYear: appSettings.roundToWholeYear,
-})
+const chartData = computed(() => {
+  let {axis, axisLabels} = createAxis({
+    startDate: ckData.operations[0].date.date,
+    endDate: lastOperationDate.value,
+    step: appSettings.timeStep,
+    wholeYear: appSettings.roundToWholeYear,
+  })
 
-let totals = {}
-for (let heap of heaps.accounts) {
-  for (let account of heap.coins) {
-    let history = accountHistoryByMonths(account, ckData.operations)
-    if (account.currency !== Currencies.baseCurrency) {
-      for (let [ym, value] of Object.entries(history)) {
-        let rate = Currencies.rate(account.currency, ym)
-        history[ym] = Math.round(value / rate)
-      }
-    }
-    for (let [ym, value] of Object.entries(history)) {
-      totals[ym] ??= 0
-      totals[ym] += value
-    }
-  }
-}
-console.log({totals})
-let totalsNull = axis.map(() => null)
-let totalsData = axis.map(ym => totals[ym])
-
-let chartData = computed(() => ({
-  labels: axisLabels,
-  datasets: heaps.accounts.map(heap => {
-    // посчитать для каждого кошелька в куче историю по месяцам
-    // получим массив объектов
-    let histories = heap.coins.map(account => {
+  let totals = {}
+  for (let heap of heaps.accounts) {
+    for (let account of heap.coins) {
       let history = accountHistoryByMonths(account, ckData.operations)
       if (account.currency !== Currencies.baseCurrency) {
         for (let [ym, value] of Object.entries(history)) {
@@ -78,90 +57,112 @@ let chartData = computed(() => ({
           history[ym] = Math.round(value / rate)
         }
       }
-      // console.log('histories', account, history)
-      return history
-    })
-
-    let dataLabelFontSize = 11
-    return {
-      label: heap.title,
-      // дальше надо их одинаковые поля просуммировать
-      data: axis.map(ym => {
-        return histories.reduce((sum, history) => {
-          sum += history[ym]
-          return sum
-        }, 0)
-      }),
-      grouped: false,
-      borderColor: palette.value[heap.color],
-      backgroundColor: changeOpacity(heap.color, 0.3),
-      datalabels: {
-        display (context) {
-          // Определить минимальное значение, в которое по высоте влезет лейбл
-          let threshold = context.chart.scales.y.max / context.chart.scales.y.maxHeight * (dataLabelFontSize + 4)
-          return context.dataset.data[context.dataIndex] > threshold
-        },
-        color: palette.value[heap.color],
-        // backgroundColor: getDataLabelBg(),
-        // borderRadius: 3,
-        // padding: {top: 1, bottom: 0, left: 3, right: 3},
-        anchor: 'center',
-        labels: {
-          value: {
-            align: 'end',
-            offset: -5,
-            font: {
-              size: dataLabelFontSize,
-              weight: 'bold',
-            },
-            formatter (value, context) {
-              return humanize(value)
-            },
-          },
-          percent: {
-            align: 'start',
-            offset: -4,
-            font: {
-              size: 9,
-              weight: 'normal',
-            },
-            formatter (value, context) {
-              return `${Math.round(100 * value / totalsData[context.dataIndex])}%`
-            },
-          },
-        },
-      },
+      for (let [ym, value] of Object.entries(history)) {
+        totals[ym] ??= 0
+        totals[ym] += value
+      }
     }
-  }).concat([{
-    label: '',
-    data: totalsNull,
-    grouped: false,
-    skipNulls: true,
-    borderColor: 'transparent',
-    backgroundColor: 'transparent',
-    datalabels: {
-      display: true,
-      color: '#777',
-      backgroundColor: 'transparent',
-      borderRadius: 3,
-      padding: {top: 1, bottom: 0, left: 3, right: 3},
-      anchor: 'end',
-      align: 'end',
-      offset (context) {
-        return context.chart.chartArea.height - 15
-      },
-      font: {
-        size: 10,
-        weight: 'bold',
-      },
-      formatter (value, context) {
-        return humanize(totalsData[context.dataIndex])
-      },
-    },
-  }]),
-}))
+  }
+  console.log({totals})
+  let totalsNull = axis.map(() => null)
+  let totalsData = axis.map(ym => totals[ym])
 
-let chartRef = ref()
+  return {
+    labels: axisLabels,
+    datasets: heaps.accounts.map(heap => {
+      // посчитать для каждого кошелька в куче историю по месяцам
+      // получим массив объектов
+      let histories = heap.coins.map(account => {
+        let history = accountHistoryByMonths(account, ckData.operations)
+        if (account.currency !== Currencies.baseCurrency) {
+          for (let [ym, value] of Object.entries(history)) {
+            let rate = Currencies.rate(account.currency, ym)
+            history[ym] = Math.round(value / rate)
+          }
+        }
+        // console.log('histories', account, history)
+        return history
+      })
+
+      let dataLabelFontSize = 11
+      return {
+        label: heap.title,
+        // дальше надо их одинаковые поля просуммировать
+        data: axis.map(ym => {
+          return histories.reduce((sum, history) => {
+            sum += history[ym]
+            return sum
+          }, 0)
+        }),
+        grouped: false,
+        borderColor: palette.value[heap.color],
+        backgroundColor: changeOpacity(heap.color, 0.3),
+        datalabels: {
+          display (context) {
+            // Определить минимальное значение, в которое по высоте влезет лейбл
+            let threshold = context.chart.scales.y.max / context.chart.scales.y.maxHeight * (dataLabelFontSize + 4)
+            return context.dataset.data[context.dataIndex] > threshold
+          },
+          color: palette.value[heap.color],
+          // backgroundColor: getDataLabelBg(),
+          // borderRadius: 3,
+          // padding: {top: 1, bottom: 0, left: 3, right: 3},
+          anchor: 'center',
+          labels: {
+            value: {
+              align: 'end',
+              offset: -5,
+              font: {
+                size: dataLabelFontSize,
+                weight: 'bold',
+              },
+              formatter (value, context) {
+                return humanize(value)
+              },
+            },
+            percent: {
+              align: 'start',
+              offset: -4,
+              font: {
+                size: 9,
+                weight: 'normal',
+              },
+              formatter (value, context) {
+                return `${Math.round(100 * value / totalsData[context.dataIndex])}%`
+              },
+            },
+          },
+        },
+      }
+    }).concat([{
+      label: '',
+      data: totalsNull,
+      grouped: false,
+      skipNulls: true,
+      borderColor: 'transparent',
+      backgroundColor: 'transparent',
+      datalabels: {
+        display: true,
+        color: '#777',
+        backgroundColor: 'transparent',
+        borderRadius: 3,
+        padding: {top: 1, bottom: 0, left: 3, right: 3},
+        anchor: 'end',
+        align: 'end',
+        offset (context) {
+          return context.chart.chartArea.height - 15
+        },
+        font: {
+          size: 10,
+          weight: 'bold',
+        },
+        formatter (value, context) {
+          return humanize(totalsData[context.dataIndex])
+        },
+      },
+    }]),
+  }
+})
 
 let addHeap = () => {
   heaps.accounts.push({

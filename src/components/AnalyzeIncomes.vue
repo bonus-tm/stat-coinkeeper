@@ -1,5 +1,5 @@
 <script setup>
-import {ref, watchEffect} from 'vue'
+import {computed, ref} from 'vue'
 import {Line} from 'vue-chartjs'
 
 import {sumPeriods} from '@/services/calculator'
@@ -12,55 +12,53 @@ import HeapOfCoins from '@/components/HeapOfCoins.vue'
 import Icon from '@/components/Icon.vue'
 import HeapsConfig from '@/components/HeapsConfig.vue'
 
-let chartRef = ref()
-let chartOptions = {
+const chartRef = ref()
+const chartOptions = {
   ...defaultChartOptions,
   scales: {
     x: defaultScaleX,
     y: defaultScaleY,
   },
 }
-let chartData = ref({
-  labels: [],
-  datasets: [],
-})
 
-watchEffect(() => {
+const chartData = computed(() => {
   let {axis, axisLabels} = createAxis({
     startDate: ckData.operations[0].date.date,
     endDate: lastOperationDate.value,
     step: appSettings.timeStep,
     wholeYear: appSettings.roundToWholeYear,
   })
-  chartData.value.labels = axisLabels
-  chartData.value.datasets = [
-    {type: 'bar', label: '', backgroundColor: 'transparent'},
-    // ↑ это чтобы точки выравнивались посередине между линиями сетки
-    ...heaps.incomes.map(heap => {
-      let data = sumPeriods(appSettings.timeStep, heap.coins, ckData.operations)
-      return {
-        label: heap.title,
-        data: axis.map(ym => data[ym]),
-        borderColor: palette.value[heap.color],
-        backgroundColor: changeOpacity(heap.color, 0.2),
-        datalabels: {
-          display: 'auto',
-          color: palette.value[heap.color],
-          backgroundColor: colors.value.chartLabelBgColor,
-          borderRadius: 3,
-          padding: {top: 1, bottom: 0, left: 3, right: 3},
-          align: 'end',
-          font: {
-            size: 11,
-            weight: 'bold',
+  return {
+    labels: axisLabels,
+    datasets: [
+      {type: 'bar', label: '', backgroundColor: 'transparent'},
+      // ↑ это чтобы точки выравнивались посередине между линиями сетки
+      ...heaps.incomes.map(heap => {
+        let data = sumPeriods(appSettings.timeStep, heap.coins, ckData.operations)
+        return {
+          label: heap.title,
+          data: axis.map(ym => data[ym]),
+          borderColor: palette.value[heap.color],
+          backgroundColor: changeOpacity(heap.color, 0.2),
+          datalabels: {
+            display: 'auto',
+            color: palette.value[heap.color],
+            backgroundColor: colors.value.chartLabelBgColor,
+            borderRadius: 3,
+            padding: {top: 1, bottom: 0, left: 3, right: 3},
+            align: 'end',
+            font: {
+              size: 11,
+              weight: 'bold',
+            },
+            formatter (value) {
+              return humanize(value)
+            },
           },
-          formatter (value) {
-            return humanize(value)
-          },
-        },
-      }
-    }),
-  ]
+        }
+      }),
+    ],
+  }
 })
 
 let addHeap = () => {
