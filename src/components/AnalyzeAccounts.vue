@@ -4,7 +4,7 @@ import {Bar} from 'vue-chartjs'
 
 import {accountHistoryByMonths} from '@/services/calculator'
 import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
-import Currencies from '@/services/currencies'
+import Currencies from '@/services/currencies/exchangerate.host.js'
 import {changeOpacity, palette} from '@/services/colors'
 import {humanize} from '@/services/numerals'
 import {appSettings, ckData, heaps, lastOperationDate} from '@/services/store'

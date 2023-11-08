@@ -10,7 +10,7 @@ import {
   lastDayOfMonth,
   lastDayOfYear
 } from 'date-fns'
-import fetchUrl from './fetch'
+import fetchUrl from '@/services/fetch'
 
 const SAVE_KEY = 'currencies'
 const API_BASE_URL = 'https://api.exchangerate.host'
