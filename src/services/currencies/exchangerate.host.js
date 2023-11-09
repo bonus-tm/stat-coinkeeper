@@ -85,7 +85,6 @@ const fetchHistory = async (base, symbols, startDate, endDate) => {
     currencies: symbols,
     start_date: format(startDate, YMD),
     end_date: format(endDate, YMD),
-    wtf: Math.round(Math.random() * 100000),
   })
   if (response.success) {
     console.log('fetch history', response.quotes, removeBaseSymbol(base, response.quotes))
