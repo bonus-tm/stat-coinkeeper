@@ -1,19 +1,12 @@
 import localForage from 'localforage'
 import {merge} from 'lodash'
-import {
-  eachMonthOfInterval,
-  eachYearOfInterval,
-  format,
-  isThisMonth,
-  isThisYear,
-  isToday,
-  lastDayOfMonth,
-  lastDayOfYear
-} from 'date-fns'
+import {eachMonthOfInterval, eachYearOfInterval, format, isThisMonth, isThisYear, isToday, lastDayOfMonth, lastDayOfYear} from 'date-fns'
 import fetchUrl from '@/services/fetch'
 
 const SAVE_KEY = 'currencies'
-const API_BASE_URL = 'https://api.exchangerate.host'
+const API_BASE_URL = 'http://api.exchangerate.host'
+const API_ACCESS_KEY = 'f97d1abbfede56b47089c06d8489ee89'
+const access_key = API_ACCESS_KEY
 const HISTORY_START_DATE = new Date(2019, 0, 1)
 
 const YMD = 'yyyy-MM-dd'
@@ -57,6 +50,72 @@ const YM = 'yyyy-MM'
  *  }
  */
 
+/**
+ * Запрос текущих курсов для списка валют
+ * @param base {string} базовая валюта
+ * @param symbols {string[]} список валют
+ * @return {{}|false}
+ */
+const fetchLatest = async (base, symbols) => {
+  let response = await fetchUrl(API_BASE_URL + '/live', {
+    access_key,
+    source: base,
+    currencies: symbols,
+  })
+  if (response.success) {
+    return removeBaseSymbol(base, response.quotes)
+  } else {
+    console.warn('load latest problem:', response)
+    return false
+  }
+}
+
+/**
+ * Запрос истории курсов в заданном интервале
+ * @param base {string} базовая валюта
+ * @param symbols {string[]} список валют
+ * @param startDate {Date}
+ * @param endDate {Date}
+ * @return {{}|false}
+ */
+const fetchHistory = async (base, symbols, startDate, endDate) => {
+  let response = await fetchUrl(API_BASE_URL + '/timeframe', {
+    access_key,
+    source: base,
+    currencies: symbols,
+    start_date: format(startDate, YMD),
+    end_date: format(endDate, YMD),
+    wtf: Math.round(Math.random() * 100000),
+  })
+  if (response.success) {
+    console.log('fetch history', response.quotes, removeBaseSymbol(base, response.quotes))
+    return removeBaseSymbol(base, response.quotes)
+  } else {
+    console.warn('load history problem:', response)
+    return false
+  }
+}
+
+/**
+ * Убрать базовую валюту из ключа конвертации в ответе
+ * @param base
+ * @param quotes
+ */
+const removeBaseSymbol = (base, quotes) => {
+  let clean = {}
+  for (let [key, value] of Object.entries(quotes)) {
+    if (typeof value === 'object') {
+      clean[key] ??= {}
+      for (let [key2, value2] of Object.entries(value)) {
+        clean[key][key2.replace(base, '')] = value2
+      }
+    } else {
+      clean[key.replace(base, '')] = value
+    }
+  }
+  return clean
+}
+
 export default {
   _currencies: {},
   baseCurrency: '',
@@ -71,7 +130,7 @@ export default {
       merge(
         this._currencies,
         await this._loadLatest(base, symbols),
-        await this._loadHistory(base, symbols)
+        await this._loadHistory(base, symbols),
       )
     }
 
@@ -82,7 +141,7 @@ export default {
       merge(
         this._currencies,
         await this._loadLatest(base, omittedSymbols),
-        await this._loadHistory(base, omittedSymbols)
+        await this._loadHistory(base, omittedSymbols),
       )
     }
 
@@ -94,7 +153,7 @@ export default {
       if (!isToday(new Date(updatedAt))) {
         merge(
           this._currencies,
-          await this._loadLatest(base, [symbol])
+          await this._loadLatest(base, [symbol]),
         )
       }
 
@@ -103,7 +162,7 @@ export default {
       if (!isThisMonth(latestMonth)) {
         merge(
           this._currencies,
-          await this._loadHistory(base, [symbol], latestMonth)
+          await this._loadHistory(base, [symbol], latestMonth),
         )
       }
 
@@ -137,7 +196,7 @@ export default {
   async _restore () {
     let {
       base = '',
-      currencies = {}
+      currencies = {},
     } = (await localForage.getItem(SAVE_KEY)) || {}
     this.baseCurrency = base
     this._currencies = currencies
@@ -152,15 +211,14 @@ export default {
    */
   async _loadLatest (base, symbols) {
     let result = {}
-    let response = await fetchUrl(API_BASE_URL + '/latest', {base, symbols})
-    if (!response.success) {
-      console.warn('load latest problem:', response)
-    } else {
-      symbols.filter(symbol => response.rates[symbol])
+    let rates = await fetchLatest(base, symbols)
+    if (rates) {
+      console.log('live rates', {rates})
+      symbols.filter(symbol => rates[symbol])
         .forEach(symbol => {
           result[symbol] = {
-            latest: response.rates[symbol],
-            updatedAt: Date.now()
+            latest: rates[symbol],
+            updatedAt: Date.now(),
           }
         })
     }
@@ -179,7 +237,7 @@ export default {
     let result = {}
     for (let symbol of symbols) {
       result[symbol] = {
-        history: {}
+        history: {},
       }
     }
 
@@ -189,22 +247,16 @@ export default {
       let startDate = year
       let endDate = isThisYear(year) ? end : lastDayOfYear(year)
 
-      let response = await fetchUrl(API_BASE_URL + '/timeseries', {
-        base,
-        symbols,
-        start_date: format(startDate, YMD),
-        end_date: format(endDate, YMD),
-      })
-      if (!response.success) {
-        console.warn('load history problem:', response)
-      } else {
+      let rates = await fetchHistory(base, symbols, startDate, endDate)
+      console.log('history rates', {year, rates})
+      if (rates) {
         // Достать значения только для последнего дня каждого месяца
         let months = eachMonthOfInterval({start: startDate, end: endDate})
         for (let month of months) {
-          let rates = response.rates[format(lastDayOfMonth(month), YMD)] || {}
+          let monthRates = rates[format(lastDayOfMonth(month), YMD)] || {}
 
           for (let symbol of symbols) {
-            result[symbol].history[format(month, YM)] = rates[symbol]
+            result[symbol].history[format(month, YM)] = monthRates[symbol]
           }
         }
       }

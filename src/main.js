@@ -1,7 +1,7 @@
 import {createApp} from 'vue'
 import localForage from 'localforage'
 import {initStore} from '@/services/store'
-// import Currencies from '@/services/currencies/exchangerate.host'
+import Currencies from '@/services/currencies/exchangerate.host'
 import {initChart} from '@/services/chart'
 import {startDarkModeWatch} from '@/services/colors'
 
@@ -22,5 +22,5 @@ startDarkModeWatch()
 
 await Promise.all([
   initStore(),
-  // Currencies.init('RUB', ['USD', 'EUR']),
+  Currencies.init('RUB', ['USD', 'EUR']),
 ])
