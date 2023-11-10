@@ -22,5 +22,5 @@ startDarkModeWatch()
 
 await Promise.all([
   initStore(),
-  Currencies.init(['USD', 'EUR']),
+  Currencies.init('RUB', ['USD', 'EUR']),
 ])

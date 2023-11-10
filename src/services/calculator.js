@@ -1,5 +1,4 @@
 import * as constants from '@/constants'
-import {createAxis} from '@/services/chart'
 import {date2y, date2ym, date2yq} from '@/services/dates'
 
 const periodIndexGetters = {
@@ -10,12 +9,12 @@ const periodIndexGetters = {
 
 /**
  * Суммирование доходов и расходов выбранных категорий по заданному масштабу
- * @param {'month'|'quarter'|'year'} timescale
+ * @param {'month'|'quarter'|'year'} timeStep
  * @param {[]} coins выбранные категории расходов и источников доходов
  * @param {[]} operations
  * @return {{}} {'2019-01': 12345, '2019-02': 45678, ...}
  */
-export const sumPeriods = (timescale, coins, operations) => {
+export const sumPeriods = (timeStep, coins, operations) => {
   let periods = {}
   for (let op of operations) {
     let isExpense = op.direction === 'out' &&
@@ -24,7 +23,7 @@ export const sumPeriods = (timescale, coins, operations) => {
       coins.some(coin => coin.type === 'income' && coin.title === op.source)
 
     if (isExpense || isIncome) {
-      let index = periodIndexGetters[timescale](op.date.date)
+      let index = periodIndexGetters[timeStep](op.date.date)
       if (typeof periods[index] === 'undefined') {
         periods[index] = 0
       }
@@ -65,27 +64,22 @@ export const calcAccountInitialValue = (account, operations) => {
   return value
 }
 
-export const accountHistoryByMonths = (account, operations) => {
+export const accountHistory = (timeStep, axis, account, operations) => {
   let value = account.value
-  let {axis: months} = createAxis({
-    startDate: operations[0].date.date,
-    endDate: operations[operations.length - 1].date.date,
-    step: 'month',
-    wholeYear: true,
-  })
+  let periods = {}
 
-  let currentIndex = months.length
-  let currentYM = ''
+  let currentStep = axis.length
+  let currentPeriodIndex = ''
 
   for (let i = operations.length - 1; i >= 0; i--) {
     let op = operations[i]
 
-    // если сменился месяц, то перейти на следующий и вписать значение
-    if (date2ym(op.date.date) !== currentYM) {
-      while (currentIndex > 0 && date2ym(op.date.date) !== currentYM) {
-        currentIndex--
-        currentYM = months[currentIndex]
-        months[currentIndex] = [months[currentIndex], value]
+    // если сменился период, то перейти на следующий и вписать значение
+    if (periodIndexGetters[timeStep](op.date.date) !== currentPeriodIndex) {
+      while (currentStep > 0 && periodIndexGetters[timeStep](op.date.date) !== currentPeriodIndex) {
+        currentStep--
+        currentPeriodIndex = axis[currentStep]
+        periods[currentPeriodIndex] = value
       }
     }
 
@@ -102,5 +96,5 @@ export const accountHistoryByMonths = (account, operations) => {
       break
     }
   }
-  return Object.fromEntries(months)
+  return periods
 }

@@ -1,7 +1,7 @@
 import localForage from 'localforage'
-import {format, isThisMonth, isToday, subDays} from 'date-fns'
+import {format, isFuture, isThisMonth, isToday, subDays} from 'date-fns'
 
-import {date2ym, lastDaysOfMonth} from '@/services/dates'
+import {date2q, date2y, date2ym, lastDaysOfMonth, pad} from '@/services/dates'
 import fetchUrl from '@/services/fetch'
 import {currencyRates} from '@/services/store'
 
@@ -66,10 +66,13 @@ const fetchRates = async (symbols, date) => {
 
 export default {
   _rates: {},
+  baseCurrency: '',
   updatedAt: null,
 
-  async init (symbols = ['USD', 'EUR'], startDate = DEFAULT_HISTORY_START_DATE) {
+  async init (base = 'RUB', symbols = ['USD', 'EUR'], startDate = DEFAULT_HISTORY_START_DATE) {
     currencyRates.value.status = 'loading'
+    this.baseCurrency = base
+
     await this._restore()
 
     let months = lastDaysOfMonth(startDate, new Date())
@@ -83,8 +86,20 @@ export default {
     currencyRates.value.status = 'ready'
   },
 
-  rate (symbol, month) {
-    return this._rates[month ?? date2ym(new Date())]?.[symbol]
+  // TODO может переделать здесь логику дат и шагов
+  rate (symbol, timeStep, period) {
+    let month = period ?? date2ym(new Date())
+    if (timeStep === 'year') {
+      month = `${period}-12`
+    } else if (timeStep === 'quarter') {
+      let [year, quarter] = period?.split('-') ?? [date2y(new Date()), date2q(new Date())]
+      month = `${year}-${pad(quarter * 3)}`
+    }
+    let monthDate = new Date(`${month}-01`)
+    if (isFuture(monthDate)) {
+      month = date2ym(new Date())
+    }
+    return this._rates[month]?.[symbol]
   },
 
   _save () {

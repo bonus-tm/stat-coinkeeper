@@ -2,9 +2,9 @@
 import {computed, ref, toRaw} from 'vue'
 import {Bar} from 'vue-chartjs'
 
-import {accountHistoryByMonths} from '@/services/calculator'
+import {accountHistory} from '@/services/calculator'
 import {createAxis, defaultChartOptions, defaultScaleX, defaultScaleY} from '@/services/chart'
-import Currencies from '@/services/currencies/exchangerate.host.js'
+import Currencies from '@/services/currencies/cbr-xml-daily.ru'
 import {changeOpacity, palette} from '@/services/colors'
 import {humanize} from '@/services/numerals'
 import {appSettings, ckData, heaps, lastOperationDate} from '@/services/store'
@@ -21,8 +21,8 @@ let pieChartData = computed(() => {
     value: heap.coins.reduce((acc, coin) => {
       let rate = coin.currency === Currencies.baseCurrency
         ? 1
-        : Currencies.rate(coin.currency)
-      acc += coin.value / rate
+        : Currencies.rate(coin.currency, appSettings.timeStep)
+      acc += coin.value * rate
       return acc
     }, 0),
   }))
@@ -50,22 +50,22 @@ const chartData = computed(() => {
   let totals = {}
   for (let heap of heaps.accounts) {
     for (let account of heap.coins) {
-      let history = accountHistoryByMonths(account, ckData.operations)
+      let history = accountHistory(appSettings.timeStep, axis, account, ckData.operations)
       if (account.currency !== Currencies.baseCurrency) {
-        for (let [ym, value] of Object.entries(history)) {
-          let rate = Currencies.rate(account.currency, ym)
-          history[ym] = Math.round(value / rate)
+        for (let [period, value] of Object.entries(history)) {
+          let rate = Currencies.rate(account.currency, appSettings.timeStep, period)
+          history[period] = Math.round(value * rate)
         }
       }
-      for (let [ym, value] of Object.entries(history)) {
-        totals[ym] ??= 0
-        totals[ym] += value
+      for (let [period, value] of Object.entries(history)) {
+        totals[period] ??= 0
+        totals[period] += value
       }
     }
   }
   console.log({totals})
   let totalsNull = axis.map(() => null)
-  let totalsData = axis.map(ym => totals[ym])
+  let totalsData = axis.map(period => totals[period])
 
   return {
     labels: axisLabels,
@@ -73,11 +73,11 @@ const chartData = computed(() => {
       // посчитать для каждого кошелька в куче историю по месяцам
       // получим массив объектов
       let histories = heap.coins.map(account => {
-        let history = accountHistoryByMonths(account, ckData.operations)
+        let history = accountHistory(appSettings.timeStep, axis, account, ckData.operations)
         if (account.currency !== Currencies.baseCurrency) {
-          for (let [ym, value] of Object.entries(history)) {
-            let rate = Currencies.rate(account.currency, ym)
-            history[ym] = Math.round(value / rate)
+          for (let [period, value] of Object.entries(history)) {
+            let rate = Currencies.rate(account.currency, appSettings.timeStep, period)
+            history[period] = Math.round(value * rate)
           }
         }
         // console.log('histories', account, history)
@@ -88,9 +88,9 @@ const chartData = computed(() => {
       return {
         label: heap.title,
         // дальше надо их одинаковые поля просуммировать
-        data: axis.map(ym => {
+        data: axis.map(period => {
           return histories.reduce((sum, history) => {
-            sum += history[ym]
+            sum += history[period]
             return sum
           }, 0)
         }),
