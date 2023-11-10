@@ -2,6 +2,10 @@ import {computed, reactive, ref, toRaw, watch} from 'vue'
 import localForage from 'localforage'
 
 export const ready = ref(false)
+export const currencyRates = ref({
+  status: 'uninitialized',
+  progress: 0,
+})
 export const dragging = ref(false)
 
 export const appSettings = reactive({

@@ -2,9 +2,12 @@
 import {computed} from 'vue'
 import {formatDistanceToNow, lightFormat} from 'date-fns'
 import {ru} from 'date-fns/locale'
-import {appSettings, clearData, hasData, lastOperationDate} from '@/services/store.js'
+
+import {appSettings, clearData, currencyRates, hasData, lastOperationDate} from '@/services/store'
+import {TIME_STEPS} from '@/constants'
+
+import ProgressBar from '@/components/ProgressBar.vue'
 import SlidePanel from '@/components/SlidePanel.vue'
-import {TIME_STEPS} from '@/constants.js'
 
 let dataExportedAgo = computed(() => {
   if (!lastOperationDate.value) return ''
@@ -50,18 +53,23 @@ const reset = () => {
       </template>
     </SlidePanel>
     <div>
-      <div v-if="hasData">
-        Последняя операция
-        {{ dataExportedAgo }},
-        {{ lightFormat(lastOperationDate, 'dd.MM.yyyy') }}
-      </div>
+      <transition name="fade" mode="out-in">
+        <div v-if="currencyRates.status === 'loading'" class="currency-message">
+          <div>Обновление курсов валют...</div>
+          <ProgressBar :current="currencyRates.progress" />
+        </div>
+        <div v-else-if="hasData">
+          Последняя операция
+          {{ dataExportedAgo }},
+          {{ lightFormat(lastOperationDate, 'dd.MM.yyyy') }}
+        </div>
+      </transition>
     </div>
     <h1>Статистика из Coin Keeper</h1>
-    <div>
+    <div class="data-buttons">
       <button v-if="hasData" class="btn" @click="clearData">
         Очистить только данные
       </button>
-      &nbsp;
       <button v-if="hasData" class="btn" @click="reset">
         Удалить всё
       </button>
@@ -71,6 +79,7 @@ const reset = () => {
 
 <style scoped>
 header {
+  --gap: 1rem;
   background:
     linear-gradient(90deg, var(--nav-bg) 20%, transparent 40% 55%, var(--nav-bg) 75%),
     repeating-linear-gradient(-50deg, var(--ornament) 1px 1px, transparent 2px 10px, var(--ornament) 11px),
@@ -78,16 +87,29 @@ header {
   color: var(--nav-color);
   padding: 0 1rem;
   display: grid;
-  grid-template-columns: max-content max-content auto max-content;
+  grid-template-columns: max-content 1fr max-content 1fr;
   align-items: center;
+  gap: var(--gap);
 }
 h4 {
   margin: 1.5em 0 0.5em;
 }
+.data-buttons {
+  justify-self: end;
+  display: flex;
+  gap: var(--gap);
+}
+
 label.radio {
   margin-bottom: 0.5rem;
   display: flex;
   align-items: flex-start;
+  gap: 0.25rem;
+}
+.currency-message {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
   gap: 0.25rem;
 }
 </style>

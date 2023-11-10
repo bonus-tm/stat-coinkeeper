@@ -32,6 +32,7 @@ import UploadFile from '@/components/UploadFile.vue'
     <p>
       Все данные хранятся только в браузере и никуда не передаются.
       Сайт только загружается с сервера и больше с ним не взаимодействует.
+      <a href="https://www.cbr-xml-daily.ru/">Курсы валют, API</a>.
     </p>
   </footer>
 </template>

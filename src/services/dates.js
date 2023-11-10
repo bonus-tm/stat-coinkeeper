@@ -1,3 +1,5 @@
+import {eachMonthOfInterval, lastDayOfMonth} from 'date-fns'
+
 /**
  * Pad start string with zeroes
  * @param {Number|String} value
@@ -67,4 +69,18 @@ export const date2ymd = date => {
   let m = date2m(date)
   let d = pad(date.getDate())
   return `${y}-${m}-${d}`
+}
+
+/**
+ * Список последних дней каждого месяца в интервале
+ * @param start {Date}
+ * @param end {Date}
+ * @return {{}}
+ */
+export const lastDaysOfMonth = (start, end) => {
+  let days = {}
+  for (let month of eachMonthOfInterval({start, end})) {
+    days[date2ym(month)] = lastDayOfMonth(month)
+  }
+  return days
 }

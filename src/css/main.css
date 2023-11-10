@@ -18,6 +18,11 @@
 
   --panel-cover: rgba(0 0 0 / 10%);
   --panel-shadow: 10px 0 25px rgb(0 0 0 / 15%);
+
+  --progress-bar-height: 5px;
+  --progress-bar-bg1: #c7c7c7;
+  --progress-bar-bg2: #e7e7e7;
+  --progress-bar-fill: #777;
 }
 @media (prefers-color-scheme: dark) {
   :root {
@@ -34,6 +39,10 @@
 
     --panel-cover: rgba(255 255 255 / 3%);
     --panel-shadow: 10px 0 15px rgb(255 255 255 / 5%);
+
+    --progress-bar-bg1: #555;
+    --progress-bar-bg2: #333;
+    --progress-bar-fill: #ccc;
   }
 }
 * {
@@ -68,7 +77,9 @@ footer {
   font-size: 0.75rem;
   text-align: center;
 }
-
+footer a {
+  color: var(--footer-color);
+}
 .line-container {
   position: relative;
   width: 100vw;
@@ -135,8 +146,8 @@ button {
 }
 
 .hamburger {
-  width: 36px;
-  padding: 0 8px;
+  width: 20px;
+  padding: 0;
 }
 .hamburger:before,
 .hamburger:after,
