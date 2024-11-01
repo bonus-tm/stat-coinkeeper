@@ -79,16 +79,29 @@ export const defaultScaleX = {
         : colors.value.chartGridColor
     },
     border: {
+      z: -9,
       color: colors.value.chartBorderColor,
       // dash: [1, 3],
     },
-    tickColor: colors.value.chartTickColor,
+    tickColor (context) {
+      let label = ''
+      if (Array.isArray(context.tick?.label)) {
+        label = context.tick.label[0]
+      }
+      let isJanuary = label.toLocaleLowerCase().startsWith('я')
+      let isFirstQuarter = label === QUARTER_LABELS['1']
+      return isJanuary || isFirstQuarter
+        ? colors.value.chartBorderColor
+        : colors.value.chartGridColor
+    },
     tickLength: 5,
+    z: -10,
   },
   ticks: {
     maxRotation: 0,
     padding: 5,
     autoSkip: false,
+    z: -5,
   },
 }
 export const defaultScaleY = {
