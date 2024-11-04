@@ -1,6 +1,6 @@
 <script setup>
 import {ref} from 'vue'
-import {loadData} from '@/services/csv'
+import {parseCsv} from '@/services/parse-csv.js'
 
 const emit = defineEmits(['import'])
 
@@ -26,14 +26,15 @@ const onDrop = e => {
   let reader = new FileReader()
   reader.onload = () => {
     try {
-      emit('import', loadData(reader.result))
+      emit('import', parseCsv(reader.result))
     } catch (error) {
+      console.warn('parseCsv failed')
+      console.log({error})
       alert(
         'Какая-то ошибка при импорте данных.\n' +
         'Надо копаться в консоли и разбираться.\n' +
         'csv.loadData failed'
       )
-      console.log('csv.loadData failed', {error})
     }
   }
   reader.readAsText(file)
